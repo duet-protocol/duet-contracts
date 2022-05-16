@@ -1,0 +1,13 @@
+[
+  "constructor(address)",
+  "function bondPool() view returns (address)",
+  "function lpPool() view returns (address)",
+  "function mintBondTokenForRewards(address,uint256)",
+  "function mintedRewards() view returns (uint256)",
+  "function setFarmingPool(address,address)",
+  "function setStartBlock(uint256)",
+  "function startBlock() view returns (uint256)",
+  "function testInvalidUpdateBondPools()",
+  "function totalPendingRewards() view returns (int256)",
+  "function updateBondPools()"
+]

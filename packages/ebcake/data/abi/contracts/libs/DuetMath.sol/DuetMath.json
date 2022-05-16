@@ -1,0 +1,3 @@
+[
+  "function mulDiv(uint256,uint256,uint256,DuetMath.Rounding) pure returns (uint256)"
+]

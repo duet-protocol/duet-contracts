@@ -1,0 +1,4 @@
+[
+  "function mintBondTokenForRewards(address,uint256)",
+  "function totalPendingRewards() view returns (int256)"
+]

@@ -1,0 +1,4 @@
+[
+  "event KeeperUpdated(address indexed,address indexed)",
+  "function keeper() view returns (address)"
+]

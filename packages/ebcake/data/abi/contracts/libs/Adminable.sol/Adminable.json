@@ -1,0 +1,5 @@
+[
+  "event AdminUpdated(address indexed,address indexed)",
+  "function admin() view returns (address)",
+  "function setAdmin(address)"
+]
