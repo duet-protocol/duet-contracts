@@ -20,10 +20,7 @@ contract ExtendableBond is ReentrancyGuardUpgradeable, PausableUpgradeable, Admi
      * Bond token contract
      */
     BondToken public bondToken;
-    /**
-     * CakePool contract
-     */
-    ICakePool public cakePool;
+
     /**
      * Bond underlying asset
      */
@@ -74,7 +71,6 @@ contract ExtendableBond is ReentrancyGuardUpgradeable, PausableUpgradeable, Admi
     function initialize(
         BondToken bondToken_,
         IERC20Upgradeable underlyingToken_,
-        ICakePool cakePool_,
         address admin_
     ) public initializer {
         __Pausable_init();
@@ -84,8 +80,6 @@ contract ExtendableBond is ReentrancyGuardUpgradeable, PausableUpgradeable, Admi
         PERCENTAGE_FACTOR = 10000;
         bondToken = bondToken_;
         underlyingToken = underlyingToken_;
-        cakePool = cakePool_;
-        admin = admin_;
     }
 
     /**
@@ -96,7 +90,7 @@ contract ExtendableBond is ReentrancyGuardUpgradeable, PausableUpgradeable, Admi
     }
 
     /**
-     * @notice total underlying token amount, including hold in current contract and cake pool
+     * @notice total underlying token amount, including hold in current contract and remote
      */
     function totalUnderlyingAmount() public view returns (uint256) {
         return underlyingAmount() + remoteUnderlyingAmount();
@@ -161,13 +155,8 @@ contract ExtendableBond is ReentrancyGuardUpgradeable, PausableUpgradeable, Admi
     /**
      * calculate remote underlying token amount.
      */
-    function remoteUnderlyingAmount() public view returns (uint256) {
-        ICakePool.UserInfo memory userInfo = cakePool.userInfo(address(this));
-        uint256 pricePerFullShare = cakePool.getPricePerFullShare();
-        return
-            (userInfo.shares * pricePerFullShare) /
-            1e18 -
-            cakePool.calculateWithdrawFee(address(this), userInfo.shares);
+    function remoteUnderlyingAmount() public view virtual returns (uint256) {
+        return 0;
     }
 
     /**
@@ -200,29 +189,17 @@ contract ExtendableBond is ReentrancyGuardUpgradeable, PausableUpgradeable, Admi
 
         uint256 underlyingTokenAmount = underlyingToken.balanceOf(address(this));
         if (underlyingTokenAmount < amount_) {
-            cakePool.withdrawByAmount(amount_ - underlyingTokenAmount);
+            _withdrawFromRemote(amount_ - underlyingTokenAmount);
         }
 
         underlyingToken.safeTransfer(user, amount_);
     }
 
-    function secondsToPancakeLockExtend() public view returns (uint256) {
-        uint256 secondsToExtend = 0;
-        uint256 currentTime = block.timestamp;
-        ICakePool.UserInfo memory bondUnderlyingCakeInfo = cakePool.userInfo(address(this));
-        // lock expired or cake lockEndTime earlier than maturity, extend lock time required.
-        if (
-            bondUnderlyingCakeInfo.lockEndTime <= currentTime ||
-            !bondUnderlyingCakeInfo.locked ||
-            bondUnderlyingCakeInfo.lockEndTime < checkPoints.maturity
-        ) {
-            secondsToExtend = MathUpgradeable.min(checkPoints.maturity - currentTime, cakePool.MAX_LOCK_DURATION());
-        }
-        return secondsToExtend >= 0 ? secondsToExtend : 0;
-    }
+    function _withdrawFromRemote(uint256 amount_) internal virtual {}
 
     /**
      * @dev convert underlying token to bond token to current user
+     * @param amount_ amount of underlying token to convert
      */
     function convert(uint256 amount_) external whenNotPaused {
         require(amount_ > 0, "Nothing to convert");
@@ -240,6 +217,9 @@ contract ExtendableBond is ReentrancyGuardUpgradeable, PausableUpgradeable, Admi
         );
     }
 
+    /**
+     * @dev distribute pending rewards.
+     */
     function _updateFarmingPools() internal {
         bondFarmingPool.updatePool();
         bondLPFarmingPool.updatePool();
@@ -257,13 +237,13 @@ contract ExtendableBond is ReentrancyGuardUpgradeable, PausableUpgradeable, Admi
     function convertAndStake(uint256 amount_) external whenNotPaused {
         require(amount_ > 0, "Nothing to convert");
         requireConvertable();
+        // Single bond token farming rewards base on  'bond token mount in pool' / 'total bond token supply' * 'total underlying rewards'  (remaining rewards for LP pools)
+        // In order to distribute pending rewards to old shares, bondToken farming pools should be updated when new bondToken converted.
         _updateFarmingPools();
 
         address user = msg.sender;
         underlyingToken.safeTransferFrom(user, address(this), amount_);
-        underlyingToken.approve(address(cakePool), amount_);
-
-        cakePool.deposit(amount_, secondsToPancakeLockExtend());
+        _depositRemote(amount_);
         // 1:1 mint bond token to current contract
         bondToken.mint(address(this), amount_);
         bondToken.approve(address(bondFarmingPool), amount_);
@@ -272,25 +252,28 @@ contract ExtendableBond is ReentrancyGuardUpgradeable, PausableUpgradeable, Admi
         emit Converted(amount_, user);
     }
 
+    function _depositRemote(uint256 amount_) internal virtual {}
+
     /**
      * @dev convert underlying token to bond token to specific user
      */
     function _convertOperation(uint256 amount_, address user_) internal nonReentrant {
         requireConvertable();
+        // Single bond token farming rewards base on  'bond token mount in pool' / 'total bond token supply' * 'total underlying rewards'   (remaining rewards for LP pools)
+        // In order to distribute pending rewards to old shares, bondToken farming pools should be updated when new bondToken converted.
         _updateFarmingPools();
 
         underlyingToken.transferFrom(user_, address(this), amount_);
-        underlyingToken.approve(address(cakePool), amount_);
-        cakePool.deposit(amount_, secondsToPancakeLockExtend());
+        _depositRemote(amount_);
         // 1:1 mint bond token to user
         bondToken.mint(user_, amount_);
         emit Converted(amount_, user_);
     }
 
-    function extendRemoteLockDate() public onlyKeeper {
-        cakePool.deposit(0, secondsToPancakeLockExtend());
-    }
-
+    /**
+     * @dev update checkPoints
+     * @param checkPoints_ new checkpoints
+     */
     function updateCheckPoints(CheckPoints calldata checkPoints_) public onlyAdminOrKeeper {
         require(checkPoints_.convertableFrom > 0, "convertableFrom must be greater than 0");
         require(
@@ -318,17 +301,6 @@ contract ExtendableBond is ReentrancyGuardUpgradeable, PausableUpgradeable, Admi
     }
 
     /**
-     * @dev Withdraw cake from cake pool.
-     */
-    function withdrawRemoteUnderlyingTokens(bool makeRedeemable_) public onlyAdminOrKeeper {
-        checkPoints.convertable = false;
-        cakePool.withdrawAll();
-        if (makeRedeemable_) {
-            checkPoints.redeemable = true;
-        }
-    }
-
-    /**
      * @dev emergency transfer underlying token for security issue or bug encounted.
      */
     function emergencyTransferUnderlyingTokens(address to_) external onlyAdmin {
@@ -337,12 +309,8 @@ contract ExtendableBond is ReentrancyGuardUpgradeable, PausableUpgradeable, Admi
         underlyingToken.safeTransfer(to_, underlyingAmount());
     }
 
-    function extendBond(CheckPoints calldata checkPoints_) public onlyAdminOrKeeper {
-        updateCheckPoints(checkPoints_);
-    }
-
     /**
-     * @notice add
+     * @notice add fee specification
      */
     function addFeeSpec(FeeSpec calldata feeSpec_) external onlyAdmin {
         require(feeSpecs.length < 5, "Too many fee specs");
@@ -356,18 +324,30 @@ contract ExtendableBond is ReentrancyGuardUpgradeable, PausableUpgradeable, Admi
         require(totalFeeRate <= PERCENTAGE_FACTOR, "Total fee rate greater than 100%.");
     }
 
-    function depositToRemote(uint256 amount_) public onlyAdminOrKeeper {
-        uint256 balance = underlyingToken.balanceOf(address(this));
-        require(balance > 0 && balance >= amount_, "nothing to deposit");
-        cakePool.deposit(amount_, secondsToPancakeLockExtend());
-    }
-
-    function depositAllToRemote() public onlyAdminOrKeeper {
-        depositToRemote(underlyingToken.balanceOf(address(this)));
+    /**
+     * @notice update fee specification
+     */
+    function setFeeSpec(uint256 feeId_, FeeSpec calldata feeSpec_) external onlyAdmin {
+        require(feeSpec_.rate > 0, "Fee rate is too low");
+        require(feeSpec_.rate <= PERCENTAGE_FACTOR, "Fee rate is too high");
+        feeSpecs[feeId_] = feeSpec_;
+        uint256 totalFeeRate = 0;
+        for (uint256 i = 0; i < feeSpecs.length; i++) {
+            totalFeeRate += feeSpecs[i].rate;
+        }
+        require(totalFeeRate <= PERCENTAGE_FACTOR, "Total fee rate greater than 100%.");
     }
 
     function removeFeeSpec(uint256 feeSpecIndex) external onlyAdmin {
         delete feeSpecs[feeSpecIndex];
+    }
+
+    function depositToRemote(uint256 amount_) public onlyAdminOrKeeper {
+        _depositRemote(amount_);
+    }
+
+    function depositAllToRemote() public onlyAdminOrKeeper {
+        depositToRemote(underlyingToken.balanceOf(address(this)));
     }
 
     function setKeeper(address newKeeper) external onlyAdmin {

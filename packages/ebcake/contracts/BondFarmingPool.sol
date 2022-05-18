@@ -84,6 +84,8 @@ contract BondFarmingPool is Pausable, ReentrancyGuard, Ownable, IBondFarmingPool
      */
     function _updatePool() internal {
         require(address(siblingPool) != address(0), "BondFarmingPool: Contract not ready yet.");
+        // Single bond token farming rewards base on  'bond token mount in pool' / 'total bond token supply' * 'total underlying rewards' and remaining rewards for LP pools.
+        // So single bond farming pool should be updated before LP's.
         require(
             siblingPool.lastUpdatedPoolAt() < block.number ||
                 (siblingPool.lastUpdatedPoolAt() == lastUpdatedPoolAt && lastUpdatedPoolAt == block.number),
@@ -151,7 +153,7 @@ contract BondFarmingPool is Pausable, ReentrancyGuard, Ownable, IBondFarmingPool
     }
 
     function stakeForUser(address user_, uint256 amount_) public whenNotPaused nonReentrant {
-        // allocate pending rewards of all sibling pools to correct reward ratio between them.
+        // distributing pending rewards of all sibling pools to correct reward ratio between them.
         _updatePools();
 
         uint256 stakeShares = amountToShares(amount_);
@@ -182,7 +184,7 @@ contract BondFarmingPool is Pausable, ReentrancyGuard, Ownable, IBondFarmingPool
         UserInfo storage userInfo = usersInfo[user];
         require(userInfo.shares >= shares_ && totalShares >= shares_, "unstake shares exceeds owned shares");
 
-        // allocate pending rewards of all sibling pools to correct reward ratio between them.
+        // distribute pending rewards of all sibling pools to correct reward ratio between them.
         _updatePools();
 
         // including rewards.

@@ -13,11 +13,12 @@ import "./libs/DuetMath.sol";
 import "./MultiRewardsMasterChef.sol";
 import "./interfaces/IBondFarmingPool.sol";
 import "./interfaces/IExtendableBond.sol";
+import "./interfaces/IPancakeMasterChefV2.sol";
 
 contract BondLPFarmingPool is Pausable, ReentrancyGuard, Ownable, IBondFarmingPool {
-    using SafeERC20 for IERC20;
     IERC20 public bondToken;
     IERC20 public lpToken;
+    using SafeERC20 for IERC20;
     IExtendableBond public bond;
 
     IBondFarmingPool public siblingPool;
@@ -27,10 +28,14 @@ contract BondLPFarmingPool is Pausable, ReentrancyGuard, Ownable, IBondFarmingPo
 
     uint256 masterChefPid;
 
+    /**
+     * @dev accumulated bond token rewards of each lp token.
+     */
     uint256 accRewardPerShare;
 
     uint256 ACC_REWARDS_PRECISION = 1e12;
 
+    uint256 totalLpAmount;
     /**
      * @notice mark bond reward is suspended. If the LP Token needs to be migrated, such as from pancake to ESP, the bond rewards will be suspended.
      * @notice you can not stake anymore when bond rewards has been suspended.
@@ -39,10 +44,6 @@ contract BondLPFarmingPool is Pausable, ReentrancyGuard, Ownable, IBondFarmingPo
     bool public bondRewardsSuspended = false;
 
     struct UserInfo {
-        /**
-         * @dev described compounded lp token amount, user's shares / total shares * underlying amount = user's amount.
-         */
-        uint256 shares;
         /**
          * lp amount deposited by user.
          */
@@ -92,6 +93,8 @@ contract BondLPFarmingPool is Pausable, ReentrancyGuard, Ownable, IBondFarmingPo
      * @dev allocate pending rewards.
      */
     function _updatePool() internal {
+        // Single bond token farming rewards base on  'bond token mount in pool' / 'total bond token supply' * 'total underlying rewards' and remaining rewards for LP pools.
+        // So single bond farming pool should be updated before LP's.
         require(
             siblingPool.lastUpdatedPoolAt() > lastUpdatedPoolAt ||
                 (siblingPool.lastUpdatedPoolAt() == lastUpdatedPoolAt && lastUpdatedPoolAt == block.number),
@@ -99,12 +102,12 @@ contract BondLPFarmingPool is Pausable, ReentrancyGuard, Ownable, IBondFarmingPo
         );
         uint256 pendingRewards = totalPendingRewards();
         lastUpdatedPoolAt = block.number;
+        _harvestRemote();
         if (pendingRewards <= 0) {
             return;
         }
-        uint256 totalLpAmount = lpToken.balanceOf(address(this));
         if (totalLpAmount > 0) {
-            accRewardPerShare += pendingRewards / (lpToken.balanceOf(address(this)) / ACC_REWARDS_PRECISION);
+            accRewardPerShare += (pendingRewards * ACC_REWARDS_PRECISION) / totalLpAmount;
         } else {
             accRewardPerShare = 0;
         }
@@ -148,18 +151,26 @@ contract BondLPFarmingPool is Pausable, ReentrancyGuard, Ownable, IBondFarmingPo
         _updatePool();
     }
 
+    function _stakeRemote(address user_, uint256 amount_) internal virtual {}
+
+    function _unstakeRemote(address user_, uint256 amount_) internal virtual {}
+
+    function _harvestRemote() internal virtual {}
+
     function stakeForUser(address user_, uint256 amount_) public whenNotPaused nonReentrant {
         require(amount_ > 0, "nothing to stake");
         // allocate pending rewards of all sibling pools to correct reward ratio between them.
         _updatePools();
         UserInfo storage userInfo = usersInfo[user_];
         if (userInfo.lpAmount > 0) {
-            uint256 sharesReward = accRewardPerShare * (userInfo.lpAmount / ACC_REWARDS_PRECISION);
+            uint256 sharesReward = (accRewardPerShare * userInfo.lpAmount) / ACC_REWARDS_PRECISION;
             userInfo.pendingRewards += sharesReward - userInfo.rewardDebit;
             userInfo.rewardDebit = sharesReward;
         }
-        lpToken.transferFrom(msg.sender, address(this), amount_);
+        lpToken.safeTransferFrom(msg.sender, address(this), amount_);
+        _stakeRemote(user_, amount_);
         userInfo.lpAmount += amount_;
+        totalLpAmount += amount_;
         masterChef.depositForUser(masterChefPid, amount_, user_);
         emit Staked(user_, amount_);
     }
@@ -175,12 +186,12 @@ contract BondLPFarmingPool is Pausable, ReentrancyGuard, Ownable, IBondFarmingPo
         // allocate pending rewards of all sibling pools to correct reward ratio between them.
         _updatePools();
 
-        uint256 sharesReward = accRewardPerShare * (userInfo.lpAmount / ACC_REWARDS_PRECISION);
+        uint256 sharesReward = (accRewardPerShare * userInfo.lpAmount) / ACC_REWARDS_PRECISION;
         console.log("BondLPFarmingPool.sharesReward", sharesReward);
         uint256 pendingRewards = userInfo.pendingRewards + sharesReward - userInfo.rewardDebit;
         userInfo.rewardDebit = sharesReward;
         userInfo.pendingRewards = 0;
-
+        _unstakeRemote(user, amount_);
         if (amount_ > 0) {
             userInfo.lpAmount -= amount_;
             // send staked assets
@@ -188,7 +199,7 @@ contract BondLPFarmingPool is Pausable, ReentrancyGuard, Ownable, IBondFarmingPo
         }
 
         // send rewards
-        bondToken.transfer(user, pendingRewards);
+        bondToken.safeTransfer(user, pendingRewards);
         masterChef.withdrawForUser(masterChefPid, amount_, user);
 
         emit Unstaked(user, amount_);
