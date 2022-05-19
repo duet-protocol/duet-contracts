@@ -1,8 +1,8 @@
 {
   "manifestVersion": "3.2",
   "admin": {
-    "address": "0x1c85638e118b37167e9298c2268758e058DdfDA0",
-    "txHash": "0xec97bf5df2f17b242f146eb5fc33560ddfdc0db9d0a71c6a9a9e9d1b0457bae0"
+    "address": "0x7A9Ec1d04904907De0ED7b6839CcdD59c3716AC9",
+    "txHash": "0x8e4d93bb3d939d3bb653dc68923b56ec40b49617f4d54caf1daf2a383d2531a4"
   },
   "proxies": [
     {
@@ -17,7 +17,12 @@
     },
     {
       "address": "0x367761085BF3C12e5DA2Df99AC6E1a824612b8fb",
-      "txHash": "0x535fdea0f6ab244d41e17577808201d204553577762175b32ab228d5b877c69c",
+      "txHash": "0xa33d2d9f7b6ffc00a86f8d71fb19f9452b9f610ee47262b1f6568c7ca2e4a254",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x49fd2BE640DB2910c2fAb69bB8531Ab6E76127ff",
+      "txHash": "0xf57f7956f980e3d3ddaa483e82d53558134f3a0f260c13214f38e2a0f787a7b4",
       "kind": "transparent"
     }
   ],
@@ -315,9 +320,9 @@
         }
       }
     },
-    "28a439cb1fff8e469ca77fd07294d8e70712632fe98341b23111874170457088": {
+    "9de1e7146a393c01c72d2b273bd0b261a682f57111692e524b73dd61afcac67f": {
       "address": "0xC9a43158891282A2B1475592D5719c001986Aaec",
-      "txHash": "0x7019ff2dff4c0edf37f375653b7f4e2bce01e15c284f8790c3119be4402a2a9d",
+      "txHash": "0xa98899b5e61c7c79cb2313ed184a8b7c8548eb722c428999028b0645b6e507e6",
       "layout": {
         "storage": [
           {
@@ -397,65 +402,57 @@
             "label": "bondToken",
             "offset": 0,
             "slot": "153",
-            "type": "t_contract(BondToken)4508",
+            "type": "t_contract(BondToken)4530",
             "contract": "ExtendableBond",
             "src": "contracts/ExtendableBond.sol:22"
           },
           {
-            "label": "cakePool",
-            "offset": 0,
-            "slot": "154",
-            "type": "t_contract(ICakePool)7360",
-            "contract": "ExtendableBond",
-            "src": "contracts/ExtendableBond.sol:26"
-          },
-          {
             "label": "underlyingToken",
             "offset": 0,
-            "slot": "155",
+            "slot": "154",
             "type": "t_contract(IERC20Upgradeable)389",
             "contract": "ExtendableBond",
-            "src": "contracts/ExtendableBond.sol:30"
+            "src": "contracts/ExtendableBond.sol:27"
           },
           {
             "label": "PERCENTAGE_FACTOR",
             "offset": 20,
-            "slot": "155",
+            "slot": "154",
             "type": "t_uint16",
             "contract": "ExtendableBond",
-            "src": "contracts/ExtendableBond.sol:36"
+            "src": "contracts/ExtendableBond.sol:33"
           },
           {
             "label": "bondFarmingPool",
             "offset": 0,
-            "slot": "156",
-            "type": "t_contract(IBondFarmingPool)7275",
+            "slot": "155",
+            "type": "t_contract(IBondFarmingPool)7136",
             "contract": "ExtendableBond",
-            "src": "contracts/ExtendableBond.sol:37"
+            "src": "contracts/ExtendableBond.sol:34"
           },
           {
             "label": "bondLPFarmingPool",
             "offset": 0,
-            "slot": "157",
-            "type": "t_contract(IBondFarmingPool)7275",
+            "slot": "156",
+            "type": "t_contract(IBondFarmingPool)7136",
             "contract": "ExtendableBond",
-            "src": "contracts/ExtendableBond.sol:38"
+            "src": "contracts/ExtendableBond.sol:35"
           },
           {
             "label": "feeSpecs",
             "offset": 0,
-            "slot": "158",
-            "type": "t_array(t_struct(FeeSpec)4577_storage)dyn_storage",
+            "slot": "157",
+            "type": "t_array(t_struct(FeeSpec)4595_storage)dyn_storage",
             "contract": "ExtendableBond",
-            "src": "contracts/ExtendableBond.sol:55"
+            "src": "contracts/ExtendableBond.sol:52"
           },
           {
             "label": "checkPoints",
             "offset": 0,
-            "slot": "159",
-            "type": "t_struct(CheckPoints)4597_storage",
+            "slot": "158",
+            "type": "t_struct(CheckPoints)4615_storage",
             "contract": "ExtendableBond",
-            "src": "contracts/ExtendableBond.sol:67"
+            "src": "contracts/ExtendableBond.sol:64"
           }
         ],
         "types": {
@@ -463,7 +460,7 @@
             "label": "address",
             "numberOfBytes": "20"
           },
-          "t_array(t_struct(FeeSpec)4577_storage)dyn_storage": {
+          "t_array(t_struct(FeeSpec)4595_storage)dyn_storage": {
             "label": "struct ExtendableBond.FeeSpec[]",
             "numberOfBytes": "32"
           },
@@ -479,16 +476,12 @@
             "label": "bool",
             "numberOfBytes": "1"
           },
-          "t_contract(BondToken)4508": {
+          "t_contract(BondToken)4530": {
             "label": "contract BondToken",
             "numberOfBytes": "20"
           },
-          "t_contract(IBondFarmingPool)7275": {
+          "t_contract(IBondFarmingPool)7136": {
             "label": "contract IBondFarmingPool",
-            "numberOfBytes": "20"
-          },
-          "t_contract(ICakePool)7360": {
-            "label": "contract ICakePool",
             "numberOfBytes": "20"
           },
           "t_contract(IERC20Upgradeable)389": {
@@ -499,7 +492,7 @@
             "label": "string",
             "numberOfBytes": "32"
           },
-          "t_struct(CheckPoints)4597_storage": {
+          "t_struct(CheckPoints)4615_storage": {
             "label": "struct ExtendableBond.CheckPoints",
             "members": [
               {
@@ -547,7 +540,266 @@
             ],
             "numberOfBytes": "224"
           },
-          "t_struct(FeeSpec)4577_storage": {
+          "t_struct(FeeSpec)4595_storage": {
+            "label": "struct ExtendableBond.FeeSpec",
+            "members": [
+              {
+                "label": "desc",
+                "type": "t_string_storage",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "rate",
+                "type": "t_uint16",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "receiver",
+                "type": "t_address",
+                "offset": 2,
+                "slot": "1"
+              }
+            ],
+            "numberOfBytes": "64"
+          },
+          "t_uint16": {
+            "label": "uint16",
+            "numberOfBytes": "2"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        }
+      }
+    },
+    "16844fb35ca8af2d5eb68fd5b9adfaca08f54b76cd39ff4aa21c6bde679b34d7": {
+      "address": "0x4C2F7092C2aE51D986bEFEe378e50BD4dB99C901",
+      "txHash": "0x4991f16126bca984bdc1c5b28a230d42ca72a6b479e5d022331566488d183303",
+      "layout": {
+        "storage": [
+          {
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint8",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:62",
+            "retypedFrom": "bool"
+          },
+          {
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "0",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:67"
+          },
+          {
+            "label": "_status",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_uint256",
+            "contract": "ReentrancyGuardUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol:38"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_array(t_uint256)49_storage",
+            "contract": "ReentrancyGuardUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol:74"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "51",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ContextUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol:36"
+          },
+          {
+            "label": "_paused",
+            "offset": 0,
+            "slot": "101",
+            "type": "t_bool",
+            "contract": "PausableUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol:29"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "102",
+            "type": "t_array(t_uint256)49_storage",
+            "contract": "PausableUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol:102"
+          },
+          {
+            "label": "admin",
+            "offset": 0,
+            "slot": "151",
+            "type": "t_address",
+            "contract": "Adminable",
+            "src": "contracts/libs/Adminable.sol:4"
+          },
+          {
+            "label": "keeper",
+            "offset": 0,
+            "slot": "152",
+            "type": "t_address",
+            "contract": "Keepable",
+            "src": "contracts/libs/Keepable.sol:4"
+          },
+          {
+            "label": "bondToken",
+            "offset": 0,
+            "slot": "153",
+            "type": "t_contract(BondToken)4540",
+            "contract": "ExtendableBond",
+            "src": "contracts/ExtendableBond.sol:22"
+          },
+          {
+            "label": "underlyingToken",
+            "offset": 0,
+            "slot": "154",
+            "type": "t_contract(IERC20Upgradeable)389",
+            "contract": "ExtendableBond",
+            "src": "contracts/ExtendableBond.sol:27"
+          },
+          {
+            "label": "PERCENTAGE_FACTOR",
+            "offset": 20,
+            "slot": "154",
+            "type": "t_uint16",
+            "contract": "ExtendableBond",
+            "src": "contracts/ExtendableBond.sol:33"
+          },
+          {
+            "label": "bondFarmingPool",
+            "offset": 0,
+            "slot": "155",
+            "type": "t_contract(IBondFarmingPool)7167",
+            "contract": "ExtendableBond",
+            "src": "contracts/ExtendableBond.sol:34"
+          },
+          {
+            "label": "bondLPFarmingPool",
+            "offset": 0,
+            "slot": "156",
+            "type": "t_contract(IBondFarmingPool)7167",
+            "contract": "ExtendableBond",
+            "src": "contracts/ExtendableBond.sol:35"
+          },
+          {
+            "label": "feeSpecs",
+            "offset": 0,
+            "slot": "157",
+            "type": "t_array(t_struct(FeeSpec)4605_storage)dyn_storage",
+            "contract": "ExtendableBond",
+            "src": "contracts/ExtendableBond.sol:52"
+          },
+          {
+            "label": "checkPoints",
+            "offset": 0,
+            "slot": "158",
+            "type": "t_struct(CheckPoints)4625_storage",
+            "contract": "ExtendableBond",
+            "src": "contracts/ExtendableBond.sol:64"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_struct(FeeSpec)4605_storage)dyn_storage": {
+            "label": "struct ExtendableBond.FeeSpec[]",
+            "numberOfBytes": "32"
+          },
+          "t_array(t_uint256)49_storage": {
+            "label": "uint256[49]",
+            "numberOfBytes": "1568"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]",
+            "numberOfBytes": "1600"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_contract(BondToken)4540": {
+            "label": "contract BondToken",
+            "numberOfBytes": "20"
+          },
+          "t_contract(IBondFarmingPool)7167": {
+            "label": "contract IBondFarmingPool",
+            "numberOfBytes": "20"
+          },
+          "t_contract(IERC20Upgradeable)389": {
+            "label": "contract IERC20Upgradeable",
+            "numberOfBytes": "20"
+          },
+          "t_string_storage": {
+            "label": "string",
+            "numberOfBytes": "32"
+          },
+          "t_struct(CheckPoints)4625_storage": {
+            "label": "struct ExtendableBond.CheckPoints",
+            "members": [
+              {
+                "label": "convertable",
+                "type": "t_bool",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "convertableFrom",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "convertableEnd",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "2"
+              },
+              {
+                "label": "redeemable",
+                "type": "t_bool",
+                "offset": 0,
+                "slot": "3"
+              },
+              {
+                "label": "redeemableFrom",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "4"
+              },
+              {
+                "label": "redeemableEnd",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "5"
+              },
+              {
+                "label": "maturity",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "6"
+              }
+            ],
+            "numberOfBytes": "224"
+          },
+          "t_struct(FeeSpec)4605_storage": {
             "label": "struct ExtendableBond.FeeSpec",
             "members": [
               {

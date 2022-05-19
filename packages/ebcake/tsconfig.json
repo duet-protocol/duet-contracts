@@ -8,9 +8,19 @@
     "declaration": true,
     "typeRoots": [
       "./types/",
-      "./node_modules/@types",
+      "./node_modules/@types"
+    ],
+    "types": [
+      "node"
     ]
   },
-  "include": ["./scripts", "./test", "./typechain", "./types"],
-  "files": ["./hardhat.config.ts"]
+  "include": [
+    "./scripts",
+    "./test",
+    "./typechain",
+    "./types"
+  ],
+  "files": [
+    "./hardhat.config.ts"
+  ]
 }

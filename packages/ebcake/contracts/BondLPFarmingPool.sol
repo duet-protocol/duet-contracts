@@ -1,41 +1,41 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.9;
 
-import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/security/Pausable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 import "hardhat/console.sol";
 
 import "./ExtendableBond.sol";
 import "./libs/DuetMath.sol";
+import "./libs/Adminable.sol";
 import "./MultiRewardsMasterChef.sol";
 import "./interfaces/IBondFarmingPool.sol";
 import "./interfaces/IExtendableBond.sol";
 import "./interfaces/IPancakeMasterChefV2.sol";
 
-contract BondLPFarmingPool is Pausable, ReentrancyGuard, Ownable, IBondFarmingPool {
-    IERC20 public bondToken;
-    IERC20 public lpToken;
-    using SafeERC20 for IERC20;
+contract BondLPFarmingPool is ReentrancyGuardUpgradeable, PausableUpgradeable, Adminable, IBondFarmingPool {
+    IERC20Upgradeable public bondToken;
+    IERC20Upgradeable public lpToken;
+    using SafeERC20Upgradeable for IERC20Upgradeable;
     IExtendableBond public bond;
 
     IBondFarmingPool public siblingPool;
     uint256 public lastUpdatedPoolAt = 0;
 
-    MultiRewardsMasterChef masterChef;
+    MultiRewardsMasterChef public masterChef;
 
-    uint256 masterChefPid;
+    uint256 public masterChefPid;
 
     /**
      * @dev accumulated bond token rewards of each lp token.
      */
-    uint256 accRewardPerShare;
+    uint256 public accRewardPerShare;
 
-    uint256 ACC_REWARDS_PRECISION = 1e12;
+    uint256 public ACC_REWARDS_PRECISION = 1e12;
 
-    uint256 totalLpAmount;
+    uint256 public totalLpAmount;
     /**
      * @notice mark bond reward is suspended. If the LP Token needs to be migrated, such as from pancake to ESP, the bond rewards will be suspended.
      * @notice you can not stake anymore when bond rewards has been suspended.
@@ -45,17 +45,21 @@ contract BondLPFarmingPool is Pausable, ReentrancyGuard, Ownable, IBondFarmingPo
 
     struct UserInfo {
         /**
-         * lp amount deposited by user.
+         * @dev lp amount deposited by user.
          */
         uint256 lpAmount;
         /**
-         * like sushi rewardDebit
+         * @dev like sushi rewardDebit
          */
         uint256 rewardDebit;
         /**
          * @dev Rewards credited to rewardDebit but not yet claimed
          */
         uint256 pendingRewards;
+        /**
+         * @dev claimed rewards. for 'earned to date' calculation.
+         */
+        uint256 claimedRewards;
     }
 
     mapping(address => UserInfo) public usersInfo;
@@ -63,17 +67,23 @@ contract BondLPFarmingPool is Pausable, ReentrancyGuard, Ownable, IBondFarmingPo
     event Staked(address indexed user, uint256 amount);
     event Unstaked(address indexed user, uint256 amount);
 
-    constructor(IERC20 bondToken_, IExtendableBond bond_) {
+    function initialize(
+        IERC20Upgradeable bondToken_,
+        IExtendableBond bond_,
+        address admin_
+    ) public initializer {
+        __ReentrancyGuard_init();
+        __Pausable_init();
+        admin = admin_;
         bondToken = bondToken_;
         bond = bond_;
     }
 
-    function setLpToken(IERC20 lpToken_) public onlyOwner {
-        require(address(lpToken) == address(0), "Can not modify lpToken");
+    function setLpToken(IERC20Upgradeable lpToken_) public onlyAdmin {
         lpToken = lpToken_;
     }
 
-    function setMasterChef(MultiRewardsMasterChef masterChef_, uint256 masterChefPid_) public onlyOwner {
+    function setMasterChef(MultiRewardsMasterChef masterChef_, uint256 masterChefPid_) public onlyAdmin {
         masterChef = masterChef_;
         masterChefPid = masterChefPid_;
     }
@@ -128,7 +138,7 @@ contract BondLPFarmingPool is Pausable, ReentrancyGuard, Ownable, IBondFarmingPo
         return totalBondPendingRewards;
     }
 
-    function setSiblingPool(IBondFarmingPool siblingPool_) public onlyOwner {
+    function setSiblingPool(IBondFarmingPool siblingPool_) public onlyAdmin {
         require(
             (address(siblingPool_.siblingPool()) == address(0) ||
                 address(siblingPool_.siblingPool()) == address(this)) && (address(siblingPool_) != address(this)),
@@ -200,6 +210,7 @@ contract BondLPFarmingPool is Pausable, ReentrancyGuard, Ownable, IBondFarmingPo
 
         // send rewards
         bondToken.safeTransfer(user, pendingRewards);
+        userInfo.claimedRewards += pendingRewards;
         masterChef.withdrawForUser(masterChefPid, amount_, user);
 
         emit Unstaked(user, amount_);
@@ -210,7 +221,7 @@ contract BondLPFarmingPool is Pausable, ReentrancyGuard, Ownable, IBondFarmingPo
         unstake(usersInfo[msg.sender].lpAmount);
     }
 
-    function setBondRewardsSuspended(bool suspended_) public onlyOwner {
+    function setBondRewardsSuspended(bool suspended_) public onlyAdmin {
         _updatePools();
         bondRewardsSuspended = suspended_;
     }

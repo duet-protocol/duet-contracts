@@ -19,6 +19,9 @@
   "workspaces": [
     "packages/*"
   ],
+  "engines": {
+    "node": "16.14.2"
+  },
   "homepage": "https://github.com/duet-protocol/duet-contracts#readme",
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.0",
@@ -30,7 +33,7 @@
     "@typechain/hardhat": "^2.3.0",
     "@types/chai": "^4.2.21",
     "@types/mocha": "^9.0.0",
-    "@types/node": "^12.0.0",
+    "@types/node": "^16.11.26",
     "@typescript-eslint/eslint-plugin": "^4.29.1",
     "@typescript-eslint/parser": "^4.29.1",
     "chai": "^4.2.0",
@@ -58,7 +61,8 @@
     "solhint-plugin-prettier": "^0.0.5",
     "solidity-coverage": "^0.7.16",
     "solidity-docgen": "^0.6.0-beta.10",
-    "ts-node": "^10.1.0",
+    "ts-node": "^10.7.0",
+    "ts-node-dev": "^2.0.0-0",
     "typechain": "^5.1.2",
     "typescript": "^4.5.2"
   }

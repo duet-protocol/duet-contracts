@@ -26,6 +26,10 @@ contract MultiRewardsMasterChef is ReentrancyGuard, Initializable {
     struct UserInfo {
         uint256 amount; // How many LP tokens the user has provided.
         /**
+         * @dev claimed rewards mapping. key is reward id, value is claimed rewards since to last claimed
+         */
+        mapping(uint256 => uint256) claimedRewards;
+        /**
          * @dev rewardDebt mapping. key is reward id, value is reward debt of the reward.
          */
         mapping(uint256 => uint256) rewardDebt; // Reward debt in each reward. See explanation below.
@@ -348,6 +352,7 @@ contract MultiRewardsMasterChef is ReentrancyGuard, Initializable {
                 uint256 pending = user.amount.mul(accRewardPerShare).div(1e12).sub(user.rewardDebt[rewardId]);
                 if (pending > 0) {
                     rewardSpec.claimedAmount += pending;
+                    user.claimedRewards[rewardId] += pending;
                     rewardSpec.token.safeTransfer(_user, pending);
                 }
             }
@@ -398,6 +403,7 @@ contract MultiRewardsMasterChef is ReentrancyGuard, Initializable {
                 uint256 pending = user.amount.mul(accRewardPerShare).div(1e12).sub(user.rewardDebt[rewardId]);
                 if (pending > 0) {
                     rewardSpec.claimedAmount += pending;
+                    user.claimedRewards[rewardId] += pending;
                     rewardSpec.token.safeTransfer(_user, pending);
                 }
                 user.rewardDebt[rewardId] = user.amount.mul(accRewardPerShare).div(1e12);

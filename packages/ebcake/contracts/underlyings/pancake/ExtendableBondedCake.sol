@@ -9,6 +9,10 @@ contract ExtendableBondedCake is ExtendableBond {
      */
     ICakePool public cakePool;
 
+    function setCakePool(ICakePool cakePool_) external onlyAdmin {
+        cakePool = cakePool_;
+    }
+
     /**
      * @dev calculate cake amount from pancake.
      */
@@ -22,14 +26,14 @@ contract ExtendableBondedCake is ExtendableBond {
     }
 
     /**
-     * withdraw from pancakeswap
+     * @dev withdraw from pancakeswap
      */
     function _withdrawFromRemote(uint256 amount_) internal override {
         cakePool.withdrawByAmount(amount_);
     }
 
     /**
-     * deposit to pancakeswap
+     * @dev deposit to pancakeswap
      */
     function _depositRemote(uint256 amount_) internal override {
         uint256 balance = underlyingToken.balanceOf(address(this));
@@ -64,7 +68,10 @@ contract ExtendableBondedCake is ExtendableBond {
         }
     }
 
-    function extendPancakeLockDate() public onlyAdminOrKeeper {
+    /**
+     * @dev extend pancake lock duration if needs
+     */
+    function extendPancakeLockDuration() public onlyAdminOrKeeper {
         uint256 secondsToExtend = secondsToPancakeLockExtend();
         if (secondsToExtend > 0) {
             cakePool.deposit(0, secondsToPancakeLockExtend());

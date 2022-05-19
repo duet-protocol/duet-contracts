@@ -10,13 +10,10 @@ import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import { parseEther } from 'ethers/lib/utils';
 import { expect } from 'chai';
 import { mineBlocks, ZERO_ADDRESS } from './helpers';
-import chalk from 'chalk';
 import { BigNumber } from 'bignumber.js';
+import { useLogger } from '../scripts/utils';
 
-// const chalk = new Chalk();
-console.info = (message?: any, ...optionalParams: any[]) => {
-  console.log(chalk.cyan(String(message)), ...optionalParams);
-};
+const logger = useLogger(__filename);
 describe('BondFarmingPools', function () {
   let alice: SignerWithAddress,
     bob: SignerWithAddress,
@@ -53,7 +50,8 @@ describe('BondFarmingPools', function () {
 
     bondPool = await BondFarmingPool.connect(alice).deploy(bondToken.address, bond.address);
     bondPool.setMasterChef(chef.address, 0);
-    lpPool = await BondLPFarmingPool.connect(alice).deploy(bondToken.address, bond.address);
+    lpPool = await BondLPFarmingPool.connect(alice).deploy();
+    await lpPool.connect(alice).initialize(bondToken.address, bond.address, alice.address);
     await lpPool.connect(alice).setLpToken(lpToken.address);
     lpPool.setMasterChef(chef.address, 1);
 
@@ -74,15 +72,15 @@ describe('BondFarmingPools', function () {
     await bondToken.connect(bob).approve(bondPool.address, parseEther('1000'));
     const rewardStartBlock = (await ethers.provider.getBlock('latest')).number + 2;
     await chef.setRewardSpec(0, parseEther('40'), rewardStartBlock, 200);
-    // console.info('bond.startBlock()', await bond.startBlock());
-    // console.info('bondToken.totalSupply()', await bondToken.totalSupply());
-    // console.info('bond.totalPendingRewards()', await bond.totalPendingRewards());
-    // console.info('bondPool.totalPendingRewards()', await bondPool.totalPendingRewards());
+    // logger.info('bond.startBlock()', await bond.startBlock());
+    // logger.info('bondToken.totalSupply()', await bondToken.totalSupply());
+    // logger.info('bond.totalPendingRewards()', await bond.totalPendingRewards());
+    // logger.info('bondPool.totalPendingRewards()', await bondPool.totalPendingRewards());
     await bondPool.connect(bob).stake(parseEther('1000'));
-    console.info('----- bob staked ----');
+    logger.info('----- bob staked ----');
     const bobUserInfo = await bondPool.usersInfo(bob.address);
 
-    console.info('carolUserInfo', bobUserInfo);
+    logger.info('carolUserInfo', bobUserInfo);
     expect(String(await bondToken.balanceOf(bondPool.address))).equal(parseEther('1000').toString());
     expect(String(await bondToken.balanceOf(bob.address))).equal(parseEther('0').toString());
     expect(await bondPool.totalPendingRewards()).equal(parseEther('0').toString());
@@ -101,17 +99,17 @@ describe('BondFarmingPools', function () {
     await bondToken.connect(carol).approve(bondPool.address, parseEther('1000'));
     await bondPool.connect(carol).stake(parseEther('1000'));
     const carolStakedBlock = (await ethers.provider.getBlock('latest')).number;
-    console.info('----- carol staked ----');
+    logger.info('----- carol staked ----');
     let carolUserInfo = await bondPool.usersInfo(carol.address);
     // 999999999999999999999 ≈ 1000 bondToken as decimal issue.
     expect(String(await bondPool.sharesToBondAmount(carolUserInfo.shares))).equal('999999999999999999999');
     await mineBlocks(7, network);
-    console.info(
+    logger.info(
       'String(await bondToken.balanceOf(bondPool.address))',
       String(await bondToken.balanceOf(bondPool.address)),
     );
     await bondPool.connect(bob).unstakeAll();
-    console.info(
+    logger.info(
       'String(await bondToken.balanceOf(bondPool.address))',
       String(await bondToken.balanceOf(bondPool.address)),
     );
@@ -120,13 +118,13 @@ describe('BondFarmingPools', function () {
     await bondPool.connect(carol).unstakeAll();
 
     let carolLatestBlock = (await ethers.provider.getBlock('latest')).number;
-    console.info('bduet', String(await bDuetToken.balanceOf(bob.address)));
-    console.info('totalShares', await bondPool.totalShares());
-    console.info('totalShares', await bondToken.balanceOf(lpPool.address));
+    logger.info('bduet', String(await bDuetToken.balanceOf(bob.address)));
+    logger.info('totalShares', await bondPool.totalShares());
+    logger.info('totalShares', await bondToken.balanceOf(lpPool.address));
 
     const bothInPoolBlocks = bobLatestBlock - carolStakedBlock;
     const bobAloneBlocks = bobLatestBlock - bobStakedBlock - bothInPoolBlocks;
-    console.info('blocks info', {
+    logger.info('blocks info', {
       bobStakedBlock,
       carolStakedBlock,
       carolLatestBlock,
@@ -148,7 +146,7 @@ describe('BondFarmingPools', function () {
       .multipliedBy(bothInPoolBlocks)
       .div(2)
       .multipliedBy(bobShareRatio.toString());
-    console.info('rewards', {
+    logger.info('rewards', {
       bobRewardsAlone: bobBduetRewardsAlone.toString(),
       sharedRewardsWithCarol: sharedBduetRewardsWithCarol.toString(),
       bobShares: bobUserInfo.shares,
@@ -163,7 +161,7 @@ describe('BondFarmingPools', function () {
     expect(String(await bondToken.balanceOf(bondPool.address))).equal(parseEther('0').toString());
     expect(String(await bondPool.totalPendingRewards())).equal(parseEther('0').toString());
     expect(String(await bondPool.totalShares())).equal(parseEther('0').toString());
-    console.log('bond token balance of lpPool', await bondToken.balanceOf(lpPool.address));
+    logger.log('bond token balance of lpPool', await bondToken.balanceOf(lpPool.address));
   });
   it("should call bondPool.updatePool() before lpPool's", async () => {
     await expect(bond.testInvalidUpdateBondPools()).revertedWith('update bond pool firstly.');
@@ -215,7 +213,7 @@ describe('BondFarmingPools', function () {
     expect(String(await bDuetToken.balanceOf(carol.address))).equal(parseEther('130'));
 
     expect(String(await bondToken.balanceOf(bob.address))).equal(parseEther('260'));
-    expect(String(await bondToken.balanceOf(carol.address))).equal(parseEther('300'));
+    expect(String(await bondToken.balanceOf(carol.address))).equal(parseEther('280'));
 
     await expect(lpPool.connect(alice).unstakeAll()).revertedWith('nothing to unstake');
   });

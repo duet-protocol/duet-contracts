@@ -31,8 +31,8 @@ contract ExtendableBond is ReentrancyGuardUpgradeable, PausableUpgradeable, Admi
      *      Calculation formula: x * percentage / PERCENTAGE_FACTOR
      */
     uint16 public PERCENTAGE_FACTOR;
-    IBondFarmingPool bondFarmingPool;
-    IBondFarmingPool bondLPFarmingPool;
+    IBondFarmingPool public bondFarmingPool;
+    IBondFarmingPool public bondLPFarmingPool;
     /**
      * Emitted when someone convert underlying token to the bond.
      */
@@ -75,8 +75,8 @@ contract ExtendableBond is ReentrancyGuardUpgradeable, PausableUpgradeable, Admi
     ) public initializer {
         __Pausable_init();
         __ReentrancyGuard_init();
-
         _setAdmin(admin_);
+
         PERCENTAGE_FACTOR = 10000;
         bondToken = bondToken_;
         underlyingToken = underlyingToken_;

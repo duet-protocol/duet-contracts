@@ -13,9 +13,10 @@ import {
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import { expect } from 'chai';
 import { setBlockTimestampTo } from './helpers';
+import { useLogger } from '../scripts/utils';
 
 // const MockBEP20 = artifacts.readArtifactSync("./libs/MockBEP20.sol");
-
+const logger = useLogger(__filename);
 describe('ExtendableBond', function () {
   let alice: SignerWithAddress,
     bob: SignerWithAddress,
@@ -66,7 +67,7 @@ describe('ExtendableBond', function () {
     const MockIBondFarmingPool = await ethers.getContractFactory('MockIBondFarmingPool');
     bondPool = await MockIBondFarmingPool.connect(alice).deploy(bondToken.address);
     lpPool = await MockIBondFarmingPool.connect(alice).deploy(bondToken.address);
-    console.log('masterChef.poolLength()', await masterChef.poolLength());
+    logger.log('masterChef.poolLength()', await masterChef.poolLength());
     cakeMasterChefV2 = await CakeMasterChefV2Contract.connect(alice).deploy(
       masterChef.address,
       cakeToken.address,
@@ -92,13 +93,13 @@ describe('ExtendableBond', function () {
     // await dCAKEPOOL.connect(alice).transfer(cakeMasterChefV2.address, parseEther('10'));
     await masterChef.connect(alice).set(0, 0, true);
     await masterChef.connect(alice).add(1, dMasterCefV2.address, true);
-    console.log('masterChefv2 pool length', await cakeMasterChefV2.poolLength());
+    logger.log('masterChefv2 pool length', await cakeMasterChefV2.poolLength());
     await cakeMasterChefV2.connect(alice).init(dMasterCefV2.address);
     await cakeToken.connect(alice).transfer(cakeMasterChefV2.address, parseEther('10000'));
-    // console.log('pool info', await cakeMasterChefV2.poolInfo(0));
+    // logger.log('pool info', await cakeMasterChefV2.poolInfo(0));
 
     const CakePoolContract = await ethers.getContractFactory('CakePool');
-    console.log('hello:80');
+    logger.log('hello:80');
     await cakeMasterChefV2.add(1, dCAKEPOOL.address, false, true);
     cakePool = await CakePoolContract.connect(alice).deploy(
       cakeToken.address,
@@ -117,13 +118,11 @@ describe('ExtendableBond', function () {
 
     const ExtendableBondContract = await ethers.getContractFactory('ExtendableBond');
     // BondToken bondToken_,
-    //   ICakePool cakePool_,
     //   IERC20Upgradeable underlyingToken_,
     //   address admin_
     extendableBond = (await upgrades.deployProxy(ExtendableBondContract, [
       bondToken.address,
       cakeToken.address,
-      cakePool.address,
       alice.address,
     ])) as ExtendableBond;
 
@@ -156,11 +155,11 @@ describe('ExtendableBond', function () {
     await network.provider.send('evm_increaseTime', [21]);
     await network.provider.send('evm_mine');
     await cakeToken.connect(bob).approve(extendableBond.address, parseEther('10000'));
-    console.log('cakeMasterChefV2.BOOST_PRECISION', await cakeMasterChefV2.BOOST_PRECISION());
-    console.log('cakeMasterChefV2.ACC_CAKE_PRECISION', await cakeMasterChefV2.ACC_CAKE_PRECISION());
-    console.log(' await cakeMasterChefV2.poolLength', await cakeMasterChefV2.poolLength());
-    console.log(' await cakeMasterChefV2.poolInfo(0)', await cakeMasterChefV2.poolInfo(0));
-    console.log(
+    logger.log('cakeMasterChefV2.BOOST_PRECISION', await cakeMasterChefV2.BOOST_PRECISION());
+    logger.log('cakeMasterChefV2.ACC_CAKE_PRECISION', await cakeMasterChefV2.ACC_CAKE_PRECISION());
+    logger.log(' await cakeMasterChefV2.poolLength', await cakeMasterChefV2.poolLength());
+    logger.log(' await cakeMasterChefV2.poolInfo(0)', await cakeMasterChefV2.poolInfo(0));
+    logger.log(
       ' await cakeMasterChefV2.pendingCake(0, cakePool.address)',
       await cakeMasterChefV2.pendingCake(0, cakePool.address),
     );
@@ -168,7 +167,7 @@ describe('ExtendableBond', function () {
     await extendableBond.connect(bob).convert(parseEther('10000'));
     await expect(String(await cakeToken.balanceOf(bob.address))).equal(parseEther('0'));
     await expect(String(await bondToken.balanceOf(bob.address))).equal(parseEther('10000'));
-    await expect(String(await cakeToken.balanceOf(extendableBond.address))).equal(parseEther('0'));
+    await expect(String(await cakeToken.balanceOf(extendableBond.address))).equal(parseEther('10000'));
     await expect(extendableBond.connect(bob).redeemAll()).revertedWith('Can not redeem.');
     await setBlockTimestampTo(now + 86400 * 8 + 10);
     await extendableBond.connect(bob).redeemAll();

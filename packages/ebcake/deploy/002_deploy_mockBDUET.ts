@@ -1,8 +1,12 @@
 import { DeployFunction } from 'hardhat-deploy/types';
 import { HardhatRuntimeEnvironment } from 'hardhat/types';
 import { parseEther } from 'ethers/lib/utils';
+import { useNetworkName } from './defines';
 
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
+  if (!['bsctest', 'local'].includes(useNetworkName())) {
+    return;
+  }
   const { deployments, getNamedAccounts } = hre;
   const { deploy } = deployments;
 

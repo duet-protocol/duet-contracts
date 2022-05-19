@@ -22,8 +22,8 @@ contract BondFarmingPool is Pausable, ReentrancyGuard, Ownable, IBondFarmingPool
     uint256 public lastUpdatedPoolAt = 0;
     IBondFarmingPool public siblingPool;
 
-    MultiRewardsMasterChef masterChef;
-    uint256 masterChefPid;
+    MultiRewardsMasterChef public masterChef;
+    uint256 public masterChefPid;
 
     struct UserInfo {
         /**
