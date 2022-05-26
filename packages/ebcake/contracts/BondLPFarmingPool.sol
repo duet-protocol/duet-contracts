@@ -33,7 +33,7 @@ contract BondLPFarmingPool is ReentrancyGuardUpgradeable, PausableUpgradeable, A
      */
     uint256 public accRewardPerShare;
 
-    uint256 public ACC_REWARDS_PRECISION = 1e12;
+    uint256 public constant ACC_REWARDS_PRECISION = 1e12;
 
     uint256 public totalLpAmount;
     /**
@@ -204,6 +204,7 @@ contract BondLPFarmingPool is ReentrancyGuardUpgradeable, PausableUpgradeable, A
         _unstakeRemote(user, amount_);
         if (amount_ > 0) {
             userInfo.lpAmount -= amount_;
+            totalLpAmount -= amount_;
             // send staked assets
             lpToken.safeTransfer(user, amount_);
         }

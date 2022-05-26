@@ -30,7 +30,7 @@ contract ExtendableBond is ReentrancyGuardUpgradeable, PausableUpgradeable, Admi
      * @dev factor for percentage that described in integer. It makes 10000 means 100%, and 20 means 0.2%;
      *      Calculation formula: x * percentage / PERCENTAGE_FACTOR
      */
-    uint16 public PERCENTAGE_FACTOR;
+    uint16 public constant PERCENTAGE_FACTOR = 10000;
     IBondFarmingPool public bondFarmingPool;
     IBondFarmingPool public bondLPFarmingPool;
     /**
@@ -77,7 +77,6 @@ contract ExtendableBond is ReentrancyGuardUpgradeable, PausableUpgradeable, Admi
         __ReentrancyGuard_init();
         _setAdmin(admin_);
 
-        PERCENTAGE_FACTOR = 10000;
         bondToken = bondToken_;
         underlyingToken = underlyingToken_;
     }
@@ -112,7 +111,7 @@ contract ExtendableBond is ReentrancyGuardUpgradeable, PausableUpgradeable, Admi
     /**
      * @dev mint bond token for rewards and allocate fees.
      */
-    function mintBondTokenForRewards(address to_, uint256 amount_) public nonReentrant {
+    function mintBondTokenForRewards(address to_, uint256 amount_) public {
         require(
             msg.sender == address(bondFarmingPool) || msg.sender == address(bondLPFarmingPool),
             "only from farming pool"
@@ -234,7 +233,7 @@ contract ExtendableBond is ReentrancyGuardUpgradeable, PausableUpgradeable, Admi
     /**
      * @dev convert underlying token to bond token and stake to bondFarmingPool for current user
      */
-    function convertAndStake(uint256 amount_) external whenNotPaused {
+    function convertAndStake(uint256 amount_) external whenNotPaused nonReentrant {
         require(amount_ > 0, "Nothing to convert");
         requireConvertable();
         // Single bond token farming rewards base on  'bond token mount in pool' / 'total bond token supply' * 'total underlying rewards'  (remaining rewards for LP pools)

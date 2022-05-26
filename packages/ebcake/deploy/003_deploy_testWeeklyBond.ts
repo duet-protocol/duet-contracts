@@ -1,27 +1,37 @@
+/* eslint-disable node/no-unpublished-import,node/no-missing-import */
 import { DeployFunction } from 'hardhat-deploy/types';
 import { useNetworkName } from './defines';
 import { HardhatRuntimeEnvironment } from 'hardhat/types/runtime';
 import moment from 'moment';
 import config from '../config';
+import { HardhatDeployRuntimeEnvironment } from '../types/hardhat-deploy';
+import { MasterChefDeployNames } from './001_deploy_masterchef';
+import { ZERO_ADDRESS } from '../test/helpers';
+import { ethers } from 'hardhat';
+import { pancakeFactoryABI } from '../3rd/pancake';
 import { useLogger } from '../scripts/utils';
+import { Event } from 'ethers';
 
 export enum DeployNames {
+  /* eslint-disable camelcase */
   testWeekly_ExtendableBondToken = 'testWeekly_ExtendableBondToken',
   testWeekly_ExtendableBondedCake = 'testWeekly_ExtendableBondedCake',
   testWeekly_BondFarmingPool = 'testWeekly_BondFarmingPool',
   testWeekly_BondLPFarmingPool = 'testWeekly_BondLPFarmingPool',
+  /* eslint-enable camelcase */
 }
 
 const logger = useLogger(__filename);
-
+const gasLimit = 3000000;
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
+  const [deployerSigner] = await ethers.getSigners();
   const networkName = useNetworkName();
   if (networkName === 'bsc') {
     console.log('deploying bsc network, ignored testWeekly_Bond');
     return;
   }
-  const { deployments, getNamedAccounts } = hre;
-  const { deploy, execute } = deployments;
+  const { deployments, getNamedAccounts } = hre as unknown as HardhatDeployRuntimeEnvironment;
+  const { deploy, execute, read, get } = deployments;
 
   const { deployer } = await getNamedAccounts();
 
@@ -42,10 +52,11 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     autoMine: true, // speed up deployment on local network (ganache, hardhat), no effect on live networks
   });
 
-  if (bond.newlyDeployed) {
+  if (bond.newlyDeployed && bond?.numDeployments === 1) {
+    logger.info('initializing', DeployNames.testWeekly_ExtendableBondedCake);
     await execute(
       DeployNames.testWeekly_ExtendableBondedCake,
-      { from: deployer },
+      { from: deployer, gasLimit },
       'initialize',
       bondToken.address,
       config.address.CakeToken[networkName],
@@ -53,7 +64,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     );
     await execute(
       DeployNames.testWeekly_ExtendableBondedCake,
-      { from: deployer },
+      { from: deployer, gasLimit },
       'setCakePool',
       config.address.CakePool[networkName],
     );
@@ -67,15 +78,17 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     //         uint256 redeemableEnd;
     //         uint256 maturity;
     const startOfWeek = moment().utc().startOf('week');
-    await execute(DeployNames.testWeekly_ExtendableBondedCake, { from: deployer }, 'updateCheckPoints', {
+    await execute(DeployNames.testWeekly_ExtendableBondedCake, { from: deployer, gasLimit }, 'updateCheckPoints', {
       convertable: true,
       convertableFrom: startOfWeek.unix(),
-      convertableEnd: startOfWeek.add(2, 'days').unix(),
+      convertableEnd: startOfWeek.clone().add(1, 'week').startOf('week').unix(),
       redeemable: false,
-      redeemableFrom: startOfWeek.add(7, 'days').unix(),
-      redeemableEnd: startOfWeek.endOf('week').unix(),
-      maturity: startOfWeek.endOf('week').unix(),
+      redeemableFrom: startOfWeek.clone().add(1, 'week').endOf('week').subtract('1', 'day').startOf('day').unix(),
+      redeemableEnd: startOfWeek.clone().add(1, 'week').endOf('week').unix(),
+      maturity: startOfWeek.clone().add(1, 'week').endOf('week').subtract('1', 'day').startOf('day').unix(),
     });
+
+    logger.info('initialized', DeployNames.testWeekly_ExtendableBondedCake);
   }
   const bondFarmingPool = await deploy(DeployNames.testWeekly_BondFarmingPool, {
     from: deployer,
@@ -90,49 +103,109 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     from: deployer,
     contract: 'BondLPFarmingPool',
     proxy: true,
-
     log: true,
     autoMine: true, // speed up deployment on local network (ganache, hardhat), no effect on live networks
   });
-  if (bondLPFarmingPool.newlyDeployed) {
-    logger.info('history', bondLPFarmingPool.history);
+
+  if (bondLPFarmingPool.newlyDeployed && bondLPFarmingPool?.numDeployments === 1) {
+    logger.info('initializing', DeployNames.testWeekly_BondLPFarmingPool);
+
     // IERC20 bondToken_, IExtendableBond bond_
     await execute(
       DeployNames.testWeekly_BondLPFarmingPool,
-      { from: deployer },
+      { from: deployer, gasLimit },
       'initialize',
       bondToken.address,
       bond.address,
       deployer,
     );
 
+    const masterChefPoolLength = (
+      await read(
+        MasterChefDeployNames.MultiRewardsMasterChef,
+        {
+          from: deployer,
+        },
+        'poolLength',
+      )
+    ).toNumber();
+    const masterChef = await get(MasterChefDeployNames.MultiRewardsMasterChef);
+    await execute(
+      MasterChefDeployNames.MultiRewardsMasterChef,
+      {
+        from: deployer,
+        gasLimit,
+      },
+      'add',
+      10,
+      ZERO_ADDRESS,
+      bondFarmingPool.address,
+      true,
+    );
+    await execute(
+      MasterChefDeployNames.MultiRewardsMasterChef,
+      {
+        from: deployer,
+        gasLimit,
+      },
+      'add',
+      10,
+      ZERO_ADDRESS,
+      bondLPFarmingPool.address,
+      true,
+    );
+    await execute(
+      DeployNames.testWeekly_BondFarmingPool,
+      { from: deployer, gasLimit },
+      'setMasterChef',
+      masterChef.address,
+      masterChefPoolLength,
+    );
+    await execute(
+      DeployNames.testWeekly_BondLPFarmingPool,
+      { from: deployer, gasLimit },
+      'setMasterChef',
+      masterChef.address,
+      masterChefPoolLength + 1,
+    );
     await execute(DeployNames.testWeekly_ExtendableBondToken, { from: deployer }, 'setMinter', bond.address);
     await execute(
       DeployNames.testWeekly_BondFarmingPool,
-      { from: deployer },
+      { from: deployer, gasLimit },
       'setSiblingPool',
       bondLPFarmingPool.address,
     );
     await execute(
       DeployNames.testWeekly_BondLPFarmingPool,
-      { from: deployer },
+      { from: deployer, gasLimit },
       'setSiblingPool',
       bondFarmingPool.address,
     );
     await execute(
       DeployNames.testWeekly_ExtendableBondedCake,
-      { from: deployer },
+      { from: deployer, gasLimit },
       'setFarmingPools',
       bondFarmingPool.address,
       bondLPFarmingPool.address,
     );
+
+    // create pancakeswap LP Token
+    const pancakeFactory = await ethers.getContractAt(pancakeFactoryABI, config.address.PancakeFactory[networkName]);
+    const ret = await pancakeFactory
+      .connect(deployerSigner)
+      .createPair(bondToken.address, config.address.CakeToken[networkName]);
+    const retReceipt = await ret.wait();
+    const lpTokenAddress = retReceipt.events.filter((e: Event) => e.event === 'PairCreated')[0].args.pair;
+    if (!lpTokenAddress) {
+      throw new Error('PancakeSwap pair token created failed');
+    }
+    logger.info('LPToken created', lpTokenAddress);
+    await execute(DeployNames.testWeekly_BondLPFarmingPool, { from: deployer, gasLimit }, 'setLpToken', lpTokenAddress);
+
+    logger.info('initialized', DeployNames.testWeekly_BondLPFarmingPool);
   }
 
-  // await execute();
   // manually todo list
-  // 1. add LP Token on pancakeswap
-  // 2. call testWeekly_BondLPFarmingPool.setLpToken()
-  // 3. add bDUET reward to MasterChef
-  // 4. set masterChef contract address and pid to testWeekly_BondFarmingPool and testWeekly_BondLPFarmingPool
+  // 1. add bDUET reward to MasterChef
 };
 export default func;

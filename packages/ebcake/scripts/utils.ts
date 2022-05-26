@@ -1,5 +1,6 @@
 import * as path from 'path';
 import chalk from 'chalk';
+import moment from 'moment';
 
 const repoBasePath = path.resolve(path.dirname(path.join(__dirname, '/../../../../')));
 
@@ -17,10 +18,13 @@ export function useLogger(prefix: string) {
   }
   const prefixStr = () => {
     const callerFileName = getCallerFile();
+    const timePrefix = chalk.gray(`[${moment().format('YYYY-MM-DD HH:mm:ss')}]`);
+
     let processedPrefix = prefix;
     if (path.basename(callerFileName) !== processedPrefix) {
       processedPrefix = `${processedPrefix}@${path.basename(callerFileName)}`;
     }
+    processedPrefix = `${timePrefix} ${processedPrefix}`;
     return `${chalk.cyanBright(chalk.bold(`${processedPrefix}:${getCallerLine()}`))}: `;
   };
   return {
@@ -40,8 +44,10 @@ export function useLogger(prefix: string) {
         return [
           level,
           (message?: any, ...optionalParams: any[]): void => {
+            const levelWrapper = level === 'error' ? chalk.redBright : level === 'warn' ? chalk.yellowBright : null;
             return console[level as 'debug' | 'error' | 'info' | 'log' | 'warn' | 'trace'](
               prefixStr(),
+              chalk.bold(levelWrapper ? levelWrapper(`[${level}]`) : `[${level}]`),
               message,
               ...optionalParams,
             );

@@ -2,24 +2,33 @@ import { DeployFunction } from 'hardhat-deploy/types';
 import { HardhatRuntimeEnvironment } from 'hardhat/types';
 // eslint-disable-next-line node/no-unpublished-import
 import { useLogger } from '../scripts/utils';
+import { HardhatDeployRuntimeEnvironment } from '../types/hardhat-deploy';
+
+export enum MasterChefDeployNames {
+  MultiRewardsMasterChef = 'MultiRewardsMasterChef',
+}
 
 const logger = useLogger(__filename);
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
-  const { deployments, getNamedAccounts } = hre;
-  const { deploy, execute } = deployments;
+  const { deployments, getNamedAccounts } = hre as unknown as HardhatDeployRuntimeEnvironment;
+  const { deploy } = deployments;
 
   const { deployer } = await getNamedAccounts();
 
   const masterChef = await deploy('MultiRewardsMasterChef', {
     from: deployer,
-    proxy: true,
+    proxy: {
+      execute: {
+        init: {
+          methodName: 'initialize',
+          args: [deployer],
+        },
+      },
+    },
     log: true,
     autoMine: true, // speed up deployment on local network (ganache, hardhat), no effect on live networks
   });
 
   logger.info('MultiRewardsMasterChef deployed, ', masterChef.address);
-  if (masterChef.newlyDeployed) {
-    await execute('MultiRewardsMasterChef', { from: deployer }, 'initialize', deployer);
-  }
 };
 export default func;

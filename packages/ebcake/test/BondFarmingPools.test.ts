@@ -213,7 +213,7 @@ describe('BondFarmingPools', function () {
     expect(String(await bDuetToken.balanceOf(carol.address))).equal(parseEther('130'));
 
     expect(String(await bondToken.balanceOf(bob.address))).equal(parseEther('260'));
-    expect(String(await bondToken.balanceOf(carol.address))).equal(parseEther('280'));
+    expect(String(await bondToken.balanceOf(carol.address))).equal(parseEther('300'));
 
     await expect(lpPool.connect(alice).unstakeAll()).revertedWith('nothing to unstake');
   });

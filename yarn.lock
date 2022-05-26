@@ -5498,10 +5498,10 @@ hardhat-contract-sizer@^2.5.1:
     chalk "^4.0.0"
     cli-table3 "^0.6.0"
 
-hardhat-deploy@^0.11.4:
-  version "0.11.5"
-  resolved "https://registry.yarnpkg.com/hardhat-deploy/-/hardhat-deploy-0.11.5.tgz#c73324ec16a6f330356de86297290f7a2eb69bf5"
-  integrity sha512-3AZqbwNzM/CKqdMI5FNWkCm8bFO2BdKrTAdYiu19bg6DL0TIUbjfqS8xRY691tu595wd0s+k3ZRHgCB4eopWTg==
+hardhat-deploy@^0.11.10:
+  version "0.11.10"
+  resolved "https://registry.yarnpkg.com/hardhat-deploy/-/hardhat-deploy-0.11.10.tgz#5d34020ae2d475a9278d5dd5f493d86290a35b4d"
+  integrity sha512-Iby2WhDuAdaKXFkcrMbaA9YWOgDMBnuwixCk4TfBBu8+mBGI9muYsbU/pCMkKfXA4MwSHENweJlfDMyyz7zcNA==
   dependencies:
     "@types/qs" "^6.9.7"
     axios "^0.21.1"

@@ -1,3 +1,5 @@
+/* eslint-disable node/no-unpublished-import,node/no-missing-import */
+
 import { parseEther } from 'ethers/lib/utils';
 import { ethers, network, upgrades } from 'hardhat';
 import {

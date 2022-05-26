@@ -15,6 +15,7 @@
     ]
   },
   "include": [
+    "./deploy",
     "./scripts",
     "./test",
     "./typechain",
