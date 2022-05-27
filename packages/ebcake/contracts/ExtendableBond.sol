@@ -8,7 +8,6 @@ import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 
 import "./BondToken.sol";
-import "./interfaces/ICakePool.sol";
 import "./interfaces/IBondFarmingPool.sol";
 import "./libs/Adminable.sol";
 import "./libs/Keepable.sol";
@@ -73,6 +72,7 @@ contract ExtendableBond is ReentrancyGuardUpgradeable, PausableUpgradeable, Admi
         IERC20Upgradeable underlyingToken_,
         address admin_
     ) public initializer {
+        require(admin_ != address(0), "Cant set admin to zero address");
         __Pausable_init();
         __ReentrancyGuard_init();
         _setAdmin(admin_);
@@ -245,7 +245,7 @@ contract ExtendableBond is ReentrancyGuardUpgradeable, PausableUpgradeable, Admi
         _depositRemote(amount_);
         // 1:1 mint bond token to current contract
         bondToken.mint(address(this), amount_);
-        bondToken.approve(address(bondFarmingPool), amount_);
+        bondToken.safeApprove(address(bondFarmingPool), amount_);
         // stake to bondFarmingPool
         bondFarmingPool.stakeForUser(user, amount_);
         emit Converted(amount_, user);
@@ -262,7 +262,7 @@ contract ExtendableBond is ReentrancyGuardUpgradeable, PausableUpgradeable, Admi
         // In order to distribute pending rewards to old shares, bondToken farming pools should be updated when new bondToken converted.
         _updateFarmingPools();
 
-        underlyingToken.transferFrom(user_, address(this), amount_);
+        underlyingToken.safeTransferFrom(user_, address(this), amount_);
         _depositRemote(amount_);
         // 1:1 mint bond token to user
         bondToken.mint(user_, amount_);
@@ -314,7 +314,6 @@ contract ExtendableBond is ReentrancyGuardUpgradeable, PausableUpgradeable, Admi
     function addFeeSpec(FeeSpec calldata feeSpec_) external onlyAdmin {
         require(feeSpecs.length < 5, "Too many fee specs");
         require(feeSpec_.rate > 0, "Fee rate is too low");
-        require(feeSpec_.rate <= PERCENTAGE_FACTOR, "Fee rate is too high");
         feeSpecs.push(feeSpec_);
         uint256 totalFeeRate = 0;
         for (uint256 i = 0; i < feeSpecs.length; i++) {
@@ -328,7 +327,6 @@ contract ExtendableBond is ReentrancyGuardUpgradeable, PausableUpgradeable, Admi
      */
     function setFeeSpec(uint256 feeId_, FeeSpec calldata feeSpec_) external onlyAdmin {
         require(feeSpec_.rate > 0, "Fee rate is too low");
-        require(feeSpec_.rate <= PERCENTAGE_FACTOR, "Fee rate is too high");
         feeSpecs[feeId_] = feeSpec_;
         uint256 totalFeeRate = 0;
         for (uint256 i = 0; i < feeSpecs.length; i++) {

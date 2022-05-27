@@ -21,6 +21,7 @@ contract BondToken is ERC20, Ownable {
     }
 
     function setMinter(address minter_) public onlyOwner {
+        require(minter_ != address(0), "Cant set minter to zero address");
         minter = minter_;
     }
 

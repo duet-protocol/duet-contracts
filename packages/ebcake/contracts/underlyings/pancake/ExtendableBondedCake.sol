@@ -2,6 +2,7 @@
 pragma solidity ^0.8.9;
 
 import "../../ExtendableBond.sol";
+import "../../interfaces/ICakePool.sol";
 
 contract ExtendableBondedCake is ExtendableBond {
     /**

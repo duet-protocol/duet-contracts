@@ -13,7 +13,6 @@ import "./libs/Adminable.sol";
 import "./MultiRewardsMasterChef.sol";
 import "./interfaces/IBondFarmingPool.sol";
 import "./interfaces/IExtendableBond.sol";
-import "./interfaces/IPancakeMasterChefV2.sol";
 
 contract BondLPFarmingPool is ReentrancyGuardUpgradeable, PausableUpgradeable, Adminable, IBondFarmingPool {
     IERC20Upgradeable public bondToken;

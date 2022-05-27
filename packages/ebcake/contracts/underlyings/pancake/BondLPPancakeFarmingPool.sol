@@ -10,14 +10,14 @@ contract BondLPPancakeFarmingPool is BondLPFarmingPool {
     IERC20Upgradeable public cakeToken;
     using SafeERC20Upgradeable for IERC20Upgradeable;
 
-    IPancakeMasterChefV2 pancakeMasterChef;
+    IPancakeMasterChefV2 public pancakeMasterChef;
 
-    uint256 pancakeMasterChefPid;
+    uint256 public pancakeMasterChefPid;
 
     /**
      * @dev accumulated cake rewards of each lp token.
      */
-    uint256 accPancakeRewardsPerShares;
+    uint256 public accPancakeRewardsPerShares;
 
     struct PancakeUserInfo {
         /**

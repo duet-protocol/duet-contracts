@@ -158,7 +158,7 @@ contract BondFarmingPool is Pausable, ReentrancyGuard, Ownable, IBondFarmingPool
 
         uint256 stakeShares = amountToShares(amount_);
         console.log("stakeShares", stakeShares);
-        bondToken.transferFrom(msg.sender, address(this), amount_);
+        bondToken.safeTransferFrom(msg.sender, address(this), amount_);
         totalShares += stakeShares;
         usersInfo[user_].shares += stakeShares;
         usersInfo[user_].accNetStaked += int256(amount_);
@@ -195,7 +195,7 @@ contract BondFarmingPool is Pausable, ReentrancyGuard, Ownable, IBondFarmingPool
         console.log("unstake.balance", bondToken.balanceOf(address(this)));
         console.log("unstake.totalBondAmount", totalBondAmount);
 
-        bondToken.transfer(user, totalBondAmount);
+        bondToken.safeTransfer(user, totalBondAmount);
         usersInfo[user].accNetStaked -= int256(totalBondAmount);
         masterChef.withdrawForUser(masterChefPid, shares_, user);
         emit Unstaked(user, totalBondAmount);
