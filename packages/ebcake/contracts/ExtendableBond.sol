@@ -6,6 +6,7 @@ import "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeab
 import "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 import "./BondToken.sol";
 import "./interfaces/IBondFarmingPool.sol";
@@ -14,7 +15,7 @@ import "./libs/Keepable.sol";
 
 contract ExtendableBond is ReentrancyGuardUpgradeable, PausableUpgradeable, Adminable, Keepable {
     using SafeERC20Upgradeable for IERC20Upgradeable;
-    using SafeERC20Upgradeable for BondToken;
+    using SafeERC20 for BondToken;
     /**
      * Bond token contract
      */
