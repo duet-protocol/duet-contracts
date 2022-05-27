@@ -10,7 +10,7 @@ import "../interfaces/IBondFarmingPool.sol";
 import "../BondToken.sol";
 
 contract MockExtendableBond is IExtendableBond {
-    MockBEP20 bondToken;
+    MockBEP20 public bondToken;
 
     uint256 public mintedRewards = 0;
     uint256 public startBlock = 0;

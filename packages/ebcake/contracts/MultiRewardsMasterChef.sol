@@ -84,7 +84,7 @@ contract MultiRewardsMasterChef is ReentrancyGuard, Initializable {
 
     // Info of each pool.
     PoolInfo[] public poolInfo;
-    mapping(uint256 => mapping(uint256 => uint256)) poolsRewardsAccRewardsPerShare; // Accumulated rewards per share in each reward spec, times 1e12. See below.
+    mapping(uint256 => mapping(uint256 => uint256)) public poolsRewardsAccRewardsPerShare; // Accumulated rewards per share in each reward spec, times 1e12. See below.
     // Info of each user that stakes LP tokens.
     mapping(uint256 => mapping(address => UserInfo)) public userInfo;
     // Total allocation points. Must be the sum of all allocation points in all pools.
@@ -95,6 +95,23 @@ contract MultiRewardsMasterChef is ReentrancyGuard, Initializable {
     event ClaimRewards(address indexed user, uint256 indexed pid);
     event EmergencyWithdraw(address indexed user, uint256 indexed pid, uint256 amount);
     event AdminChanged(address indexed previousAdmin, address indexed newAdmin);
+
+    event PoolAdded(uint256 indexed pid, address indexed lpToken, address indexed proxyFarmer, uint256 allocPoint);
+    event PoolUpdated(uint256 indexed pid, uint256 allocPoint);
+    event RewardSpecAdded(
+        uint256 indexed rewardId,
+        address indexed rewardToken,
+        uint256 rewardPerBlock,
+        uint256 startedAtBlock,
+        uint256 endedAtBlock
+    );
+    event RewardSpecUpdated(
+        uint256 indexed rewardId,
+        uint256 rewardPerBlock,
+        uint256 startedAtBlock,
+        uint256 endedAtBlock
+    );
+
     /**
      * @notice Checks if the msg.sender is the admin address.
      */
@@ -118,7 +135,7 @@ contract MultiRewardsMasterChef is ReentrancyGuard, Initializable {
         IERC20 _lpToken,
         address _proxyFarmer,
         bool _withUpdate
-    ) public onlyAdmin {
+    ) public onlyAdmin returns (uint256 pid) {
         if (_withUpdate) {
             massUpdatePools();
         }
@@ -136,6 +153,9 @@ contract MultiRewardsMasterChef is ReentrancyGuard, Initializable {
                 totalAmount: 0
             })
         );
+        uint256 pid = poolInfo.length - 1;
+        emit PoolAdded(pid, address(_lpToken), _proxyFarmer, _allocPoint);
+        return pid;
     }
 
     // Update the given pool's RewardToken allocation point. Can only be called by the owner.
@@ -152,6 +172,8 @@ contract MultiRewardsMasterChef is ReentrancyGuard, Initializable {
         if (prevAllocPoint != _allocPoint) {
             totalAllocPoint = totalAllocPoint.sub(prevAllocPoint).add(_allocPoint);
         }
+
+        emit PoolUpdated(_pid, _allocPoint);
     }
 
     function addRewardSpec(
@@ -159,7 +181,7 @@ contract MultiRewardsMasterChef is ReentrancyGuard, Initializable {
         uint256 rewardPerBlock,
         uint256 startedAtBlock,
         uint256 endedAtBlock
-    ) public onlyAdmin {
+    ) public onlyAdmin returns (uint256 rewardId) {
         require(endedAtBlock > startedAtBlock, "endedAtBlock should be greater than startedAtBlock");
         require(rewardPerBlock > 0, "rewardPerBlock should be greater than zero");
 
@@ -174,6 +196,9 @@ contract MultiRewardsMasterChef is ReentrancyGuard, Initializable {
                 claimedAmount: 0
             })
         );
+        uint256 rewardId = rewardSpecs.length - 1;
+        emit RewardSpecAdded(rewardId, address(token), rewardPerBlock, startedAtBlock, endedAtBlock);
+        return rewardId;
     }
 
     function setRewardSpec(
@@ -213,6 +238,8 @@ contract MultiRewardsMasterChef is ReentrancyGuard, Initializable {
         rewardSpec.startedAtBlock = startedAtBlock;
         rewardSpec.endedAtBlock = endedAtBlock;
         rewardSpec.rewardPerBlock = rewardPerBlock;
+
+        emit RewardSpecUpdated(rewardId, rewardPerBlock, startedAtBlock, endedAtBlock);
     }
 
     // Set the migrator contract. Can only be called by the owner.
@@ -280,7 +307,7 @@ contract MultiRewardsMasterChef is ReentrancyGuard, Initializable {
             }
             rewardsInfo[rewardId] = RewardInfo({
                 token: rewardSpec.token,
-                amount: user.amount.mul(accRewardPerShare).div(1e12) // .sub(user.rewardDebt)
+                amount: user.amount.mul(accRewardPerShare).div(1e12)
             });
         }
 

@@ -8,8 +8,8 @@ import "../interfaces/IBondFarmingPool.sol";
 contract MockIBondFarmingPool is IBondFarmingPool {
     uint256 public lastUpdatedPoolAt;
     IBondFarmingPool public siblingPool;
-    IERC20 bondToken;
-    mapping(address => uint256) usersAmount;
+    IERC20 public bondToken;
+    mapping(address => uint256) public usersAmount;
 
     constructor(IERC20 bondToken_) {
         bondToken = bondToken_;

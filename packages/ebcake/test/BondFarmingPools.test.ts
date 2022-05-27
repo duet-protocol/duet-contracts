@@ -101,6 +101,7 @@ describe('BondFarmingPools', function () {
     const carolStakedBlock = (await ethers.provider.getBlock('latest')).number;
     logger.info('----- carol staked ----');
     let carolUserInfo = await bondPool.usersInfo(carol.address);
+    logger.info('bobUserInfo', String(await bondPool.sharesToBondAmount(bobUserInfo.shares)));
     // 999999999999999999999 ≈ 1000 bondToken as decimal issue.
     expect(String(await bondPool.sharesToBondAmount(carolUserInfo.shares))).equal('999999999999999999999');
     await mineBlocks(7, network);

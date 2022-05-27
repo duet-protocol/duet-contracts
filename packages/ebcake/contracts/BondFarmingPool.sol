@@ -41,6 +41,7 @@ contract BondFarmingPool is Pausable, ReentrancyGuard, Ownable, IBondFarmingPool
 
     event Staked(address indexed user, uint256 amount);
     event Unstaked(address indexed user, uint256 amount);
+    event SiblingPoolUpdated(address indexed previousPool, address indexed newPool);
 
     constructor(IERC20 bondToken_, IExtendableBond bond_) {
         bondToken = bondToken_;
@@ -57,6 +58,7 @@ contract BondFarmingPool is Pausable, ReentrancyGuard, Ownable, IBondFarmingPool
             address(siblingPool_.siblingPool()) == address(0) || address(siblingPool_.siblingPool()) == address(this),
             "Invalid sibling"
         );
+        emit SiblingPoolUpdated(address(siblingPool), address(siblingPool_));
         siblingPool = siblingPool_;
     }
 

@@ -65,6 +65,7 @@ contract BondLPFarmingPool is ReentrancyGuardUpgradeable, PausableUpgradeable, A
 
     event Staked(address indexed user, uint256 amount);
     event Unstaked(address indexed user, uint256 amount);
+    event SiblingPoolUpdated(address indexed previousPool, address indexed newPool);
 
     function initialize(
         IERC20Upgradeable bondToken_,
@@ -143,6 +144,7 @@ contract BondLPFarmingPool is ReentrancyGuardUpgradeable, PausableUpgradeable, A
                 address(siblingPool_.siblingPool()) == address(this)) && (address(siblingPool_) != address(this)),
             "Invalid sibling"
         );
+        emit SiblingPoolUpdated(address(siblingPool), address(siblingPool_));
         siblingPool = siblingPool_;
     }
 

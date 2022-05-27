@@ -6,20 +6,20 @@ import "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeab
 import "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
-import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 import "./BondToken.sol";
 import "./interfaces/IBondFarmingPool.sol";
+import "./interfaces/IBondTokenUpgradeable.sol";
 import "./libs/Adminable.sol";
 import "./libs/Keepable.sol";
 
 contract ExtendableBond is ReentrancyGuardUpgradeable, PausableUpgradeable, Adminable, Keepable {
     using SafeERC20Upgradeable for IERC20Upgradeable;
-    using SafeERC20 for BondToken;
+    using SafeERC20Upgradeable for IBondTokenUpgradeable;
     /**
      * Bond token contract
      */
-    BondToken public bondToken;
+    IBondTokenUpgradeable public bondToken;
 
     /**
      * Bond underlying asset
@@ -69,7 +69,7 @@ contract ExtendableBond is ReentrancyGuardUpgradeable, PausableUpgradeable, Admi
     }
 
     function initialize(
-        BondToken bondToken_,
+        IBondTokenUpgradeable bondToken_,
         IERC20Upgradeable underlyingToken_,
         address admin_
     ) public initializer {
