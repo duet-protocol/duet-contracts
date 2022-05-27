@@ -135,7 +135,7 @@ contract BondLPFarmingPool is ReentrancyGuardUpgradeable, PausableUpgradeable, A
         if (totalBondPendingRewards <= 0) {
             return 0;
         }
-        return totalBondPendingRewards;
+        return totalBondPendingRewards - siblingPool.totalPendingRewards();
     }
 
     function setSiblingPool(IBondFarmingPool siblingPool_) public onlyAdmin {
