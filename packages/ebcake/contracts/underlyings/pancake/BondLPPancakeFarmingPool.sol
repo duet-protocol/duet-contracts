@@ -80,7 +80,7 @@ contract BondLPPancakeFarmingPool is BondLPFarmingPool {
         }
 
         if (amount_ > 0) {
-            cakeToken.safeApprove(address(pancakeMasterChef), amount_);
+            lpToken.safeApprove(address(pancakeMasterChef), amount_);
             // deposit to pancake
             pancakeMasterChef.deposit(pancakeMasterChefPid, amount_);
         }
