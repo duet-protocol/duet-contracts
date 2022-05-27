@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity ^0.8.9;
+pragma solidity 0.8.9;
 
 interface IExtendableBond {
     function totalPendingRewards() external view returns (uint256);

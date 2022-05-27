@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 // copy from https://bscscan.com/address/0x45c54210128a065de780C4B0Df3d16664f7f859e#code#F1#L1
-pragma solidity ^0.8.9;
+pragma solidity 0.8.9;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // copy from https://bscscan.com/address/0xa5f8C5Dbd5F286960b9d90548680aE5ebFf07652#code#F1#L1
 
-pragma solidity ^0.8.9;
+pragma solidity 0.8.9;
 pragma experimental ABIEncoderV2;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
