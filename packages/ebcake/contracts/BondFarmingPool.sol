@@ -109,6 +109,9 @@ contract BondFarmingPool is Pausable, ReentrancyGuard, Ownable, IBondFarmingPool
     }
 
     function totalPendingRewards() public view virtual returns (uint256) {
+        if (lastUpdatedPoolAt == block.number) {
+            return 0;
+        }
         uint256 remoteTotalPendingRewards = bond.totalPendingRewards();
 
         console.log("BondFarmingPool.remoteTotalPendingRewards", uint256(remoteTotalPendingRewards));
