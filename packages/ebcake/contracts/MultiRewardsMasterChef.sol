@@ -433,7 +433,7 @@ contract MultiRewardsMasterChef is ReentrancyGuard, Initializable {
         pool.totalAmount = pool.totalAmount.sub(user.amount);
         pool.lpToken.safeTransfer(address(msg.sender), user.amount);
         user.amount = 0;
-        for (uint256 rewardId = 0; rewardId < rewardSpecs.length; rewardId) {
+        for (uint256 rewardId = 0; rewardId < rewardSpecs.length; rewardId++) {
             user.rewardDebt[rewardId] = 0;
         }
         emit EmergencyWithdraw(msg.sender, _pid, user.amount);
