@@ -1,6 +1,6 @@
 /* eslint-disable node/no-unpublished-import,node/no-missing-import */
 import { DeployFunction } from 'hardhat-deploy/types';
-import { useNetworkName } from './defines';
+import { testId, useNetworkName } from './defines';
 import { HardhatRuntimeEnvironment } from 'hardhat/types/runtime';
 import moment from 'moment';
 import config from '../config';
@@ -38,7 +38,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const bondToken = await deploy(DeployNames.testWeekly_ExtendableBondToken, {
     from: deployer,
     contract: 'BondToken',
-    args: ['test weekly ebCAKE', 'ebCAKE-W', deployer],
+    args: [`test weekly ebCAKE ${testId}`, `ebCAKE-W-${testId}`, deployer],
     log: true,
     autoMine: true, // speed up deployment on local network (ganache, hardhat), no effect on live networks
   });
@@ -46,22 +46,20 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const bond = await deploy(DeployNames.testWeekly_ExtendableBondedCake, {
     from: deployer,
     contract: 'ExtendableBondedCake',
-
-    proxy: true,
+    proxy: {
+      execute: {
+        init: {
+          methodName: 'initialize',
+          args: [bondToken.address, config.address.CakeToken[networkName], deployer],
+        },
+      },
+    },
     log: true,
     autoMine: true, // speed up deployment on local network (ganache, hardhat), no effect on live networks
   });
 
   if (bond.newlyDeployed && bond?.numDeployments === 1) {
     logger.info('initializing', DeployNames.testWeekly_ExtendableBondedCake);
-    await execute(
-      DeployNames.testWeekly_ExtendableBondedCake,
-      { from: deployer, gasLimit },
-      'initialize',
-      bondToken.address,
-      config.address.CakeToken[networkName],
-      deployer,
-    );
     await execute(
       DeployNames.testWeekly_ExtendableBondedCake,
       { from: deployer, gasLimit },
@@ -95,30 +93,34 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     contract: 'BondFarmingPool',
     // IERC20 bondToken_,
     // IExtendableBond bond_
-    args: [bondToken.address, bond.address],
+    proxy: {
+      execute: {
+        init: {
+          methodName: 'initialize',
+          args: [bondToken.address, bond.address, deployer],
+        },
+      },
+    },
     log: true,
     autoMine: true, // speed up deployment on local network (ganache, hardhat), no effect on live networks
   });
   const bondLPFarmingPool = await deploy(DeployNames.testWeekly_BondLPFarmingPool, {
     from: deployer,
     contract: 'BondLPFarmingPool',
-    proxy: true,
+    proxy: {
+      execute: {
+        init: {
+          methodName: 'initialize',
+          args: [bondToken.address, bond.address, deployer],
+        },
+      },
+    },
     log: true,
     autoMine: true, // speed up deployment on local network (ganache, hardhat), no effect on live networks
   });
 
   if (bondLPFarmingPool.newlyDeployed && bondLPFarmingPool?.numDeployments === 1) {
     logger.info('initializing', DeployNames.testWeekly_BondLPFarmingPool);
-
-    // IERC20 bondToken_, IExtendableBond bond_
-    await execute(
-      DeployNames.testWeekly_BondLPFarmingPool,
-      { from: deployer, gasLimit },
-      'initialize',
-      bondToken.address,
-      bond.address,
-      deployer,
-    );
 
     const masterChefPoolLength = (
       await read(
@@ -195,6 +197,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
       .connect(deployerSigner)
       .createPair(bondToken.address, config.address.CakeToken[networkName]);
     const retReceipt = await ret.wait();
+    logger.info('retReceipt', retReceipt);
     const lpTokenAddress = retReceipt.events.filter((e: Event) => e.event === 'PairCreated')[0].args.pair;
     if (!lpTokenAddress) {
       throw new Error('PancakeSwap pair token created failed');
@@ -204,8 +207,5 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
     logger.info('initialized', DeployNames.testWeekly_BondLPFarmingPool);
   }
-
-  // manually todo list
-  // 1. add bDUET reward to MasterChef
 };
 export default func;

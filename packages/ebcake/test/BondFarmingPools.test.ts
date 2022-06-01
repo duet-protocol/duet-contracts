@@ -48,15 +48,16 @@ describe('BondFarmingPools', function () {
     const BondFarmingPool = await ethers.getContractFactory('BondFarmingPool');
     const BondLPFarmingPool = await ethers.getContractFactory('BondLPFarmingPool');
 
-    bondPool = await BondFarmingPool.connect(alice).deploy(bondToken.address, bond.address);
-    bondPool.setMasterChef(chef.address, 0);
+    bondPool = await BondFarmingPool.connect(alice).deploy();
+    await bondPool.connect(alice).initialize(bondToken.address, bond.address, alice.address);
+    await bondPool.setMasterChef(chef.address, 0);
     lpPool = await BondLPFarmingPool.connect(alice).deploy();
     await lpPool.connect(alice).initialize(bondToken.address, bond.address, alice.address);
     await lpPool.connect(alice).setLpToken(lpToken.address);
-    lpPool.setMasterChef(chef.address, 1);
+    await lpPool.setMasterChef(chef.address, 1);
 
-    bondPool.setSiblingPool(lpPool.address);
-    lpPool.setSiblingPool(bondPool.address);
+    await bondPool.setSiblingPool(lpPool.address);
+    await lpPool.setSiblingPool(bondPool.address);
 
     await bond.setFarmingPool(bondPool.address, lpPool.address);
 

@@ -1,10 +1,12 @@
 import { network } from 'hardhat';
 
-export type NetworkName = 'bsc' | 'bsctest' | 'local';
+export type NetworkName = 'bsc' | 'bsctest' | 'hardhat';
 
 export function useNetworkName() {
   return network.name as NetworkName;
 }
+
+export const testId = '0601';
 
 export enum ContractTag {
   BOND_TOKEN = 'BOND_TOKEN',

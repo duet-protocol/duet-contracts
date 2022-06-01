@@ -1,0 +1,267 @@
+{
+  "manifestVersion": "3.2",
+  "admin": {
+    "address": "0x86A2EE8FAf9A840F7a2c64CA3d51209F9A02081D",
+    "txHash": "0x6fa11f76e8d6790e0b7e5e8378b23b835f76e389af0131456a9286a20fd74168"
+  },
+  "proxies": [
+    {
+      "address": "0xA4899D35897033b927acFCf422bc745916139776",
+      "txHash": "0x9ada872273269a1b5a72a397b4d88549d713feb3ac39c4abc1a2b16e8a7694c5",
+      "kind": "transparent"
+    }
+  ],
+  "impls": {
+    "4553c26a4aa13d39a4231d00ecbeca121407123699ec7a2eb9e23510c9c71600": {
+      "address": "0x4631BCAbD6dF18D94796344963cB60d44a4136b6",
+      "txHash": "0xb8f559ee654e19962cf643e51279b4f8bde59dc85deef0d9a90ead79d6f676da",
+      "layout": {
+        "storage": [
+          {
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint8",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:62",
+            "retypedFrom": "bool"
+          },
+          {
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "0",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:67"
+          },
+          {
+            "label": "_status",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_uint256",
+            "contract": "ReentrancyGuardUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol:38"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_array(t_uint256)49_storage",
+            "contract": "ReentrancyGuardUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol:74"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "51",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ContextUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol:36"
+          },
+          {
+            "label": "_paused",
+            "offset": 0,
+            "slot": "101",
+            "type": "t_bool",
+            "contract": "PausableUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol:29"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "102",
+            "type": "t_array(t_uint256)49_storage",
+            "contract": "PausableUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol:102"
+          },
+          {
+            "label": "admin",
+            "offset": 0,
+            "slot": "151",
+            "type": "t_address",
+            "contract": "Adminable",
+            "src": "contracts/libs/Adminable.sol:4"
+          },
+          {
+            "label": "keeper",
+            "offset": 0,
+            "slot": "152",
+            "type": "t_address",
+            "contract": "Keepable",
+            "src": "contracts/libs/Keepable.sol:4"
+          },
+          {
+            "label": "bondToken",
+            "offset": 0,
+            "slot": "153",
+            "type": "t_contract(IBondTokenUpgradeable)7393",
+            "contract": "ExtendableBond",
+            "src": "contracts/ExtendableBond.sol:22"
+          },
+          {
+            "label": "underlyingToken",
+            "offset": 0,
+            "slot": "154",
+            "type": "t_contract(IERC20Upgradeable)389",
+            "contract": "ExtendableBond",
+            "src": "contracts/ExtendableBond.sol:27"
+          },
+          {
+            "label": "bondFarmingPool",
+            "offset": 0,
+            "slot": "155",
+            "type": "t_contract(IBondFarmingPool)7374",
+            "contract": "ExtendableBond",
+            "src": "contracts/ExtendableBond.sol:34"
+          },
+          {
+            "label": "bondLPFarmingPool",
+            "offset": 0,
+            "slot": "156",
+            "type": "t_contract(IBondFarmingPool)7374",
+            "contract": "ExtendableBond",
+            "src": "contracts/ExtendableBond.sol:35"
+          },
+          {
+            "label": "feeSpecs",
+            "offset": 0,
+            "slot": "157",
+            "type": "t_array(t_struct(FeeSpec)4721_storage)dyn_storage",
+            "contract": "ExtendableBond",
+            "src": "contracts/ExtendableBond.sol:52"
+          },
+          {
+            "label": "checkPoints",
+            "offset": 0,
+            "slot": "158",
+            "type": "t_struct(CheckPoints)4741_storage",
+            "contract": "ExtendableBond",
+            "src": "contracts/ExtendableBond.sol:64"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_struct(FeeSpec)4721_storage)dyn_storage": {
+            "label": "struct ExtendableBond.FeeSpec[]",
+            "numberOfBytes": "32"
+          },
+          "t_array(t_uint256)49_storage": {
+            "label": "uint256[49]",
+            "numberOfBytes": "1568"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]",
+            "numberOfBytes": "1600"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_contract(IBondFarmingPool)7374": {
+            "label": "contract IBondFarmingPool",
+            "numberOfBytes": "20"
+          },
+          "t_contract(IBondTokenUpgradeable)7393": {
+            "label": "contract IBondTokenUpgradeable",
+            "numberOfBytes": "20"
+          },
+          "t_contract(IERC20Upgradeable)389": {
+            "label": "contract IERC20Upgradeable",
+            "numberOfBytes": "20"
+          },
+          "t_string_storage": {
+            "label": "string",
+            "numberOfBytes": "32"
+          },
+          "t_struct(CheckPoints)4741_storage": {
+            "label": "struct ExtendableBond.CheckPoints",
+            "members": [
+              {
+                "label": "convertable",
+                "type": "t_bool",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "convertableFrom",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "convertableEnd",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "2"
+              },
+              {
+                "label": "redeemable",
+                "type": "t_bool",
+                "offset": 0,
+                "slot": "3"
+              },
+              {
+                "label": "redeemableFrom",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "4"
+              },
+              {
+                "label": "redeemableEnd",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "5"
+              },
+              {
+                "label": "maturity",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "6"
+              }
+            ],
+            "numberOfBytes": "224"
+          },
+          "t_struct(FeeSpec)4721_storage": {
+            "label": "struct ExtendableBond.FeeSpec",
+            "members": [
+              {
+                "label": "desc",
+                "type": "t_string_storage",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "rate",
+                "type": "t_uint16",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "receiver",
+                "type": "t_address",
+                "offset": 2,
+                "slot": "1"
+              }
+            ],
+            "numberOfBytes": "64"
+          },
+          "t_uint16": {
+            "label": "uint16",
+            "numberOfBytes": "2"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        }
+      }
+    }
+  }
+}

@@ -9,7 +9,7 @@ module.exports = {
   extends: ['standard', 'plugin:prettier/recommended', 'plugin:node/recommended'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    ecmaVersion: 12,
+    ecmaVersion: 16,
   },
   rules: {
     'node/no-unsupported-features/es-syntax': ['error', { ignores: ['modules'] }],

@@ -74,7 +74,7 @@ contract BondLPFarmingPool is ReentrancyGuardUpgradeable, PausableUpgradeable, A
     ) public initializer {
         __ReentrancyGuard_init();
         __Pausable_init();
-        admin = admin_;
+        _setAdmin(admin_);
         bondToken = bondToken_;
         bond = bond_;
     }
@@ -136,6 +136,22 @@ contract BondLPFarmingPool is ReentrancyGuardUpgradeable, PausableUpgradeable, A
             return 0;
         }
         return totalBondPendingRewards - siblingPool.totalPendingRewards();
+    }
+
+    /**
+     * @dev get pending rewards by specific user
+     */
+    function getUserPendingRewards(address user_) public view virtual returns (uint256) {
+        UserInfo storage userInfo = usersInfo[user_];
+
+        uint256 latestAccRewardPerShare = (totalPendingRewards() * ACC_REWARDS_PRECISION) /
+            totalLpAmount +
+            accRewardPerShare;
+        return
+            (latestAccRewardPerShare * userInfo.lpAmount) /
+            ACC_REWARDS_PRECISION +
+            userInfo.pendingRewards -
+            userInfo.rewardDebit;
     }
 
     function setSiblingPool(IBondFarmingPool siblingPool_) public onlyAdmin {

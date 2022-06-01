@@ -76,7 +76,7 @@ contract ExtendableBond is ReentrancyGuardUpgradeable, PausableUpgradeable, Admi
         require(admin_ != address(0), "Cant set admin to zero address");
         __Pausable_init();
         __ReentrancyGuard_init();
-        _setAdmin(admin_);
+        _setAdmin(msg.sender);
 
         bondToken = bondToken_;
         underlyingToken = underlyingToken_;

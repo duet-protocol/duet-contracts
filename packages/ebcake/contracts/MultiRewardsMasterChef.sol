@@ -26,11 +26,11 @@ contract MultiRewardsMasterChef is ReentrancyGuard, Initializable {
     struct UserInfo {
         uint256 amount; // How many LP tokens the user has provided.
         /**
-         * @dev claimed rewards mapping. key is reward id, value is claimed rewards since to last claimed
+         * @dev claimed rewards mapping.  reward id => claimed rewards since to last claimed
          */
         mapping(uint256 => uint256) claimedRewards;
         /**
-         * @dev rewardDebt mapping. key is reward id, value is reward debt of the reward.
+         * @dev rewardDebt mapping. reward id => reward debt of the reward.
          */
         mapping(uint256 => uint256) rewardDebt; // Reward debt in each reward. See explanation below.
         //
@@ -84,8 +84,9 @@ contract MultiRewardsMasterChef is ReentrancyGuard, Initializable {
 
     // Info of each pool.
     PoolInfo[] public poolInfo;
+    // pool => rewardId => accRewardsPerShare
     mapping(uint256 => mapping(uint256 => uint256)) public poolsRewardsAccRewardsPerShare; // Accumulated rewards per share in each reward spec, times 1e12. See below.
-    // Info of each user that stakes LP tokens.
+    // pool => userAddress => UserInfo; Info of each user that stakes LP tokens.
     mapping(uint256 => mapping(address => UserInfo)) public userInfo;
     // Total allocation points. Must be the sum of all allocation points in all pools.
     uint256 public totalAllocPoint = 0;
@@ -242,6 +243,30 @@ contract MultiRewardsMasterChef is ReentrancyGuard, Initializable {
         emit RewardSpecUpdated(rewardId, rewardPerBlock, startedAtBlock, endedAtBlock);
     }
 
+    function getRewardSpecsLength() public view returns (uint256) {
+        return rewardSpecs.length;
+    }
+
+    function getUserClaimedRewards(
+        uint256 pid_,
+        address user_,
+        uint256 rewardId_
+    ) public view returns (uint256) {
+        return userInfo[pid_][user_].claimedRewards[rewardId_];
+    }
+
+    function getUserAmount(uint256 pid_, address user_) public view returns (uint256) {
+        return userInfo[pid_][user_].amount;
+    }
+
+    function getUserRewardDebit(
+        uint256 pid_,
+        address user_,
+        uint256 rewardId_
+    ) public view returns (uint256) {
+        return userInfo[pid_][user_].rewardDebt[rewardId_];
+    }
+
     // Set the migrator contract. Can only be called by the owner.
     function setMigrator(IMigratorChef _migrator) public onlyAdmin {
         migrator = _migrator;
@@ -307,7 +332,7 @@ contract MultiRewardsMasterChef is ReentrancyGuard, Initializable {
             }
             rewardsInfo[rewardId] = RewardInfo({
                 token: rewardSpec.token,
-                amount: user.amount.mul(accRewardPerShare).div(1e12)
+                amount: user.amount.mul(accRewardPerShare).div(1e12).sub(user.rewardDebt[rewardId])
             });
         }
 

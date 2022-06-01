@@ -18,6 +18,7 @@ import { removeConsoleLog } from 'hardhat-preprocessor';
 import { useLogger } from './scripts/utils';
 import * as path from 'path';
 import * as fs from 'fs';
+import ethers from 'ethers';
 
 dotenv.config();
 
@@ -92,15 +93,22 @@ const config: HardhatUserConfig = {
     hardhat: {
       // for CakePool
       allowUnlimitedContractSize: true,
-    },
-    local: {
-      url: 'http://localhost:8545',
       chainId: 30097,
-      forking: {
-        url: process.env.LOCAL_FORK_URL!,
-        blockNumber: 19619372,
-      },
-      accounts: [process.env.KEY_BSC_TEST!],
+      ...(process.env.FORK_ENABLED === 'on'
+        ? {
+            chainId: process.env.FORK_CHAIN_ID ? parseInt(process.env.FORK_CHAIN_ID) : 30097,
+            forking: {
+              url: process.env.FORK_URL!,
+              blockNumber: parseInt(process.env.FORK_BLOCK_NUMBER!),
+            },
+            accounts: [
+              {
+                privateKey: process.env.FORK_KEY!,
+                balance: ethers.utils.parseEther('1000').toString(),
+              },
+            ],
+          }
+        : {}),
     },
     bsctest: {
       url: 'https://data-seed-prebsc-1-s1.binance.org:8545/',

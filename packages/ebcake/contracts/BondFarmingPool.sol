@@ -1,22 +1,22 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity 0.8.9;
 
-import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/security/Pausable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 import "hardhat/console.sol";
 
 import "./ExtendableBond.sol";
 import "./libs/DuetMath.sol";
 import "./MultiRewardsMasterChef.sol";
+import "./libs/Adminable.sol";
 import "./interfaces/IBondFarmingPool.sol";
 import "./interfaces/IExtendableBond.sol";
 
-contract BondFarmingPool is Pausable, ReentrancyGuard, Ownable, IBondFarmingPool {
-    using SafeERC20 for IERC20;
-    IERC20 public bondToken;
+contract BondFarmingPool is PausableUpgradeable, ReentrancyGuardUpgradeable, IBondFarmingPool, Adminable {
+    using SafeERC20Upgradeable for IERC20Upgradeable;
+    IERC20Upgradeable public bondToken;
     IExtendableBond public bond;
     uint256 public totalShares = 0;
     uint256 public lastUpdatedPoolAt = 0;
@@ -43,17 +43,24 @@ contract BondFarmingPool is Pausable, ReentrancyGuard, Ownable, IBondFarmingPool
     event Unstaked(address indexed user, uint256 amount);
     event SiblingPoolUpdated(address indexed previousPool, address indexed newPool);
 
-    constructor(IERC20 bondToken_, IExtendableBond bond_) {
+    function initialize(
+        IERC20Upgradeable bondToken_,
+        IExtendableBond bond_,
+        address admin_
+    ) public initializer {
+        __ReentrancyGuard_init();
+        __Pausable_init();
+        _setAdmin(admin_);
         bondToken = bondToken_;
         bond = bond_;
     }
 
-    function setMasterChef(MultiRewardsMasterChef masterChef_, uint256 masterChefPid_) public onlyOwner {
+    function setMasterChef(MultiRewardsMasterChef masterChef_, uint256 masterChefPid_) public onlyAdmin {
         masterChef = masterChef_;
         masterChefPid = masterChefPid_;
     }
 
-    function setSiblingPool(IBondFarmingPool siblingPool_) public onlyOwner {
+    function setSiblingPool(IBondFarmingPool siblingPool_) public onlyAdmin {
         require(
             address(siblingPool_.siblingPool()) == address(0) || address(siblingPool_.siblingPool()) == address(this),
             "Invalid sibling"
