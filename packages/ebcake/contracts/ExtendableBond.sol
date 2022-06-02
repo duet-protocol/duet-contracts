@@ -82,6 +82,10 @@ contract ExtendableBond is ReentrancyGuardUpgradeable, PausableUpgradeable, Admi
         underlyingToken = underlyingToken_;
     }
 
+    function feeSpecsLength() public view returns (uint256) {
+        return feeSpecs.length;
+    }
+
     /**
      * @notice Underlying token amount that hold in current contract.
      */

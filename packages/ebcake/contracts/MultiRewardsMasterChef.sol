@@ -259,7 +259,7 @@ contract MultiRewardsMasterChef is ReentrancyGuard, Initializable {
         return userInfo[pid_][user_].amount;
     }
 
-    function getUserRewardDebit(
+    function getUserRewardDebt(
         uint256 pid_,
         address user_,
         uint256 rewardId_

@@ -21,11 +21,11 @@ contract BondLPPancakeFarmingPool is BondLPFarmingPool {
 
     struct PancakeUserInfo {
         /**
-         * like sushi rewardDebit
+         * like sushi rewardDebt
          */
-        uint256 rewardDebit;
+        uint256 rewardDebt;
         /**
-         * @dev Rewards credited to rewardDebit but not yet claimed
+         * @dev Rewards credited to rewardDebt but not yet claimed
          */
         uint256 pendingRewards;
         /**
@@ -75,8 +75,12 @@ contract BondLPPancakeFarmingPool is BondLPFarmingPool {
 
         if (userInfo.lpAmount > 0) {
             uint256 sharesReward = (accPancakeRewardsPerShares * userInfo.lpAmount) / ACC_REWARDS_PRECISION;
-            pancakeUserInfo.pendingRewards += sharesReward - userInfo.rewardDebit;
-            pancakeUserInfo.rewardDebit = sharesReward;
+            pancakeUserInfo.pendingRewards += sharesReward - userInfo.rewardDebt;
+            pancakeUserInfo.rewardDebt =
+                (accPancakeRewardsPerShares * (userInfo.lpAmount + amount_)) /
+                ACC_REWARDS_PRECISION;
+        } else {
+            pancakeUserInfo.rewardDebt = (accPancakeRewardsPerShares * amount_) / ACC_REWARDS_PRECISION;
         }
 
         if (amount_ > 0) {
@@ -97,9 +101,9 @@ contract BondLPPancakeFarmingPool is BondLPFarmingPool {
         PancakeUserInfo storage pancakeUserInfo = pancakeUsersInfo[user_];
 
         uint256 sharesReward = (accRewardPerShare * userInfo.lpAmount) / ACC_REWARDS_PRECISION;
-        uint256 pendingRewards = sharesReward + pancakeUserInfo.pendingRewards - userInfo.rewardDebit;
+        uint256 pendingRewards = sharesReward + pancakeUserInfo.pendingRewards - userInfo.rewardDebt;
         pancakeUserInfo.pendingRewards = 0;
-        pancakeUserInfo.rewardDebit = sharesReward;
+        pancakeUserInfo.rewardDebt = sharesReward;
 
         // withdraw from pancake
         pancakeMasterChef.withdraw(pancakeMasterChefPid, amount_);

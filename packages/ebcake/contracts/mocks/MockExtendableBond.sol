@@ -14,12 +14,14 @@ contract MockExtendableBond is IExtendableBond {
 
     uint256 public mintedRewards = 0;
     uint256 public startBlock = 0;
+    uint256 public rewardPerBlock = 0;
 
     IBondFarmingPool public bondPool;
     IBondFarmingPool public lpPool;
 
-    constructor(MockBEP20 bondToken_) {
+    constructor(MockBEP20 bondToken_, uint256 rewardPerBlock_) {
         bondToken = bondToken_;
+        rewardPerBlock = rewardPerBlock_;
     }
 
     function setFarmingPool(IBondFarmingPool bondPool_, IBondFarmingPool lpPool_) external {
@@ -38,10 +40,11 @@ contract MockExtendableBond is IExtendableBond {
         if (startBlock >= block.number) {
             return 0;
         }
-        return ((block.number - startBlock) * 40 * 1e18) - mintedRewards;
+        return ((block.number - startBlock) * rewardPerBlock) - mintedRewards;
     }
 
     function mintBondTokenForRewards(address to_, uint256 amount_) external {
+        require(amount_ <= totalPendingRewards(), "can not over issue");
         mintedRewards += amount_;
         console.log("contract mintBondTokenForRewards", amount_);
         bondToken.mint(to_, amount_);
