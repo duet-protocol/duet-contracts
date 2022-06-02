@@ -48,11 +48,11 @@ contract BondLPFarmingPool is ReentrancyGuardUpgradeable, PausableUpgradeable, A
          */
         uint256 lpAmount;
         /**
-         * @dev like sushi rewardDebit
+         * @dev like sushi rewardDebt
          */
-        uint256 rewardDebit;
+        uint256 rewardDebt;
         /**
-         * @dev Rewards credited to rewardDebit but not yet claimed
+         * @dev Rewards credited to rewardDebt but not yet claimed
          */
         uint256 pendingRewards;
         /**
@@ -113,14 +113,16 @@ contract BondLPFarmingPool is ReentrancyGuardUpgradeable, PausableUpgradeable, A
         uint256 pendingRewards = totalPendingRewards();
         lastUpdatedPoolAt = block.number;
         _harvestRemote();
-        if (pendingRewards <= 0) {
+        // no rewards will be distributed to the LP Pool when it's empty.
+        // In this case, the single bond farming pool still distributes its rewards proportionally,
+        // but its rewards will be expanded every time the pools are updated.
+        // Because the remaining rewards is not distributed to the LP pool
+        // The first user (start with totalLpAmount = 0) to enter the LP pool will receive this part of the undistributed rewards.
+        // But this case is very rare and usually doesn't last long.
+        if (pendingRewards <= 0 || totalLpAmount <= 0) {
             return;
         }
-        if (totalLpAmount > 0) {
-            accRewardPerShare += (pendingRewards * ACC_REWARDS_PRECISION) / totalLpAmount;
-        } else {
-            accRewardPerShare = 0;
-        }
+        accRewardPerShare += (pendingRewards * ACC_REWARDS_PRECISION) / totalLpAmount;
         bond.mintBondTokenForRewards(address(this), pendingRewards);
     }
 
@@ -151,7 +153,7 @@ contract BondLPFarmingPool is ReentrancyGuardUpgradeable, PausableUpgradeable, A
             (latestAccRewardPerShare * userInfo.lpAmount) /
             ACC_REWARDS_PRECISION +
             userInfo.pendingRewards -
-            userInfo.rewardDebit;
+            userInfo.rewardDebt;
     }
 
     function setSiblingPool(IBondFarmingPool siblingPool_) public onlyAdmin {
@@ -191,8 +193,14 @@ contract BondLPFarmingPool is ReentrancyGuardUpgradeable, PausableUpgradeable, A
         UserInfo storage userInfo = usersInfo[user_];
         if (userInfo.lpAmount > 0) {
             uint256 sharesReward = (accRewardPerShare * userInfo.lpAmount) / ACC_REWARDS_PRECISION;
-            userInfo.pendingRewards += sharesReward - userInfo.rewardDebit;
-            userInfo.rewardDebit = sharesReward;
+            console.log("BondLPFarmingPool.stakeForUser.sharesReward", sharesReward);
+            console.log("BondLPFarmingPool.stakeForUser.userInfo.rewardDebt", userInfo.rewardDebt);
+            console.log("BondLPFarmingPool.stakeForUser.userInfo.pendingRewards", userInfo.pendingRewards);
+            userInfo.pendingRewards += sharesReward - userInfo.rewardDebt;
+            console.log("BondLPFarmingPool.stakeForUser.userInfo.newPendingRewards", userInfo.pendingRewards);
+            userInfo.rewardDebt = (accRewardPerShare * (userInfo.lpAmount + amount_)) / ACC_REWARDS_PRECISION;
+        } else {
+            userInfo.rewardDebt = (accRewardPerShare * amount_) / ACC_REWARDS_PRECISION;
         }
         lpToken.safeTransferFrom(msg.sender, address(this), amount_);
         _stakeRemote(user_, amount_);
@@ -214,10 +222,12 @@ contract BondLPFarmingPool is ReentrancyGuardUpgradeable, PausableUpgradeable, A
         _updatePools();
 
         uint256 sharesReward = (accRewardPerShare * userInfo.lpAmount) / ACC_REWARDS_PRECISION;
-        console.log("BondLPFarmingPool.sharesReward", sharesReward);
-        uint256 pendingRewards = userInfo.pendingRewards + sharesReward - userInfo.rewardDebit;
-        userInfo.rewardDebit = sharesReward;
+        console.log("BondLPFarmingPool.unstake.sharesReward", sharesReward);
+        uint256 pendingRewards = userInfo.pendingRewards + sharesReward - userInfo.rewardDebt;
+        userInfo.rewardDebt = sharesReward;
         userInfo.pendingRewards = 0;
+        console.log("BondLPFarmingPool.unstake.pendingRewards", pendingRewards);
+        console.log("BondLPFarmingPool.unstake.balance", bondToken.balanceOf(address(this)));
         _unstakeRemote(user, amount_);
         if (amount_ > 0) {
             userInfo.lpAmount -= amount_;
