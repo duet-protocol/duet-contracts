@@ -18,6 +18,18 @@ struct UserInfo {
 }
 ```
 
+### withdrawFeePeriod
+
+```solidity
+function withdrawFeePeriod() external view returns (uint256)
+```
+
+### freeWithdrawFeeUsers
+
+```solidity
+function freeWithdrawFeeUsers(address user_) external view returns (bool)
+```
+
 ### MAX_LOCK_DURATION
 
 ```solidity

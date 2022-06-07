@@ -10,6 +10,21 @@ export default {
       bsctest: '0x683433ba14e8F26774D43D3E90DA6Dd7a22044Fe',
       hardhat: '0x45c54210128a065de780C4B0Df3d16664f7f859e',
     },
+    PancakeLpTokenPair__CAKE_BUSD: {
+      bsc: '0x804678fa97d91B974ec2af3c843270886528a9E6',
+      bsctest: '0x78df8ca5bb516efe4dade3726b0c052ba8bdcf57',
+      hardhat: '0x78df8ca5bb516efe4dade3726b0c052ba8bdcf57',
+    },
+    PancakeLpTokenPair__DUET_BUSD: {
+      bsc: null,
+      bsctest: '0xb50776a4e01a1b2704d35cee69cfbd6d37910f12',
+      hardhat: '0xb50776a4e01a1b2704d35cee69cfbd6d37910f12',
+    },
+    PancakeLpTokenPair__DUET_CAKE: {
+      bsc: '0xbdf0aa1d1985caa357a6ac6661d838da8691c569',
+      bsctest: null,
+      hardhat: null,
+    },
     CakeMasterChefV2: {
       bsc: '0xa5f8C5Dbd5F286960b9d90548680aE5ebFf07652',
       bsctest: '0xB4A466911556e39210a6bB2FaECBB59E4eB7E43d',
