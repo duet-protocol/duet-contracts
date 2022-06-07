@@ -145,7 +145,9 @@ contract BondLPFarmingPool is ReentrancyGuardUpgradeable, PausableUpgradeable, A
      */
     function getUserPendingRewards(address user_) public view virtual returns (uint256) {
         UserInfo storage userInfo = usersInfo[user_];
-
+        if (totalLpAmount <= 0) {
+            return 0;
+        }
         uint256 latestAccRewardPerShare = (totalPendingRewards() * ACC_REWARDS_PRECISION) /
             totalLpAmount +
             accRewardPerShare;
