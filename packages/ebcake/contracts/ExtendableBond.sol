@@ -9,11 +9,12 @@ import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.
 
 import "./BondToken.sol";
 import "./interfaces/IBondFarmingPool.sol";
+import "./interfaces/IExtendableBond.sol";
 import "./interfaces/IBondTokenUpgradeable.sol";
 import "./libs/Adminable.sol";
 import "./libs/Keepable.sol";
 
-contract ExtendableBond is ReentrancyGuardUpgradeable, PausableUpgradeable, Adminable, Keepable {
+contract ExtendableBond is IExtendableBond, ReentrancyGuardUpgradeable, PausableUpgradeable, Adminable, Keepable {
     using SafeERC20Upgradeable for IERC20Upgradeable;
     using SafeERC20Upgradeable for IBondTokenUpgradeable;
     /**
@@ -113,10 +114,24 @@ contract ExtendableBond is ReentrancyGuardUpgradeable, PausableUpgradeable, Admi
         return underlying - bondAmount;
     }
 
+    function calculateFeeAmount(uint256 amount_) public view returns (uint256) {
+        uint256 totalFeeAmount = 0;
+        for (uint256 i = 0; i < feeSpecs.length; i++) {
+            FeeSpec storage feeSpec = feeSpecs[i];
+            uint256 feeAmount = (amount_ * feeSpec.rate) / PERCENTAGE_FACTOR;
+
+            if (feeAmount <= 0) {
+                continue;
+            }
+            totalFeeAmount += feeAmount;
+        }
+        return totalFeeAmount;
+    }
+
     /**
      * @dev mint bond token for rewards and allocate fees.
      */
-    function mintBondTokenForRewards(address to_, uint256 amount_) public {
+    function mintBondTokenForRewards(address to_, uint256 amount_) public returns (uint256 totalFeeAmount) {
         require(
             msg.sender == address(bondFarmingPool) || msg.sender == address(bondLPFarmingPool),
             "only from farming pool"
@@ -125,11 +140,10 @@ contract ExtendableBond is ReentrancyGuardUpgradeable, PausableUpgradeable, Admi
 
         // nothing to happen when reward amount is zero.
         if (amount_ <= 0) {
-            return;
+            return 0;
         }
 
         uint256 amountToTarget = amount_;
-
         // allocate fees.
         for (uint256 i = 0; i < feeSpecs.length; i++) {
             FeeSpec storage feeSpec = feeSpecs[i];
@@ -147,6 +161,7 @@ contract ExtendableBond is ReentrancyGuardUpgradeable, PausableUpgradeable, Admi
         }
 
         emit MintedBondTokenForRewards(to_, amount_);
+        return amount_ - amountToTarget;
     }
 
     /**
@@ -370,5 +385,9 @@ contract ExtendableBond is ReentrancyGuardUpgradeable, PausableUpgradeable, Admi
      */
     function unpause() external onlyAdmin whenPaused {
         _unpause();
+    }
+
+    function burnBondToken(uint256 amount_) public onlyAdmin {
+        bondToken.burnFrom(msg.sender, amount_);
     }
 }

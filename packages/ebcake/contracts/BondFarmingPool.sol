@@ -141,22 +141,27 @@ contract BondFarmingPool is PausableUpgradeable, ReentrancyGuardUpgradeable, IBo
         if (shares_ <= 0) {
             return 0;
         }
-        return DuetMath.mulDiv(totalPendingRewards(), shares_, totalShares);
+        uint256 totalPendingRewards = totalPendingRewards();
+
+        return
+            DuetMath.mulDiv(totalPendingRewards - bond.calculateFeeAmount(totalPendingRewards), shares_, totalShares);
     }
 
     function sharesToBondAmount(uint256 shares_) public view returns (uint256) {
         if (shares_ <= 0) {
             return 0;
         }
-        return DuetMath.mulDiv(underlyingAmount(), shares_, totalShares);
+        return DuetMath.mulDiv(underlyingAmount(true), shares_, totalShares);
     }
 
     function amountToShares(uint256 amount_) public view returns (uint256) {
-        return totalShares > 0 ? DuetMath.mulDiv(amount_, totalShares, underlyingAmount()) : amount_;
+        return totalShares > 0 ? DuetMath.mulDiv(amount_, totalShares, underlyingAmount(false)) : amount_;
     }
 
-    function underlyingAmount() public view returns (uint256) {
-        return totalPendingRewards() + bondToken.balanceOf(address(this));
+    function underlyingAmount(bool exclusiveFees) public view returns (uint256) {
+        uint256 totalPendingRewards = totalPendingRewards();
+        totalPendingRewards -= exclusiveFees ? bond.calculateFeeAmount(totalPendingRewards) : 0;
+        return totalPendingRewards + bondToken.balanceOf(address(this));
     }
 
     function stake(uint256 amount_) public whenNotPaused {
@@ -203,7 +208,7 @@ contract BondFarmingPool is PausableUpgradeable, ReentrancyGuardUpgradeable, IBo
         uint256 totalBondAmount = sharesToBondAmount(shares_);
         userInfo.shares -= shares_;
         totalShares -= shares_;
-        console.log("unstake.underlying", underlyingAmount());
+        console.log("unstake.underlying", underlyingAmount(true));
         console.log("unstake.balance", bondToken.balanceOf(address(this)));
         console.log("unstake.totalBondAmount", totalBondAmount);
 
