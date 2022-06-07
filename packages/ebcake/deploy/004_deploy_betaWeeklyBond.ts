@@ -1,6 +1,6 @@
 /* eslint-disable node/no-unpublished-import,node/no-missing-import */
 import { DeployFunction } from 'hardhat-deploy/types';
-import { deployBond, useNetworkName } from './defines';
+import { deployBond, useNetworkName } from './.defines';
 import { HardhatRuntimeEnvironment } from 'hardhat/types/runtime';
 import moment from 'moment-timezone';
 import { useLogger } from '../scripts/utils';
@@ -22,6 +22,7 @@ export enum DeployNames {
 
 const logger = useLogger(__filename);
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
+  return
   if (useNetworkName() !== 'bsc') {
     logger.info('deploying non bsc network, ignored betaWeekly_Bond');
     return;
@@ -31,6 +32,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     name: 'weekly ebCAKE beta',
     symbol: 'ebCAKE-W-beta',
     bondLPFarmingContract: 'BondLPFarmingPool',
+    instancePrefix: 'Weekly_',
     checkpoints: {
       convertable: true,
       convertableFrom: now.unix(),

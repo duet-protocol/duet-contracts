@@ -13,4 +13,4 @@ contains its smart contracts, test environment and unique config files.
 ## Create a new project
 
 1 - Create a new folder inside `packages` <br/>
-2 - Run `yarn init`
+2 - Run `pnpm init`

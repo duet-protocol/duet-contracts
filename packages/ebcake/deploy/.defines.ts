@@ -9,6 +9,8 @@ import { pancakeFactoryABI } from '../3rd/pancake';
 import { Event } from 'ethers';
 import { HardhatRuntimeEnvironment } from 'hardhat/types/runtime';
 import { useLogger } from '../scripts/utils';
+import { resolve } from 'path';
+import { mkdir, writeFile } from 'fs/promises';
 
 export type NetworkName = 'bsc' | 'bsctest' | 'hardhat';
 
@@ -16,7 +18,7 @@ export function useNetworkName() {
   return network.name as NetworkName;
 }
 
-export const testId = '0603';
+export const testId = 'GDM-0620';
 
 export enum ContractTag {
   BOND_TOKEN = 'BOND_TOKEN',
@@ -41,6 +43,7 @@ export async function latestBlockNumber() {
 export async function deployBond(input: {
   name: string;
   symbol: string;
+  instancePrefix: string;
   hre: HardhatRuntimeEnvironment;
   deployNames: BondDeployNamesSpec;
   farm?: {
@@ -61,6 +64,7 @@ export async function deployBond(input: {
   const {
     name,
     symbol,
+    instancePrefix,
     hre,
     deployNames,
     checkpoints,
@@ -83,6 +87,7 @@ export async function deployBond(input: {
     log: true,
     autoMine: true, // speed up deployment on local network (ganache, hardhat), no effect on live networks
   });
+  await writeExtraMeta(deployNames.ExtendableBondToken, { class: 'BondToken', instance: instancePrefix + 'ExtendableBondToken' })
 
   const bond = await deploy(deployNames.ExtendableBondedCake, {
     from: deployer,
@@ -98,6 +103,7 @@ export async function deployBond(input: {
     log: true,
     autoMine: true, // speed up deployment on local network (ganache, hardhat), no effect on live networks
   });
+  await writeExtraMeta(deployNames.ExtendableBondedCake, { class: 'ExtendableBondedCake', instance: instancePrefix + 'ExtendableBondedCake' })
 
   if (bond.newlyDeployed && bond?.numDeployments === 1) {
     logger.info('initializing', deployNames.ExtendableBondedCake);
@@ -111,6 +117,7 @@ export async function deployBond(input: {
 
     logger.info('initialized', deployNames.ExtendableBondedCake);
   }
+
   const bondFarmingPool = await deploy(deployNames.BondFarmingPool, {
     from: deployer,
     contract: 'BondFarmingPool',
@@ -127,6 +134,8 @@ export async function deployBond(input: {
     log: true,
     autoMine: true, // speed up deployment on local network (ganache, hardhat), no effect on live networks
   });
+  await writeExtraMeta(deployNames.BondFarmingPool, { class: 'BondFarmingPool', instance: instancePrefix + 'BondFarmingPool' })
+
   const bondLPFarmingPool = await deploy(deployNames.BondLPFarmingPool, {
     from: deployer,
     contract: bondLPFarmingContract,
@@ -141,6 +150,7 @@ export async function deployBond(input: {
     log: true,
     autoMine: true, // speed up deployment on local network (ganache, hardhat), no effect on live networks
   });
+  await writeExtraMeta(deployNames.BondLPFarmingPool, { class: 'BondLPFarmingPool', instance: instancePrefix + 'BondLPFarmingPool' })
 
   if (bondLPFarmingPool.newlyDeployed && bondLPFarmingPool?.numDeployments === 1) {
     logger.info('initializing', deployNames.BondLPFarmingPool);
@@ -242,5 +252,11 @@ export async function deployBond(input: {
   }
 }
 
-// faking for hardhat-deploy
-export default () => {};
+export async function writeExtraMeta(name: string, meta?: { class?: string, instance?: string } | string) {
+  const directory = resolve(__dirname, '..', 'deployments', useNetworkName(), '.extraMeta')
+  await mkdir(directory, { recursive: true })
+
+  const className = typeof meta === 'string' ? meta : meta?.class || name
+  const instanceName = typeof meta === 'string' ? meta : meta?.instance || className
+  await writeFile(resolve(directory, name + '.json'), JSON.stringify({ class: className, instance: instanceName }, null, 2))
+}

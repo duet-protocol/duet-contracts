@@ -1,6 +1,6 @@
 /* eslint-disable node/no-unpublished-import,node/no-missing-import */
 import { DeployFunction } from 'hardhat-deploy/types';
-import { deployBond } from './defines';
+import { deployBond } from './.defines';
 import { HardhatRuntimeEnvironment } from 'hardhat/types/runtime';
 import moment from 'moment-timezone';
 import { useLogger } from '../scripts/utils';
@@ -42,6 +42,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   await deployBond({
     name: 'ebCAKE Rabbit',
     symbol: 'ebCAKE-Rabbit',
+    instancePrefix: 'Yearly_',
     farm: {
       singleAllocPoint: 0,
       lpAllocPoint: 0,

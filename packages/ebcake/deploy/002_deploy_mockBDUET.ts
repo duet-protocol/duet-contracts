@@ -3,7 +3,7 @@
 import { DeployFunction } from 'hardhat-deploy/types';
 import { HardhatRuntimeEnvironment } from 'hardhat/types';
 import { parseEther } from 'ethers/lib/utils';
-import { testId, useNetworkName } from './defines';
+import { testId, useNetworkName, writeExtraMeta } from './.defines';
 import { HardhatDeployRuntimeEnvironment } from '../types/hardhat-deploy';
 import { MasterChefDeployNames } from './001_deploy_masterchef';
 import { ethers } from 'hardhat';
@@ -15,6 +15,7 @@ export enum MockBduetDeployNames {
 
 const logger = useLogger(__filename);
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
+  return
   if (!['bsctest', 'hardhat'].includes(useNetworkName())) {
     return;
   }
@@ -33,6 +34,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     log: true,
     autoMine: true, // speed up deployment on local network (ganache, hardhat), no effect on live networks
   });
+  await writeExtraMeta(MockBduetDeployNames.mockBDUET, { class: 'MockBEP20', instance: MockBduetDeployNames.mockBDUET })
 
   if (bDuet.newlyDeployed) {
     logger.info('reward spec adding...');
