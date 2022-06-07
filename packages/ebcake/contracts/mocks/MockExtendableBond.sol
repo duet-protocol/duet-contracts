@@ -43,11 +43,16 @@ contract MockExtendableBond is IExtendableBond {
         return ((block.number - startBlock) * rewardPerBlock) - mintedRewards;
     }
 
-    function mintBondTokenForRewards(address to_, uint256 amount_) external {
+    function mintBondTokenForRewards(address to_, uint256 amount_) external returns (uint256) {
         require(amount_ <= totalPendingRewards(), "can not over issue");
         mintedRewards += amount_;
         console.log("contract mintBondTokenForRewards", amount_);
         bondToken.mint(to_, amount_);
+        return 0;
+    }
+
+    function calculateFeeAmount(uint256 amount_) external view returns (uint256) {
+        return 0;
     }
 
     function updateBondPools() external {

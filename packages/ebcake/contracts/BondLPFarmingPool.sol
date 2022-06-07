@@ -122,8 +122,8 @@ contract BondLPFarmingPool is ReentrancyGuardUpgradeable, PausableUpgradeable, A
         if (pendingRewards <= 0 || totalLpAmount <= 0) {
             return;
         }
-        accRewardPerShare += (pendingRewards * ACC_REWARDS_PRECISION) / totalLpAmount;
-        bond.mintBondTokenForRewards(address(this), pendingRewards);
+        uint256 feeAmount = bond.mintBondTokenForRewards(address(this), pendingRewards);
+        accRewardPerShare += ((pendingRewards - feeAmount) * ACC_REWARDS_PRECISION) / totalLpAmount;
     }
 
     /**
@@ -145,10 +145,12 @@ contract BondLPFarmingPool is ReentrancyGuardUpgradeable, PausableUpgradeable, A
      */
     function getUserPendingRewards(address user_) public view virtual returns (uint256) {
         UserInfo storage userInfo = usersInfo[user_];
-        if (totalLpAmount <= 0) {
+        if (totalLpAmount <= 0 || userInfo.lpAmount <= 0) {
             return 0;
         }
-        uint256 latestAccRewardPerShare = (totalPendingRewards() * ACC_REWARDS_PRECISION) /
+        uint256 totalPendingRewards = totalPendingRewards();
+        uint256 latestAccRewardPerShare = ((totalPendingRewards - bond.calculateFeeAmount(totalPendingRewards)) *
+            ACC_REWARDS_PRECISION) /
             totalLpAmount +
             accRewardPerShare;
         return
@@ -226,6 +228,10 @@ contract BondLPFarmingPool is ReentrancyGuardUpgradeable, PausableUpgradeable, A
         uint256 sharesReward = (accRewardPerShare * userInfo.lpAmount) / ACC_REWARDS_PRECISION;
         console.log("BondLPFarmingPool.unstake.sharesReward", sharesReward);
         uint256 pendingRewards = userInfo.pendingRewards + sharesReward - userInfo.rewardDebt;
+        uint256 bondBalance = bondToken.balanceOf(address(this));
+        if (pendingRewards > bondBalance) {
+            pendingRewards = bondBalance;
+        }
         userInfo.rewardDebt = sharesReward;
         userInfo.pendingRewards = 0;
         console.log("BondLPFarmingPool.unstake.pendingRewards", pendingRewards);
@@ -238,8 +244,10 @@ contract BondLPFarmingPool is ReentrancyGuardUpgradeable, PausableUpgradeable, A
             lpToken.safeTransfer(user, amount_);
         }
 
-        // send rewards
-        bondToken.safeTransfer(user, pendingRewards);
+        if (pendingRewards > 0) {
+            // send rewards
+            bondToken.safeTransfer(user, pendingRewards);
+        }
         userInfo.claimedRewards += pendingRewards;
         masterChef.withdrawForUser(masterChefPid, amount_, user);
 

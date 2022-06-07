@@ -23,7 +23,15 @@ contract ExtendableBondedCake is ExtendableBond {
         return
             (userInfo.shares * pricePerFullShare) /
             1e18 -
+            userInfo.userBoostedShare -
             cakePool.calculateWithdrawFee(address(this), userInfo.shares);
+    }
+
+    /**
+     * @dev calculate cake amount from pancake.
+     */
+    function pancakeUserInfo() public view returns (ICakePool.UserInfo memory) {
+        return cakePool.userInfo(address(this));
     }
 
     /**
