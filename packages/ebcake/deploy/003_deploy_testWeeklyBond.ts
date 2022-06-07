@@ -27,7 +27,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const [deployerSigner] = await ethers.getSigners();
   const networkName = useNetworkName();
   if (networkName === 'bsc') {
-    console.log('deploying bsc network, ignored testWeekly_Bond');
+    logger.info('deploying bsc network, ignored testWeekly_Bond');
     return;
   }
   const { deployments, getNamedAccounts } = hre as unknown as HardhatDeployRuntimeEnvironment;

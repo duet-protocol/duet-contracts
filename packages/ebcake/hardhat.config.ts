@@ -114,6 +114,7 @@ const config: HardhatUserConfig = {
       url: 'https://data-seed-prebsc-1-s1.binance.org:8545/',
       chainId: 97,
       accounts: [process.env.KEY_BSC_TEST!],
+      // for hardhat-eploy
       verify: {
         etherscan: {
           apiKey: process.env.BSCSCAN_TEST_KEY,
@@ -124,6 +125,12 @@ const config: HardhatUserConfig = {
       url: 'https://bsc-dataseed.binance.org/',
       chainId: 56,
       accounts: [process.env.KEY_BSC_MAINNET!],
+      // for hardhat-eploy
+      verify: {
+        etherscan: {
+          apiKey: process.env.BSCSCAN_KEY,
+        },
+      },
     },
     ropsten: {
       url: process.env.ROPSTEN_URL || '',
@@ -159,8 +166,9 @@ const config: HardhatUserConfig = {
     pretty: true,
   },
   etherscan: {
+    // for hardhat-verify
     apiKey: {
-      // bsc: '',
+      bsc: process.env.BSCSCAN_KEY,
       bscTestnet: process.env.BSCSCAN_TEST_KEY,
       mainnet: process.env.ETHERSCAN_API_KEY,
     },
