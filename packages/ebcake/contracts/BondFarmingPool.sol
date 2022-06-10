@@ -62,7 +62,8 @@ contract BondFarmingPool is PausableUpgradeable, ReentrancyGuardUpgradeable, IBo
 
     function setSiblingPool(IBondFarmingPool siblingPool_) public onlyAdmin {
         require(
-            address(siblingPool_.siblingPool()) == address(0) || address(siblingPool_.siblingPool()) == address(this),
+            (address(siblingPool_.siblingPool()) == address(0) ||
+                address(siblingPool_.siblingPool()) == address(this)) && address(siblingPool_) != address(this),
             "Invalid sibling"
         );
         emit SiblingPoolUpdated(address(siblingPool), address(siblingPool_));
@@ -216,5 +217,17 @@ contract BondFarmingPool is PausableUpgradeable, ReentrancyGuardUpgradeable, IBo
         usersInfo[user].accNetStaked -= int256(totalBondAmount);
         masterChef.withdrawForUser(masterChefPid, shares_, user);
         emit Unstaked(user, totalBondAmount);
+    }
+
+    function unstakeByAmount(uint256 amount_) public {
+        if (amount_ == 0) {}
+        UserInfo storage userInfo = usersInfo[msg.sender];
+        uint256 userTotalAmount = sharesToBondAmount(userInfo.shares);
+
+        if (amount_ >= userTotalAmount) {
+            unstake(userInfo.shares);
+        } else {
+            unstake(DuetMath.mulDiv(userInfo.shares, amount_, userTotalAmount));
+        }
     }
 }
