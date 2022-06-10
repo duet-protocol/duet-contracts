@@ -115,6 +115,9 @@ contract ExtendableBond is IExtendableBond, ReentrancyGuardUpgradeable, Pausable
     }
 
     function calculateFeeAmount(uint256 amount_) public view returns (uint256) {
+        if (amount_ <= 0) {
+            return 0;
+        }
         uint256 totalFeeAmount = 0;
         for (uint256 i = 0; i < feeSpecs.length; i++) {
             FeeSpec storage feeSpec = feeSpecs[i];

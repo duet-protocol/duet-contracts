@@ -238,6 +238,7 @@ contract BondLPFarmingPool is ReentrancyGuardUpgradeable, PausableUpgradeable, A
         console.log("BondLPFarmingPool.unstake.balance", bondToken.balanceOf(address(this)));
         _unstakeRemote(user, amount_);
         if (amount_ > 0) {
+            userInfo.rewardDebt = (accRewardPerShare * (userInfo.lpAmount - amount_)) / ACC_REWARDS_PRECISION;
             userInfo.lpAmount -= amount_;
             totalLpAmount -= amount_;
             // send staked assets
