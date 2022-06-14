@@ -1,5 +1,5 @@
 {
-  "name": "ebcake",
+  "name": "dAssets-liquidator",
   "description": "Projects can bid with $Cake to win a 7-day farm",
   "main": "index.js",
   "version": "1.0.0",
