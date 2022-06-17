@@ -20,6 +20,7 @@
     "test:watch": "npx hardhat watch test",
     "test:coverage": "npx hardhat coverage",
     "test:size-contracts": "npx hardhat size-contracts",
+    "build:client": "ts-node scripts/build-for-client.ts",
     "docgen": "rm -rf ./docs && npx hardhat docgen",
     "prettier": "prettier --write 'contracts/**/*.sol'"
   },

@@ -1,6 +1,6 @@
 /* eslint-disable node/no-unpublished-import,node/no-missing-import */
 import { DeployFunction } from 'hardhat-deploy/types';
-import { deployBond, useNetworkName } from './defines';
+import { deployBond, useNetworkName } from './.defines';
 import { HardhatRuntimeEnvironment } from 'hardhat/types/runtime';
 import moment from 'moment-timezone';
 import { useLogger } from '../scripts/utils';
@@ -29,6 +29,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   await deployBond({
     name: 'weekly ebCAKE beta',
     symbol: 'ebCAKE-W-beta',
+    instancePrefix: 'Weekly_',
     checkpoints: {
       convertable: true,
       convertableFrom: now.unix(),

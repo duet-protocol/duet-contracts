@@ -3,6 +3,7 @@ import { HardhatRuntimeEnvironment } from 'hardhat/types';
 // eslint-disable-next-line node/no-unpublished-import
 import { useLogger } from '../scripts/utils';
 import { HardhatDeployRuntimeEnvironment } from '../types/hardhat-deploy';
+import { writeExtraMeta } from './.defines';
 
 export enum MasterChefDeployNames {
   MultiRewardsMasterChef = 'MultiRewardsMasterChef',
@@ -15,7 +16,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
   const { deployer } = await getNamedAccounts();
 
-  const masterChef = await deploy('MultiRewardsMasterChef', {
+  const masterChef = await deploy(MasterChefDeployNames.MultiRewardsMasterChef, {
     from: deployer,
     proxy: {
       execute: {
@@ -29,6 +30,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     autoMine: true, // speed up deployment on local network (ganache, hardhat), no effect on live networks
   });
 
+  await writeExtraMeta(MasterChefDeployNames.MultiRewardsMasterChef)
   logger.info('MultiRewardsMasterChef deployed, ', masterChef.address);
 };
 export default func;
