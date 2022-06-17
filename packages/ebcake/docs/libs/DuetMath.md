@@ -18,7 +18,7 @@ enum Rounding {
 function mulDiv(uint256 x, uint256 y, uint256 denominator) internal pure returns (uint256 result)
 ```
 
-Calculates floor(x * y / denominator) with full precision. Throws if result overflows a uint256 or denominator &#x3D;&#x3D; 0
+Calculates floor(x * y / denominator) with full precision. Throws if result overflows a uint256 or denominator == 0
 
 _Credit to Remco Bloemen under MIT license https://xn--2-umb.com/21/muldiv_
 

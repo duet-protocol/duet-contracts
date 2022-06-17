@@ -11,20 +11,12 @@ function totalPendingRewards() external view returns (uint256)
 ### mintBondTokenForRewards
 
 ```solidity
-function mintBondTokenForRewards(address to_, uint256 amount_) external
+function mintBondTokenForRewards(address to_, uint256 amount_) external returns (uint256)
 ```
 
-## IExtendableBond
-
-### totalPendingRewards
+### calculateFeeAmount
 
 ```solidity
-function totalPendingRewards() external view returns (int256)
-```
-
-### mintBondTokenForRewards
-
-```solidity
-function mintBondTokenForRewards(address to_, uint256 amount_) external
+function calculateFeeAmount(uint256 amount_) external view returns (uint256)
 ```
 

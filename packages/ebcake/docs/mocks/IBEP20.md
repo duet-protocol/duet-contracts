@@ -48,7 +48,7 @@ _Returns the bep token owner._
 function balanceOf(address account) external view returns (uint256)
 ```
 
-_Returns the amount of tokens owned by &#x60;account&#x60;._
+_Returns the amount of tokens owned by `account`._
 
 ### transfer
 
@@ -56,7 +56,7 @@ _Returns the amount of tokens owned by &#x60;account&#x60;._
 function transfer(address recipient, uint256 amount) external returns (bool)
 ```
 
-_Moves &#x60;amount&#x60; tokens from the caller&#x27;s account to &#x60;recipient&#x60;.
+_Moves `amount` tokens from the caller's account to `recipient`.
 
 Returns a boolean value indicating whether the operation succeeded.
 
@@ -68,8 +68,8 @@ Emits a {Transfer} event._
 function allowance(address _owner, address spender) external view returns (uint256)
 ```
 
-_Returns the remaining number of tokens that &#x60;spender&#x60; will be
-allowed to spend on behalf of &#x60;owner&#x60; through {transferFrom}. This is
+_Returns the remaining number of tokens that `spender` will be
+allowed to spend on behalf of `owner` through {transferFrom}. This is
 zero by default.
 
 This value changes when {approve} or {transferFrom} are called._
@@ -80,14 +80,14 @@ This value changes when {approve} or {transferFrom} are called._
 function approve(address spender, uint256 amount) external returns (bool)
 ```
 
-_Sets &#x60;amount&#x60; as the allowance of &#x60;spender&#x60; over the caller&#x27;s tokens.
+_Sets `amount` as the allowance of `spender` over the caller's tokens.
 
 Returns a boolean value indicating whether the operation succeeded.
 
 IMPORTANT: Beware that changing an allowance with this method brings the risk
 that someone may use both the old and the new allowance by unfortunate
 transaction ordering. One possible solution to mitigate this race
-condition is to first reduce the spender&#x27;s allowance to 0 and set the
+condition is to first reduce the spender's allowance to 0 and set the
 desired value afterwards:
 https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729
 
@@ -99,8 +99,8 @@ Emits an {Approval} event._
 function transferFrom(address sender, address recipient, uint256 amount) external returns (bool)
 ```
 
-_Moves &#x60;amount&#x60; tokens from &#x60;sender&#x60; to &#x60;recipient&#x60; using the
-allowance mechanism. &#x60;amount&#x60; is then deducted from the caller&#x27;s
+_Moves `amount` tokens from `sender` to `recipient` using the
+allowance mechanism. `amount` is then deducted from the caller's
 allowance.
 
 Returns a boolean value indicating whether the operation succeeded.
@@ -113,137 +113,10 @@ Emits a {Transfer} event._
 event Transfer(address from, address to, uint256 value)
 ```
 
-_Emitted when &#x60;value&#x60; tokens are moved from one account (&#x60;from&#x60;) to
-another (&#x60;to&#x60;).
+_Emitted when `value` tokens are moved from one account (`from`) to
+another (`to`).
 
-Note that &#x60;value&#x60; may be zero._
-
-### Approval
-
-```solidity
-event Approval(address owner, address spender, uint256 value)
-```
-
-_Emitted when the allowance of a &#x60;spender&#x60; for an &#x60;owner&#x60; is set by
-a call to {approve}. &#x60;value&#x60; is the new allowance._
-
-## IBEP20
-
-### totalSupply
-
-```solidity
-function totalSupply() external view returns (uint256)
-```
-
-_Returns the amount of tokens in existence._
-
-### decimals
-
-```solidity
-function decimals() external view returns (uint8)
-```
-
-_Returns the token decimals._
-
-### symbol
-
-```solidity
-function symbol() external view returns (string)
-```
-
-_Returns the token symbol._
-
-### name
-
-```solidity
-function name() external view returns (string)
-```
-
-_Returns the token name._
-
-### getOwner
-
-```solidity
-function getOwner() external view returns (address)
-```
-
-_Returns the bep token owner._
-
-### balanceOf
-
-```solidity
-function balanceOf(address account) external view returns (uint256)
-```
-
-_Returns the amount of tokens owned by &#x60;account&#x60;._
-
-### transfer
-
-```solidity
-function transfer(address recipient, uint256 amount) external returns (bool)
-```
-
-_Moves &#x60;amount&#x60; tokens from the caller&#x27;s account to &#x60;recipient&#x60;.
-
-Returns a boolean value indicating whether the operation succeeded.
-
-Emits a {Transfer} event._
-
-### allowance
-
-```solidity
-function allowance(address _owner, address spender) external view returns (uint256)
-```
-
-_Returns the remaining number of tokens that &#x60;spender&#x60; will be
-allowed to spend on behalf of &#x60;owner&#x60; through {transferFrom}. This is
-zero by default.
-
-This value changes when {approve} or {transferFrom} are called._
-
-### approve
-
-```solidity
-function approve(address spender, uint256 amount) external returns (bool)
-```
-
-_Sets &#x60;amount&#x60; as the allowance of &#x60;spender&#x60; over the caller&#x27;s tokens.
-
-Returns a boolean value indicating whether the operation succeeded.
-
-IMPORTANT: Beware that changing an allowance with this method brings the risk
-that someone may use both the old and the new allowance by unfortunate
-transaction ordering. One possible solution to mitigate this race
-condition is to first reduce the spender&#x27;s allowance to 0 and set the
-desired value afterwards:
-https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729
-
-Emits an {Approval} event._
-
-### transferFrom
-
-```solidity
-function transferFrom(address sender, address recipient, uint256 amount) external returns (bool)
-```
-
-_Moves &#x60;amount&#x60; tokens from &#x60;sender&#x60; to &#x60;recipient&#x60; using the
-allowance mechanism. &#x60;amount&#x60; is then deducted from the caller&#x27;s
-allowance.
-
-Returns a boolean value indicating whether the operation succeeded.
-
-Emits a {Transfer} event._
-
-### Transfer
-
-```solidity
-event Transfer(address from, address to, uint256 value)
-```
-
-_Emitted when &#x60;value&#x60; tokens are moved from one account (&#x60;from&#x60;) to
-another (&#x60;to&#x60;).
-
-Note that &#x60;value&#x60; may be zero._
+Note that `value` may be zero._
 
 ### Approval
 
@@ -251,6 +124,6 @@ Note that &#x60;value&#x60; may be zero._
 event Approval(address owner, address spender, uint256 value)
 ```
 
-_Emitted when the allowance of a &#x60;spender&#x60; for an &#x60;owner&#x60; is set by
-a call to {approve}. &#x60;value&#x60; is the new allowance._
+_Emitted when the allowance of a `spender` for an `owner` is set by
+a call to {approve}. `value` is the new allowance._
 
