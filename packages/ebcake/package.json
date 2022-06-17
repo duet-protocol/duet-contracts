@@ -8,6 +8,7 @@
   "scripts": {
     "compile": "npx hardhat compile",
     "compile:watch": "npx hardhat watch compile",
+    "clean": "rm -rf artifacts && rm -rf cache && rm -rf coverage && rm -rf typechain",
     "deploy:bsc": "npx hardhat deploy --network bsc",
     "deploy:bsctest": "npx hardhat deploy --network bsctest",
     "deploy:local": "npx hardhat deploy --network local",

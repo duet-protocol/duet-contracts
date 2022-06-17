@@ -27,6 +27,7 @@ importers:
       '@types/node': ^16.11.26
       '@typescript-eslint/eslint-plugin': ^4.29.1
       '@typescript-eslint/parser': ^4.29.1
+      bignumber.js: ^9.0.2
       bn.js: ^4.12.0
       chai: ^4.2.0
       chalk: ^4.1.2
@@ -77,6 +78,7 @@ importers:
       '@types/node': 16.11.39
       '@typescript-eslint/eslint-plugin': 4.33.0_b2rfmdvuwe4rokpupduzboofj4
       '@typescript-eslint/parser': 4.33.0_kix3shd7zvxuvkzdjm72bpp2vy
+      bignumber.js: 9.0.2
       bn.js: 4.12.0
       chai: 4.3.6
       chalk: 4.1.2
@@ -113,8 +115,6 @@ importers:
       '@openzeppelin/contracts': ^4.6.0
       '@openzeppelin/contracts-upgradeable': ^4.6.0
       '@openzeppelin/hardhat-upgrades': ^1.17.0
-      '@types/lodash': ^4.14.182
-      lodash: ^4.17.21
       moment: ^2.29.3
       moment-timezone: ^0.5.34
     dependencies:
@@ -122,8 +122,6 @@ importers:
     devDependencies:
       '@openzeppelin/contracts': 4.6.0
       '@openzeppelin/hardhat-upgrades': 1.18.1
-      '@types/lodash': 4.14.182
-      lodash: 4.17.21
       moment: 2.29.3
       moment-timezone: 0.5.34
 
@@ -132,8 +130,6 @@ importers:
       '@openzeppelin/contracts': ^4.6.0
       '@openzeppelin/contracts-upgradeable': ^4.6.0
       '@openzeppelin/hardhat-upgrades': ^1.17.0
-      '@types/lodash': ^4.14.182
-      lodash: ^4.17.21
       moment: ^2.29.3
       moment-timezone: ^0.5.34
     dependencies:
@@ -141,8 +137,6 @@ importers:
     devDependencies:
       '@openzeppelin/contracts': 4.6.0
       '@openzeppelin/hardhat-upgrades': 1.18.1
-      '@types/lodash': 4.14.182
-      lodash: 4.17.21
       moment: 2.29.3
       moment-timezone: 0.5.34
 

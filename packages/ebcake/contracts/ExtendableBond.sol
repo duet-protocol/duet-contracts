@@ -210,11 +210,18 @@ contract ExtendableBond is IExtendableBond, ReentrancyGuardUpgradeable, Pausable
         bondToken.burnFrom(user, amount_);
 
         uint256 underlyingTokenAmount = underlyingToken.balanceOf(address(this));
+
         if (underlyingTokenAmount < amount_) {
             _withdrawFromRemote(amount_ - underlyingTokenAmount);
         }
+        // for precision issue
+        // The underlying asset may be calculated on a share basis, and the amount withdrawn may vary slightly
+        if (amount_ > underlyingToken.balanceOf(address(this))) {
+            underlyingToken.safeTransfer(user, underlyingToken.balanceOf(address(this)));
+        } else {
+            underlyingToken.safeTransfer(user, amount_);
+        }
 
-        underlyingToken.safeTransfer(user, amount_);
     }
 
     function _withdrawFromRemote(uint256 amount_) internal virtual {}
