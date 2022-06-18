@@ -20,11 +20,11 @@ contract ExtendableBondedCake is ExtendableBond {
     function remoteUnderlyingAmount() public view override returns (uint256) {
         ICakePool.UserInfo memory userInfo = cakePool.userInfo(address(this));
         uint256 pricePerFullShare = cakePool.getPricePerFullShare();
-        return
-            (userInfo.shares * pricePerFullShare) /
-            1e18 -
-            userInfo.userBoostedShare -
-            cakePool.calculateWithdrawFee(address(this), userInfo.shares);
+        uint256 withdrawFee = !cakePool.freeWithdrawFeeUsers(address(this)) &&
+            userInfo.lockEndTime < userInfo.lastDepositedTime + cakePool.withdrawFeePeriod()
+            ? cakePool.calculateWithdrawFee(address(this), userInfo.shares)
+            : 0;
+        return (userInfo.shares * pricePerFullShare) / 1e18 - userInfo.userBoostedShare - withdrawFee;
     }
 
     /**
