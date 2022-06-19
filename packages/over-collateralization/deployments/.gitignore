@@ -1,0 +1,3 @@
+dev/*.json
+*.hardhat.json
+*.goerli.json
