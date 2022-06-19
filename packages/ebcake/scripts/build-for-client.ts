@@ -79,15 +79,21 @@ void (async () => {
     indexContent += `  address: string\n`
     indexContent += `}\n`
     indexContent += `\n\n`
+
+    const exportedTypes = new Set<string>()
     for (const contract of contracts) {
       if (!exporting.has(contract.class)) throw new Error(`[${name}] Can not resolve "${contract.class}"`)
       if (!exporting.has(`${contract.class}__factory`)) throw new Error(`[${name}] Can not resolve "${contract.class}" factory`)
-      indexContent += `export type { ${contract.class} } from './typechain/index'\n`
+      if (!exportedTypes.has(contract.class)) indexContent += `export type { ${contract.class} } from './typechain/index'\n`
+      exportedTypes.add(contract.class)
     }
     indexContent += '\n'
+
+    const importedFactories = new Set<string>()
     for (const contract of contracts) {
       indexContent += '\n'
-      indexContent += `import { ${contract.class}__factory } from './typechain/index'\n`
+      if (!importedFactories.has(contract.class)) indexContent += `import { ${contract.class}__factory } from './typechain/index'\n`
+      importedFactories.add(contract.class)
       indexContent += `export function createContract__${contract.instance}(signerOrProvider: Signer | Provider) {\n`
       indexContent += `  return ${contract.class}__factory.connect('${contract.address}', signerOrProvider)\n`
       indexContent += `}\n`

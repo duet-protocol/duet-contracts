@@ -24,7 +24,6 @@ export enum DeployNames {
 const logger = useLogger(__filename);
 const gasLimit = 3000000;
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
-  return
   const [deployerSigner] = await ethers.getSigners();
   const networkName = useNetworkName();
   if (networkName === 'bsc') {

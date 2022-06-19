@@ -1,0 +1,43 @@
+{
+  "name": "DUET-YIELD_EARN",
+  "version": "1.0.0",
+  "description": "",
+  "main": "hardhat.config.js",
+  "scripts": {
+    "compile": "npx hardhat compile",
+    "compile:watch": "npx hardhat watch compile",
+    "abi": "hardhat export-abi",
+    "build:client": "ts-node scripts/build-for-client.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:duet-protocol/Duet-Over-Collateralization-us.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@gnosis.pm/safe-core-sdk": "^2.0.0",
+    "@gnosis.pm/safe-core-sdk-types": "^1.0.0",
+    "@gnosis.pm/safe-ethers-lib": "^1.0.0",
+    "@gnosis.pm/safe-service-client": "^1.1.1",
+    "@nomiclabs/hardhat-ethers": "^2.0.2",
+    "@nomiclabs/hardhat-etherscan": "^2.1.8",
+    "@nomiclabs/hardhat-waffle": "^2.0.1",
+    "@openzeppelin/contracts": "4.3.2",
+    "@openzeppelin/hardhat-upgrades": "^1.15.0",
+    "chai": "^4.3.4",
+    "dotenv": "^10.0.0",
+    "ethereum-waffle": "^3.4.0",
+    "hardhat": "^2.6.6",
+    "typescript": "^4.6.3",
+    "undici": "^4.15.1"
+  },
+  "dependencies": {
+    "@chainlink/contracts": "0.4.0",
+    "@openzeppelin/contracts-upgradeable": "^4.4.0",
+    "@uniswap/lib": "^4.0.1-alpha",
+    "@uniswap/v2-core": "^1.0.1",
+    "bignumber": "^1.1.0",
+    "hardhat-abi-exporter": "^2.4.0"
+  }
+}

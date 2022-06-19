@@ -11,7 +11,6 @@ export enum MasterChefDeployNames {
 
 const logger = useLogger(__filename);
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
-  return
   const { deployments, getNamedAccounts } = hre as unknown as HardhatDeployRuntimeEnvironment;
   const { deploy } = deployments;
 
