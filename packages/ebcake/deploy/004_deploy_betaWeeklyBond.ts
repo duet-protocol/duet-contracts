@@ -22,7 +22,6 @@ export enum DeployNames {
 
 const logger = useLogger(__filename);
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
-  return
   if (useNetworkName() !== 'bsc') {
     logger.info('deploying non bsc network, ignored betaWeekly_Bond');
     return;

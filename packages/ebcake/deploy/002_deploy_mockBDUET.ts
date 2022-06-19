@@ -15,7 +15,6 @@ export enum MockBduetDeployNames {
 
 const logger = useLogger(__filename);
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
-  return
   if (!['bsctest', 'hardhat'].includes(useNetworkName())) {
     return;
   }
