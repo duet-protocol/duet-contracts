@@ -199,7 +199,7 @@ contract ExtendableBond is IExtendableBond, ReentrancyGuardUpgradeable, Pausable
                 block.timestamp >= checkPoints.redeemableFrom &&
                 block.timestamp <= checkPoints.redeemableEnd &&
                 block.timestamp > checkPoints.convertableEnd,
-            "Can not redeem."
+            "Can not redeem at this time."
         );
 
         address user = msg.sender;
@@ -242,7 +242,7 @@ contract ExtendableBond is IExtendableBond, ReentrancyGuardUpgradeable, Pausable
                 block.timestamp >= checkPoints.convertableFrom &&
                 block.timestamp <= checkPoints.convertableEnd &&
                 block.timestamp < checkPoints.redeemableFrom,
-            "Can not convert."
+            "Can not convert at this time."
         );
     }
 
