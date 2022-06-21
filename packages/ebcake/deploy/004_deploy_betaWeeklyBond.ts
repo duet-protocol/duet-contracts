@@ -19,6 +19,7 @@ export enum DeployNames {
   betaWeekly_BondLPFarmingPool = 'betaWeekly_BondLPFarmingPool',
   /* eslint-enable camelcase */
 }
+
 const logger = useLogger(__filename);
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   if (useNetworkName() !== 'bsc') {
@@ -29,6 +30,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   await deployBond({
     name: 'weekly ebCAKE beta',
     symbol: 'ebCAKE-W-beta',
+    bondLPFarmingContract: 'BondLPFarmingPool',
     checkpoints: {
       convertable: true,
       convertableFrom: now.unix(),

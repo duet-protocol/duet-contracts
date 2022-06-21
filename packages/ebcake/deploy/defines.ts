@@ -47,6 +47,7 @@ export async function deployBond(input: {
     singleAllocPoint?: number;
     lpAllocPoint?: number;
   };
+  bondLPFarmingContract?: string;
   checkpoints: {
     convertable: boolean;
     convertableFrom: number;
@@ -57,7 +58,15 @@ export async function deployBond(input: {
     maturity: number;
   };
 }) {
-  const { name, symbol, hre, deployNames, checkpoints, farm = {} } = input;
+  const {
+    name,
+    symbol,
+    hre,
+    deployNames,
+    checkpoints,
+    farm = {},
+    bondLPFarmingContract = 'BondLPPancakeFarmingPool',
+  } = input;
   const gasLimit = 3000000;
 
   const [deployerSigner] = await ethers.getSigners();
@@ -120,7 +129,7 @@ export async function deployBond(input: {
   });
   const bondLPFarmingPool = await deploy(deployNames.BondLPFarmingPool, {
     from: deployer,
-    contract: 'BondLPPancakeFarmingPool',
+    contract: bondLPFarmingContract,
     proxy: {
       execute: {
         init: {
