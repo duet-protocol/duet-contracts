@@ -18,7 +18,7 @@ import { removeConsoleLog } from 'hardhat-preprocessor';
 import { useLogger } from './scripts/utils';
 import * as path from 'path';
 import * as fs from 'fs';
-import ethers from 'ethers';
+import * as ethers from 'ethers';
 
 dotenv.config();
 

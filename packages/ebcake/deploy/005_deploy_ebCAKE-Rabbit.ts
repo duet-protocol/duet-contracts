@@ -23,9 +23,7 @@ export enum DeployNames {
 const logger = useLogger(__filename);
 
 export function genCheckpoints() {
-  const now = moment().tz('UTC');
-
-  const convertableFrom = now;
+  const convertableFrom = moment().tz('UTC');
   const convertableEnd = convertableFrom.clone().add('1', 'quarter').endOf('quarter');
   const maturity = convertableEnd.clone().add(1, 'year');
   const redeemableFrom = maturity.clone().add(1, 'second');

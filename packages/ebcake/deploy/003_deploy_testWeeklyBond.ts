@@ -183,7 +183,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
       'setSiblingPool',
       bondFarmingPool.address,
     );
-    await execute(
+    const receipt = await execute(
       DeployNames.testWeekly_ExtendableBondedCake,
       { from: deployer, gasLimit },
       'setFarmingPools',
