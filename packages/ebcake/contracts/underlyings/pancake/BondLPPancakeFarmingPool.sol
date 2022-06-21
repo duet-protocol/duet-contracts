@@ -19,6 +19,12 @@ contract BondLPPancakeFarmingPool is BondLPFarmingPool {
      */
     uint256 public accPancakeRewardsPerShares;
 
+    /**
+     * @dev whether remote staking enabled (stake to PancakeSwap LP farming pool).
+     * @notice It cannot be modified from true to false as this may cause accounting problems.
+     */
+    bool public remoteEnabled;
+
     struct PancakeUserInfo {
         /**
          * like sushi rewardDebt
@@ -56,6 +62,25 @@ contract BondLPPancakeFarmingPool is BondLPFarmingPool {
         pancakeMasterChefPid = pancakeMasterChefPid_;
     }
 
+    /**
+     * @dev enable remote staking (stake to PancakeSwap LP farming pool).
+     */
+    function remoteEnable() external onlyAdmin {
+        require(!remoteEnabled, "Already enabled");
+        remoteEnabled = true;
+        _stakeBalanceToRemote();
+    }
+
+    function _stakeBalanceToRemote() internal {
+        _requirePancakeSettled();
+        uint256 balance = lpToken.balanceOf(address(this));
+        if (balance <= 0) {
+            return;
+        }
+        lpToken.safeApprove(address(pancakeMasterChef), balance);
+        pancakeMasterChef.deposit(pancakeMasterChefPid, balance);
+    }
+
     function _requirePancakeSettled() internal view {
         require(
             address(pancakeMasterChef) != address(0) && pancakeMasterChefPid != 0 && address(cakeToken) != address(0),
@@ -69,7 +94,6 @@ contract BondLPPancakeFarmingPool is BondLPFarmingPool {
      * @param amount_ amount to stake
      */
     function _stakeRemote(address user_, uint256 amount_) internal override {
-        _requirePancakeSettled();
         UserInfo storage userInfo = usersInfo[user_];
         PancakeUserInfo storage pancakeUserInfo = pancakeUsersInfo[user_];
 
@@ -83,7 +107,8 @@ contract BondLPPancakeFarmingPool is BondLPFarmingPool {
             pancakeUserInfo.rewardDebt = (accPancakeRewardsPerShares * amount_) / ACC_REWARDS_PRECISION;
         }
 
-        if (amount_ > 0) {
+        if (amount_ > 0 && remoteEnabled) {
+            _requirePancakeSettled();
             lpToken.safeApprove(address(pancakeMasterChef), amount_);
             // deposit to pancake
             pancakeMasterChef.deposit(pancakeMasterChefPid, amount_);
@@ -96,7 +121,6 @@ contract BondLPPancakeFarmingPool is BondLPFarmingPool {
      * @param amount_ amount to unstake
      */
     function _unstakeRemote(address user_, uint256 amount_) internal override {
-        _requirePancakeSettled();
         UserInfo storage userInfo = usersInfo[user_];
         PancakeUserInfo storage pancakeUserInfo = pancakeUsersInfo[user_];
 
@@ -105,18 +129,30 @@ contract BondLPPancakeFarmingPool is BondLPFarmingPool {
         pancakeUserInfo.pendingRewards = 0;
         pancakeUserInfo.rewardDebt = sharesReward;
 
-        // withdraw from pancake
-        pancakeMasterChef.withdraw(pancakeMasterChefPid, amount_);
-
+        uint256 lpBalance = lpToken.balanceOf(address(this));
+        if (amount_ > lpBalance && remoteEnabled) {
+            _requirePancakeSettled();
+            // withdraw from pancake
+            pancakeMasterChef.withdraw(pancakeMasterChefPid, amount_ - lpBalance);
+        }
+        uint256 cakeBalance = cakeToken.balanceOf(address(this));
         // send cake rewards
-        cakeToken.safeTransfer(user_, pendingRewards);
-        pancakeUserInfo.claimedRewards += pendingRewards;
+        if (pendingRewards > cakeBalance) {
+            cakeToken.safeTransfer(user_, cakeBalance);
+            pancakeUserInfo.claimedRewards += cakeBalance;
+        } else {
+            cakeToken.safeTransfer(user_, pendingRewards);
+            pancakeUserInfo.claimedRewards += pendingRewards;
+        }
     }
 
     /**
      * @dev harvest from pancakeswap
      */
     function _harvestRemote() internal override {
+        if (!remoteEnabled) {
+            return;
+        }
         _requirePancakeSettled();
 
         uint256 previousCakeAmount = cakeToken.balanceOf(address(this));
