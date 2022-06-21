@@ -170,7 +170,7 @@ describe('ExtendableBond', function () {
     await expect(String(await cakeToken.balanceOf(bob.address))).equal(parseEther('0'));
     await expect(String(await bondToken.balanceOf(bob.address))).equal(parseEther('10000'));
     await expect(String(await cakeToken.balanceOf(extendableBond.address))).equal(parseEther('10000'));
-    await expect(extendableBond.connect(bob).redeemAll()).revertedWith('Can not redeem.');
+    await expect(extendableBond.connect(bob).redeemAll()).revertedWith('Can not redeem at this time.');
     await setBlockTimestampTo(now + 86400 * 8 + 10);
     await extendableBond.connect(bob).redeemAll();
     await expect(String(await cakeToken.balanceOf(bob.address))).equal(parseEther('10000'));

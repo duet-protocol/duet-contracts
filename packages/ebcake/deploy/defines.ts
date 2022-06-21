@@ -43,6 +43,10 @@ export async function deployBond(input: {
   symbol: string;
   hre: HardhatRuntimeEnvironment;
   deployNames: BondDeployNamesSpec;
+  farm?: {
+    singleAllocPoint?: number;
+    lpAllocPoint?: number;
+  };
   checkpoints: {
     convertable: boolean;
     convertableFrom: number;
@@ -53,7 +57,7 @@ export async function deployBond(input: {
     maturity: number;
   };
 }) {
-  const { name, symbol, hre, deployNames, checkpoints } = input;
+  const { name, symbol, hre, deployNames, checkpoints, farm = {} } = input;
   const gasLimit = 3000000;
 
   const [deployerSigner] = await ethers.getSigners();
@@ -116,7 +120,7 @@ export async function deployBond(input: {
   });
   const bondLPFarmingPool = await deploy(deployNames.BondLPFarmingPool, {
     from: deployer,
-    contract: 'BondLPFarmingPool',
+    contract: 'BondLPPancakeFarmingPool',
     proxy: {
       execute: {
         init: {
@@ -149,7 +153,7 @@ export async function deployBond(input: {
         gasLimit,
       },
       'add',
-      10,
+      farm.singleAllocPoint ?? 0,
       ZERO_ADDRESS,
       bondFarmingPool.address,
       true,
@@ -161,7 +165,7 @@ export async function deployBond(input: {
         gasLimit,
       },
       'add',
-      10,
+      farm.lpAllocPoint ?? 0,
       ZERO_ADDRESS,
       bondLPFarmingPool.address,
       true,
