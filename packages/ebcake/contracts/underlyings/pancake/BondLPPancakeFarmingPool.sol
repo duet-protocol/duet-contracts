@@ -129,20 +129,21 @@ contract BondLPPancakeFarmingPool is BondLPFarmingPool {
         pancakeUserInfo.pendingRewards = 0;
         pancakeUserInfo.rewardDebt = sharesReward;
 
-        uint256 lpBalance = lpToken.balanceOf(address(this));
-        if (amount_ > lpBalance && remoteEnabled) {
+        if (remoteEnabled) {
             _requirePancakeSettled();
             // withdraw from pancake
-            pancakeMasterChef.withdraw(pancakeMasterChefPid, amount_ - lpBalance);
+            pancakeMasterChef.withdraw(pancakeMasterChefPid, amount_);
         }
-        uint256 cakeBalance = cakeToken.balanceOf(address(this));
-        // send cake rewards
-        if (pendingRewards > cakeBalance) {
-            cakeToken.safeTransfer(user_, cakeBalance);
-            pancakeUserInfo.claimedRewards += cakeBalance;
-        } else {
-            cakeToken.safeTransfer(user_, pendingRewards);
-            pancakeUserInfo.claimedRewards += pendingRewards;
+        if (pendingRewards > 0) {
+            uint256 cakeBalance = cakeToken.balanceOf(address(this));
+            // send cake rewards
+            if (pendingRewards > cakeBalance) {
+                cakeToken.safeTransfer(user_, cakeBalance);
+                pancakeUserInfo.claimedRewards += cakeBalance;
+            } else {
+                cakeToken.safeTransfer(user_, pendingRewards);
+                pancakeUserInfo.claimedRewards += pendingRewards;
+            }
         }
     }
 

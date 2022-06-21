@@ -54,22 +54,37 @@ contract ExtendableBondedCake is ExtendableBond {
         uint256 balance = underlyingToken.balanceOf(address(this));
         require(balance > 0 && balance >= amount_, "nothing to deposit");
         underlyingToken.approve(address(cakePool), amount_);
-        cakePool.deposit(amount_, secondsToPancakeLockExtend());
+        cakePool.deposit(amount_, secondsToPancakeLockExtend(true));
     }
 
-    function secondsToPancakeLockExtend() public view returns (uint256) {
-        uint256 secondsToExtend = 0;
+    /**
+     * @dev calculate lock extend seconds
+     * @param deposit_ whether use as deposit param.
+     */
+    function secondsToPancakeLockExtend(bool deposit_) public view returns (uint256 secondsToExtend) {
         uint256 currentTime = block.timestamp;
-        ICakePool.UserInfo memory bondUnderlyingCakeInfo = cakePool.userInfo(address(this));
+        ICakePool.UserInfo memory cakeInfo = cakePool.userInfo(address(this));
+
+        uint256 cakeMaxLockDuration = cakePool.MAX_LOCK_DURATION();
         // lock expired or cake lockEndTime earlier than maturity, extend lock time required.
         if (
-            bondUnderlyingCakeInfo.lockEndTime <= currentTime ||
-            !bondUnderlyingCakeInfo.locked ||
-            bondUnderlyingCakeInfo.lockEndTime < checkPoints.maturity
+            cakeInfo.lockEndTime < checkPoints.maturity &&
+            checkPoints.maturity > block.timestamp &&
+            (deposit_ || cakeInfo.lockEndTime - cakeInfo.lockStartTime < cakeMaxLockDuration)
         ) {
-            secondsToExtend = MathUpgradeable.min(checkPoints.maturity - currentTime, cakePool.MAX_LOCK_DURATION());
+            if (cakeInfo.lockEndTime >= block.timestamp) {
+                // lockStartTime will be updated to block.timestamp in CakePool every time.
+                uint256 totalLockDuration = checkPoints.maturity - block.timestamp;
+                return
+                    MathUpgradeable.min(totalLockDuration, cakeMaxLockDuration) +
+                    block.timestamp -
+                    cakeInfo.lockEndTime;
+            }
+
+            return MathUpgradeable.min(checkPoints.maturity - block.timestamp, cakeMaxLockDuration);
         }
-        return secondsToExtend >= 0 ? secondsToExtend : 0;
+
+        return secondsToExtend;
     }
 
     /**
@@ -85,11 +100,12 @@ contract ExtendableBondedCake is ExtendableBond {
 
     /**
      * @dev extend pancake lock duration if needs
+     * @param force_ force extend even it's unnecessary
      */
-    function extendPancakeLockDuration() public onlyAdminOrKeeper {
-        uint256 secondsToExtend = secondsToPancakeLockExtend();
+    function extendPancakeLockDuration(bool force_) public onlyAdminOrKeeper {
+        uint256 secondsToExtend = secondsToPancakeLockExtend(force_);
         if (secondsToExtend > 0) {
-            cakePool.deposit(0, secondsToPancakeLockExtend());
+            cakePool.deposit(0, secondsToExtend);
         }
     }
 }
