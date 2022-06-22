@@ -155,6 +155,7 @@ export async function deployBond(input: {
       )
     ).toNumber();
     const masterChef = await get(MasterChefDeployNames.MultiRewardsMasterChef);
+    logger.info('add pool for bondFarmingPool');
     await execute(
       MasterChefDeployNames.MultiRewardsMasterChef,
       {
@@ -167,6 +168,7 @@ export async function deployBond(input: {
       bondFarmingPool.address,
       true,
     );
+    logger.info('add pool for bondLPFarmingPool');
     await execute(
       MasterChefDeployNames.MultiRewardsMasterChef,
       {
@@ -179,6 +181,7 @@ export async function deployBond(input: {
       bondLPFarmingPool.address,
       true,
     );
+    logger.info('setMasterChef for BondFarmingPool');
     await execute(
       deployNames.BondFarmingPool,
       { from: deployer, gasLimit },
@@ -186,6 +189,7 @@ export async function deployBond(input: {
       masterChef.address,
       masterChefPoolLength,
     );
+    logger.info('setMasterChef for BondLPFarmingPool');
     await execute(
       deployNames.BondLPFarmingPool,
       { from: deployer, gasLimit },
@@ -193,19 +197,23 @@ export async function deployBond(input: {
       masterChef.address,
       masterChefPoolLength + 1,
     );
+    logger.info('setMinter for ExtendableBondToken');
     await execute(deployNames.ExtendableBondToken, { from: deployer }, 'setMinter', bond.address);
+    logger.info('setSiblingPool for BondFarmingPool');
     await execute(
       deployNames.BondFarmingPool,
       { from: deployer, gasLimit },
       'setSiblingPool',
       bondLPFarmingPool.address,
     );
+    logger.info('setSiblingPool for BondLPFarmingPool');
     await execute(
       deployNames.BondLPFarmingPool,
       { from: deployer, gasLimit },
       'setSiblingPool',
       bondFarmingPool.address,
     );
+    logger.info('setFarmingPools for ExtendableBondedCake');
     await execute(
       deployNames.ExtendableBondedCake,
       { from: deployer, gasLimit },
@@ -214,6 +222,7 @@ export async function deployBond(input: {
       bondLPFarmingPool.address,
     );
 
+    logger.info('create pancakeswap LP Token');
     // create pancakeswap LP Token
     const pancakeFactory = await ethers.getContractAt(pancakeFactoryABI, config.address.PancakeFactory[networkName]);
     const ret = await pancakeFactory
@@ -226,6 +235,7 @@ export async function deployBond(input: {
       throw new Error('PancakeSwap pair token created failed');
     }
     logger.info('LPToken created', lpTokenAddress);
+    logger.info('setLpToken for BondLPFarmingPool');
     await execute(deployNames.BondLPFarmingPool, { from: deployer, gasLimit }, 'setLpToken', lpTokenAddress);
 
     logger.info('initialized', deployNames.BondLPFarmingPool);
