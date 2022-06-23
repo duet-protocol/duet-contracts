@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "./interfaces/IMultiRewardsMasterChef.sol";
 
 interface IMigratorChef {
     function migrate(IERC20 token) external returns (IERC20);
@@ -18,7 +19,7 @@ interface IMigratorChef {
 // distributed and the community can show to govern itself.
 //
 // Have fun reading it. Hopefully it's bug-free. God bless.
-contract MultiRewardsMasterChef is ReentrancyGuard, Initializable {
+contract MultiRewardsMasterChef is ReentrancyGuard, Initializable, IMultiRewardsMasterChef {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
     address public admin;
@@ -208,7 +209,36 @@ contract MultiRewardsMasterChef is ReentrancyGuard, Initializable {
         uint256 startedAtBlock,
         uint256 endedAtBlock
     ) public onlyAdmin {
+        (uint256 depositAmount, uint256 refundAmount) = previewSetRewardSpec(
+            rewardId,
+            rewardPerBlock,
+            startedAtBlock,
+            endedAtBlock
+        );
+        require(depositAmount == 0 || refundAmount == 0, "One of depositAmount and refundAmount must be 0");
+        massUpdatePools();
         RewardSpec storage rewardSpec = rewardSpecs[rewardId];
+        if (depositAmount > 0) {
+            rewardSpec.token.safeTransferFrom(msg.sender, address(this), depositAmount);
+        } else if (refundAmount > 0) {
+            rewardSpec.token.safeTransfer(msg.sender, refundAmount);
+        }
+
+        rewardSpec.startedAtBlock = startedAtBlock;
+        rewardSpec.endedAtBlock = endedAtBlock;
+        rewardSpec.rewardPerBlock = rewardPerBlock;
+
+        emit RewardSpecUpdated(rewardId, rewardPerBlock, startedAtBlock, endedAtBlock);
+    }
+
+    function previewSetRewardSpec(
+        uint256 rewardId,
+        uint256 rewardPerBlock,
+        uint256 startedAtBlock,
+        uint256 endedAtBlock
+    ) public view returns (uint256 depositAmount, uint256 refundAmount) {
+        RewardSpec storage rewardSpec = rewardSpecs[rewardId];
+
         if (rewardSpec.startedAtBlock <= block.number) {
             require(
                 startedAtBlock == rewardSpec.startedAtBlock,
@@ -218,29 +248,20 @@ contract MultiRewardsMasterChef is ReentrancyGuard, Initializable {
 
         require(endedAtBlock > block.number, "can not modify endedAtBlock to a past block number");
         require(endedAtBlock > startedAtBlock, "endedAtBlock should be greater than startedAtBlock");
-        massUpdatePools();
-        uint256 requiredAmount = (endedAtBlock - startedAtBlock) * rewardPerBlock;
+        uint256 minedAwards = block.number > rewardSpec.startedAtBlock
+            ? (block.number - rewardSpec.startedAtBlock) * rewardSpec.rewardPerBlock
+            : 0;
         uint256 tokenBalance = rewardSpec.token.balanceOf(address(this));
-        if (requiredAmount > tokenBalance + rewardSpec.claimedAmount) {
-            rewardSpec.token.safeTransferFrom(
-                msg.sender,
-                address(this),
-                requiredAmount - tokenBalance - rewardSpec.claimedAmount
-            );
-        } else if (requiredAmount < tokenBalance + rewardSpec.claimedAmount) {
-            // return overflow tokens
-            rewardSpec.token.safeTransferFrom(
-                address(this),
-                msg.sender,
-                (tokenBalance + rewardSpec.claimedAmount) - requiredAmount
-            );
+        uint256 amountDebt = minedAwards - rewardSpec.claimedAmount;
+        uint256 usableBalance = tokenBalance - amountDebt;
+        uint256 requiredAmount = (endedAtBlock - block.number) * rewardPerBlock;
+
+        if (requiredAmount > usableBalance) {
+            depositAmount = requiredAmount - usableBalance;
+        } else if (requiredAmount < usableBalance) {
+            refundAmount = usableBalance - requiredAmount;
         }
-
-        rewardSpec.startedAtBlock = startedAtBlock;
-        rewardSpec.endedAtBlock = endedAtBlock;
-        rewardSpec.rewardPerBlock = rewardPerBlock;
-
-        emit RewardSpecUpdated(rewardId, rewardPerBlock, startedAtBlock, endedAtBlock);
+        return (depositAmount, refundAmount);
     }
 
     function getRewardSpecsLength() public view returns (uint256) {

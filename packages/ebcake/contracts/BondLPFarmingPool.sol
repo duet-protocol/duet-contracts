@@ -10,7 +10,7 @@ import "hardhat/console.sol";
 import "./ExtendableBond.sol";
 import "./libs/DuetMath.sol";
 import "./libs/Adminable.sol";
-import "./MultiRewardsMasterChef.sol";
+import "./interfaces/IMultiRewardsMasterChef.sol";
 import "./interfaces/IBondFarmingPool.sol";
 import "./interfaces/IExtendableBond.sol";
 
@@ -23,7 +23,7 @@ contract BondLPFarmingPool is ReentrancyGuardUpgradeable, PausableUpgradeable, A
     IBondFarmingPool public siblingPool;
     uint256 public lastUpdatedPoolAt = 0;
 
-    MultiRewardsMasterChef public masterChef;
+    IMultiRewardsMasterChef public masterChef;
 
     uint256 public masterChefPid;
 
@@ -83,7 +83,7 @@ contract BondLPFarmingPool is ReentrancyGuardUpgradeable, PausableUpgradeable, A
         lpToken = lpToken_;
     }
 
-    function setMasterChef(MultiRewardsMasterChef masterChef_, uint256 masterChefPid_) public onlyAdmin {
+    function setMasterChef(IMultiRewardsMasterChef masterChef_, uint256 masterChefPid_) public onlyAdmin {
         masterChef = masterChef_;
         masterChefPid = masterChefPid_;
     }

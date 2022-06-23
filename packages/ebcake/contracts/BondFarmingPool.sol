@@ -9,7 +9,7 @@ import "hardhat/console.sol";
 
 import "./ExtendableBond.sol";
 import "./libs/DuetMath.sol";
-import "./MultiRewardsMasterChef.sol";
+import "./interfaces/IMultiRewardsMasterChef.sol";
 import "./libs/Adminable.sol";
 import "./interfaces/IBondFarmingPool.sol";
 import "./interfaces/IExtendableBond.sol";
@@ -22,7 +22,7 @@ contract BondFarmingPool is PausableUpgradeable, ReentrancyGuardUpgradeable, IBo
     uint256 public lastUpdatedPoolAt = 0;
     IBondFarmingPool public siblingPool;
 
-    MultiRewardsMasterChef public masterChef;
+    IMultiRewardsMasterChef public masterChef;
     uint256 public masterChefPid;
 
     struct UserInfo {
@@ -55,7 +55,7 @@ contract BondFarmingPool is PausableUpgradeable, ReentrancyGuardUpgradeable, IBo
         bond = bond_;
     }
 
-    function setMasterChef(MultiRewardsMasterChef masterChef_, uint256 masterChefPid_) public onlyAdmin {
+    function setMasterChef(IMultiRewardsMasterChef masterChef_, uint256 masterChefPid_) public onlyAdmin {
         masterChef = masterChef_;
         masterChefPid = masterChefPid_;
     }
