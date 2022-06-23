@@ -55,6 +55,8 @@ contract ExtendableBondedCake is ExtendableBond {
         require(balance > 0 && balance >= amount_, "nothing to deposit");
         underlyingToken.approve(address(cakePool), amount_);
         cakePool.deposit(amount_, secondsToPancakeLockExtend(true));
+
+        require(pancakeUserInfo().lockEndTime <= checkPoints.maturity, "The lock-up time exceeds the ebCAKE maturity");
     }
 
     /**
