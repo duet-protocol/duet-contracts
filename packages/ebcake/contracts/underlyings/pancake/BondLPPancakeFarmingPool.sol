@@ -99,7 +99,7 @@ contract BondLPPancakeFarmingPool is BondLPFarmingPool {
 
         if (userInfo.lpAmount > 0) {
             uint256 sharesReward = (accPancakeRewardsPerShares * userInfo.lpAmount) / ACC_REWARDS_PRECISION;
-            pancakeUserInfo.pendingRewards += sharesReward - userInfo.rewardDebt;
+            pancakeUserInfo.pendingRewards += sharesReward - pancakeUserInfo.rewardDebt;
             pancakeUserInfo.rewardDebt =
                 (accPancakeRewardsPerShares * (userInfo.lpAmount + amount_)) /
                 ACC_REWARDS_PRECISION;
@@ -124,8 +124,8 @@ contract BondLPPancakeFarmingPool is BondLPFarmingPool {
         UserInfo storage userInfo = usersInfo[user_];
         PancakeUserInfo storage pancakeUserInfo = pancakeUsersInfo[user_];
 
-        uint256 sharesReward = (accRewardPerShare * userInfo.lpAmount) / ACC_REWARDS_PRECISION;
-        uint256 pendingRewards = sharesReward + pancakeUserInfo.pendingRewards - userInfo.rewardDebt;
+        uint256 sharesReward = (accPancakeRewardsPerShares * userInfo.lpAmount) / ACC_REWARDS_PRECISION;
+        uint256 pendingRewards = sharesReward + pancakeUserInfo.pendingRewards - pancakeUserInfo.rewardDebt;
         pancakeUserInfo.pendingRewards = 0;
         pancakeUserInfo.rewardDebt = sharesReward;
 
