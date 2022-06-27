@@ -11,4 +11,4 @@ artifacts
 
 # node
 node_modules/
-yarn-error.log
+*.log

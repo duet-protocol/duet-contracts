@@ -3,7 +3,7 @@
 import { DeployFunction } from 'hardhat-deploy/types';
 import { HardhatRuntimeEnvironment } from 'hardhat/types';
 import { parseEther } from 'ethers/lib/utils';
-import { testId, useNetworkName, writeExtraMeta } from './.defines';
+import { advancedDeploy, testId, useNetworkName, writeExtraMeta } from './.defines';
 import { HardhatDeployRuntimeEnvironment } from '../types/hardhat-deploy';
 import { MasterChefDeployNames } from './001_deploy_masterchef';
 import { ethers } from 'hardhat';
@@ -23,17 +23,28 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
   const { deployer } = await getNamedAccounts();
   const bDuetMintAmount = 1000000;
-  const bDuet = await deploy(MockBduetDeployNames.mockBDUET, {
-    from: deployer,
-    contract: 'MockBEP20',
-    // string memory name,
-    // string memory symbol,
-    // uint256 supply
-    args: [`mock bDUET ${testId}`, `bDUET-MOCK-${testId}`, parseEther(bDuetMintAmount.toString())],
-    log: true,
-    autoMine: true, // speed up deployment on local network (ganache, hardhat), no effect on live networks
-  });
-  await writeExtraMeta(MockBduetDeployNames.mockBDUET, { class: 'MockBEP20', instance: MockBduetDeployNames.mockBDUET })
+
+  const bDuet = await advancedDeploy({
+    hre,
+    logger,
+    name: MockBduetDeployNames.mockBDUET,
+    proxied: false,
+    class: 'MockBEP20',
+    instance: MockBduetDeployNames.mockBDUET,
+  }, async ({ name }) => {
+
+    return await deploy(name, {
+      from: deployer,
+      contract: 'MockBEP20',
+      // string memory name,
+      // string memory symbol,
+      // uint256 supply
+      args: [`mock bDUET ${testId}`, `bDUET-MOCK-${testId}`, parseEther(bDuetMintAmount.toString())],
+      log: true,
+      autoMine: true, // speed up deployment on local network (ganache, hardhat), no effect on live networks
+    });
+  })
+
 
   if (bDuet.newlyDeployed) {
     logger.info('reward spec adding...');
@@ -68,5 +79,6 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
     logger.info('reward spec added');
   }
+
 };
 export default func;

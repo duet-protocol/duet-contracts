@@ -1,6 +1,6 @@
 /* eslint-disable node/no-unpublished-import,node/no-missing-import */
 import { DeployFunction } from 'hardhat-deploy/types';
-import { testId, useNetworkName, writeExtraMeta } from './.defines';
+import { advancedDeploy, testId, useNetworkName } from './.defines';
 import { HardhatRuntimeEnvironment } from 'hardhat/types/runtime';
 import moment from 'moment';
 import config from '../config';
@@ -35,30 +35,52 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
   const { deployer } = await getNamedAccounts();
 
-  const bondToken = await deploy(DeployNames.testWeekly_ExtendableBondToken, {
-    from: deployer,
-    contract: 'BondToken',
-    args: [`test weekly ebCAKE ${testId}`, `ebCAKE-W-${testId}`, deployer],
-    log: true,
-    autoMine: true, // speed up deployment on local network (ganache, hardhat), no effect on live networks
-  });
-  await writeExtraMeta(DeployNames.testWeekly_ExtendableBondToken, { class: 'BondToken', instance: 'Weekly_ExtendableBondToken' })
 
-  const bond = await deploy(DeployNames.testWeekly_ExtendableBondedCake, {
-    from: deployer,
-    contract: 'ExtendableBondedCake',
-    proxy: {
-      execute: {
-        init: {
-          methodName: 'initialize',
-          args: [bondToken.address, config.address.CakeToken[networkName], deployer],
+  const bondToken = await advancedDeploy({
+    hre,
+    logger,
+    name: DeployNames.testWeekly_ExtendableBondToken,
+    class: 'BondToken',
+    instance: 'Weekly_ExtendableBondToken'
+  }, async ({ name }) => {
+
+    return await deploy(name, {
+      from: deployer,
+      contract: 'BondToken',
+      args: [`test weekly ebCAKE ${testId}`, `ebCAKE-W-${testId}`, deployer],
+      log: true,
+      autoMine: true, // speed up deployment on local network (ganache, hardhat), no effect on live networks
+    })
+  })
+
+
+
+  const bond = await advancedDeploy({
+    hre,
+    logger,
+    name: DeployNames.testWeekly_ExtendableBondedCake,
+    class: 'ExtendableBondedCake',
+    instance: 'Weekly_ExtendableBondedCake'
+  }, async ({ name }) => {
+
+    return await deploy(name, {
+      from: deployer,
+      contract: 'ExtendableBondedCake',
+      proxy: {
+        execute: {
+          init: {
+            methodName: 'initialize',
+            args: [bondToken.address, config.address.CakeToken[networkName], deployer],
+          },
         },
       },
-    },
-    log: true,
-    autoMine: true, // speed up deployment on local network (ganache, hardhat), no effect on live networks
-  });
-  await writeExtraMeta(DeployNames.testWeekly_ExtendableBondedCake, { class: 'ExtendableBondedCake', instance: 'Weekly_ExtendableBondedCake' })
+      log: true,
+      autoMine: true, // speed up deployment on local network (ganache, hardhat), no effect on live networks
+    })
+  })
+
+
+
 
   if (bond.newlyDeployed && bond?.numDeployments === 1) {
     logger.info('initializing', DeployNames.testWeekly_ExtendableBondedCake);
@@ -91,39 +113,62 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     logger.info('initialized', DeployNames.testWeekly_ExtendableBondedCake);
   }
 
-  const bondFarmingPool = await deploy(DeployNames.testWeekly_BondFarmingPool, {
-    from: deployer,
-    contract: 'BondFarmingPool',
-    // IERC20 bondToken_,
-    // IExtendableBond bond_
-    proxy: {
-      execute: {
-        init: {
-          methodName: 'initialize',
-          args: [bondToken.address, bond.address, deployer],
-        },
-      },
-    },
-    log: true,
-    autoMine: true, // speed up deployment on local network (ganache, hardhat), no effect on live networks
-  });
-  await writeExtraMeta(DeployNames.testWeekly_BondFarmingPool, { class: 'BondFarmingPool', instance: 'Weekly_BondFarmingPool' })
 
-  const bondLPFarmingPool = await deploy(DeployNames.testWeekly_BondLPFarmingPool, {
-    from: deployer,
-    contract: 'BondLPFarmingPool',
-    proxy: {
-      execute: {
-        init: {
-          methodName: 'initialize',
-          args: [bondToken.address, bond.address, deployer],
+
+  const bondFarmingPool = await advancedDeploy({
+    hre,
+    logger,
+    name: DeployNames.testWeekly_BondFarmingPool,
+    class: 'BondFarmingPool',
+    instance: 'Weekly_BondFarmingPool'
+  }, async ({ name }) => {
+
+    return await deploy(name, {
+      from: deployer,
+      contract: 'BondFarmingPool',
+      // IERC20 bondToken_,
+      // IExtendableBond bond_
+      proxy: {
+        execute: {
+          init: {
+            methodName: 'initialize',
+            args: [bondToken.address, bond.address, deployer],
+          },
         },
       },
-    },
-    log: true,
-    autoMine: true, // speed up deployment on local network (ganache, hardhat), no effect on live networks
-  });
-  await writeExtraMeta(DeployNames.testWeekly_BondLPFarmingPool, { class: 'BondLPFarmingPool', instance: 'Weekly_BondLPFarmingPool' })
+      log: true,
+      autoMine: true, // speed up deployment on local network (ganache, hardhat), no effect on live networks
+    })
+  })
+
+
+
+
+  const bondLPFarmingPool = await advancedDeploy({
+    hre,
+    logger,
+    name: DeployNames.testWeekly_BondFarmingPool,
+    class: 'BondLPFarmingPool',
+    instance: 'Weekly_BondLPFarmingPool'
+  }, async ({ name }) => {
+
+    return await deploy(name, {
+      from: deployer,
+      contract: 'BondLPFarmingPool',
+      proxy: {
+        execute: {
+          init: {
+            methodName: 'initialize',
+            args: [bondToken.address, bond.address, deployer],
+          },
+        },
+      },
+      log: true,
+      autoMine: true, // speed up deployment on local network (ganache, hardhat), no effect on live networks
+    })
+  })
+
+
 
   if (bondLPFarmingPool.newlyDeployed && bondLPFarmingPool?.numDeployments === 1) {
     logger.info('initializing', DeployNames.testWeekly_BondLPFarmingPool);
