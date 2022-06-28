@@ -56,6 +56,10 @@ contract ExtendableBondedCake is ExtendableBond {
         underlyingToken.approve(address(cakePool), amount_);
         cakePool.deposit(amount_, secondsToPancakeLockExtend(true));
 
+        _checkLockEndTime();
+    }
+
+    function _checkLockEndTime() internal view {
         require(pancakeUserInfo().lockEndTime <= checkPoints.maturity, "The lock-up time exceeds the ebCAKE maturity");
     }
 
@@ -108,6 +112,7 @@ contract ExtendableBondedCake is ExtendableBond {
         uint256 secondsToExtend = secondsToPancakeLockExtend(force_);
         if (secondsToExtend > 0) {
             cakePool.deposit(0, secondsToExtend);
+            _checkLockEndTime();
         }
     }
 }
