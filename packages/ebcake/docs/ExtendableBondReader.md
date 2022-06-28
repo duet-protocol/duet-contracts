@@ -57,54 +57,6 @@ struct ExtendableBondLpStakePackageUserInfo {
 }
 ```
 
-### underlyingTokenAddress
-
-```solidity
-function underlyingTokenAddress(contract ExtendableBond eb_) external view returns (address)
-```
-
-### bondTokenAddress
-
-```solidity
-function bondTokenAddress(contract ExtendableBond eb_) external view returns (address)
-```
-
-### bondFarmingPoolAddress
-
-```solidity
-function bondFarmingPoolAddress(contract ExtendableBond eb_) external view returns (address)
-```
-
-### bondFarmingPoolMrMasterChefAddress
-
-```solidity
-function bondFarmingPoolMrMasterChefAddress(contract ExtendableBond eb_) external view returns (address)
-```
-
-### bondFarmingPoolMrMasterChefPoolId
-
-```solidity
-function bondFarmingPoolMrMasterChefPoolId(contract ExtendableBond eb_) external view returns (uint256)
-```
-
-### bondLpFarmingPoolAddress
-
-```solidity
-function bondLpFarmingPoolAddress(contract ExtendableBond eb_) external view returns (address)
-```
-
-### bondLpFarmingPoolMrMasterChefAddress
-
-```solidity
-function bondLpFarmingPoolMrMasterChefAddress(contract ExtendableBond eb_) external view returns (address)
-```
-
-### bondLpFarmingPoolMrMasterChefPoolId
-
-```solidity
-function bondLpFarmingPoolMrMasterChefPoolId(contract ExtendableBond eb_) external view returns (uint256)
-```
-
 ### extendableBondPackagePublicInfo
 
 ```solidity

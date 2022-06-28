@@ -19,7 +19,6 @@ export function useNetworkName() {
   return network.name as NetworkName;
 }
 
-export const testId = '0627';
 
 export enum ContractTag {
   BOND_TOKEN = 'BOND_TOKEN',

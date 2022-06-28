@@ -35,7 +35,7 @@ uint256 lastUpdatedPoolAt
 ### masterChef
 
 ```solidity
-contract MultiRewardsMasterChef masterChef
+contract IMultiRewardsMasterChef masterChef
 ```
 
 ### masterChefPid
@@ -125,7 +125,7 @@ function setLpToken(contract IERC20Upgradeable lpToken_) public
 ### setMasterChef
 
 ```solidity
-function setMasterChef(contract MultiRewardsMasterChef masterChef_, uint256 masterChefPid_) public
+function setMasterChef(contract IMultiRewardsMasterChef masterChef_, uint256 masterChefPid_) public
 ```
 
 ### updatePool

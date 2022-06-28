@@ -43,22 +43,26 @@ struct ExtendableBondGroupInfo {
 }
 ```
 
-### admin
+### AddressBook
 
 ```solidity
-contract ExtendableBondAdmin admin
+struct AddressBook {
+  address underlyingToken;
+  address bondToken;
+  address lpToken;
+  address bondFarmingPool;
+  address bondLpFarmingPool;
+  address multiRewardsMasterChef;
+  uint256 bondFarmingPoolId;
+  uint256 bondLpFarmingPoolId;
+  address pancakePool;
+}
 ```
 
-### pairTokenAddress__CAKE_BUSD
+### entrypoint
 
 ```solidity
-contract IPancakePair pairTokenAddress__CAKE_BUSD
-```
-
-### pairTokenAddress__DUET_CAKE
-
-```solidity
-contract IPancakePair pairTokenAddress__DUET_CAKE
+contract ExtendableBondAdmin entrypoint
 ```
 
 ### pancakePool
@@ -73,34 +77,34 @@ contract CakePool pancakePool
 contract MasterChefV2 pancakeMasterChef
 ```
 
+### pairTokenAddress__CAKE_BUSD
+
+```solidity
+contract IPancakePair pairTokenAddress__CAKE_BUSD
+```
+
+### pairTokenAddress__DUET_BUSD
+
+```solidity
+contract IPancakePair pairTokenAddress__DUET_BUSD
+```
+
+### pairTokenAddress__DUET_CAKE
+
+```solidity
+contract IPancakePair pairTokenAddress__DUET_CAKE
+```
+
 ### constructor
 
 ```solidity
-constructor(contract ExtendableBondAdmin admin_, contract IPancakePair pairTokenAddress__CAKE_BUSD_, contract IPancakePair pairTokenAddress__DUET_CAKE_, contract CakePool pancakePool_, contract MasterChefV2 pancakeMasterChef_) public
+constructor(contract ExtendableBondAdmin entrypoint_, contract CakePool pancakePool_, contract MasterChefV2 pancakeMasterChef_, contract IPancakePair pairTokenAddress__CAKE_BUSD_, contract IPancakePair pairTokenAddress__DUET_BUSD_, contract IPancakePair pairTokenAddress__DUET_CAKE_) public
 ```
 
-### bondLpPancakeFarmingPoolMasterChefAddress
+### addressBook
 
 ```solidity
-function bondLpPancakeFarmingPoolMasterChefAddress(contract ExtendableBond eb_) external view returns (address)
-```
-
-### bondLpPancakeFarmingPoolMasterChefPoolId
-
-```solidity
-function bondLpPancakeFarmingPoolMasterChefPoolId(contract ExtendableBond eb_) external view returns (uint256)
-```
-
-### cakePoolAddress
-
-```solidity
-function cakePoolAddress(contract ExtendableBondedCake eb_) external view returns (address)
-```
-
-### cakeTokenAddress
-
-```solidity
-function cakeTokenAddress(contract ExtendableBondedCake eb_) external view returns (address)
+function addressBook(contract ExtendableBondedCake eb_) external view returns (struct ExtendableBondedCakeReader.AddressBook book)
 ```
 
 ### extendableBondGroupInfo
