@@ -282,7 +282,7 @@ export async function deployBond(input: {
       .createPair(bondToken.address, config.address.CakeToken[networkName]);
     const retReceipt = await ret.wait();
     logger.info('retReceipt', retReceipt);
-    const lpTokenAddress = retReceipt.events.filter((e: Event) => e.event === 'PairCreated')[0].args.pair;
+    const lpTokenAddress = retReceipt.events.filter((e: Event) => e.event === 'PairCreated')[0]?.args?.pair;
     if (!lpTokenAddress) {
       throw new Error('PancakeSwap pair token created failed');
     }
@@ -314,9 +314,9 @@ export async function isProxiedContractDeployable(
   const { read, all } = deployments;
   const { deployer } = await getNamedAccounts();
 
-  if (!Object.keys(await all()).includes(name)) return true;
-  const owner: string = await read(name, 'owner');
-  return deployer === owner;
+  if (!Object.keys(await all()).includes(name)) return true
+  const owner: string = await read(name, 'owner') // @TODO: try `bytes32(uint256(keccak256('eip1967.proxy.implementation')) - 1)`
+  return deployer === owner
 }
 
 export async function advancedDeploy(
@@ -327,23 +327,28 @@ export async function advancedDeploy(
     proxied?: boolean;
     class?: string;
     instance?: string;
+    dryRun?: boolean;
   },
   fn: (ctx: typeof options) => Promise<DeployResult>,
 ): Promise<DeployResult> {
-  const complete = async () => {
-    const result = await fn(options);
-    options.logger.info(`[deployed] ${options.name}`, result.address);
-    await writeExtraMeta(options.name, { class: options.class, instance: options.instance });
-    return result;
-  };
+  const { deployments: { get } } = options.hre as unknown as HardhatDeployRuntimeEnvironment
+  const deploy =
+    (options.dryRun || process.env.DEPLOY_DRY_RUN === '1') !== true ? fn : async () => {
+      options.logger.info(`[DRY] [DEPLOYING]`);
+      return { ...await get(options.name), newlyDeployed: false }
+    }
 
-  if (!options.proxied) await complete();
+  const complete = async () => {
+    const result = await deploy(options)
+    options.logger.info(`${options.name}`, result.address);
+    await writeExtraMeta(options.name, { class: options.class, instance: options.instance })
+    return result
+  }
+
+  if (process.env.DEPLOY_NO_PROXY_OWNER_VALIDATION === '1' || !options.proxied) return await complete()
   if (!(await isProxiedContractDeployable(options.hre, options.name))) {
-    options.logger.warn(`${options.name} is a proxied contract, but you are not allowed to deploy.`);
-    const {
-      deployments: { get },
-    } = options.hre as unknown as HardhatDeployRuntimeEnvironment;
-    return { ...(await get(options.name)), newlyDeployed: false };
+    options.logger.warn(`${options.name} is a proxied contract, but you are not allowed to deploy.`)
+    return { ...await get(options.name), newlyDeployed: false }
   }
   options.logger.info(`${options.name} is a proxied contract, and you are allowed to deploy`);
   return await complete();

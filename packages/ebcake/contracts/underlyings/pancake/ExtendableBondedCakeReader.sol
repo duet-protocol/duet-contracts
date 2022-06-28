@@ -7,7 +7,7 @@ import "./ExtendableBondedCake.sol";
 import "./BondLPPancakeFarmingPool.sol";
 import "../../ExtendableBond.sol";
 import "../../ExtendableBondReader.sol";
-import "../../ExtendableBondAdmin.sol";
+import "../../ExtendableBondRegistry.sol";
 import "../../interfaces/ICakePool.sol";
 import "../../interfaces/IPancakePair.sol";
 import "../../mocks/CakePool.sol";
@@ -48,7 +48,7 @@ contract ExtendableBondedCakeReader is ExtendableBondReader {
       address pancakePool;
     }
 
-    ExtendableBondAdmin public immutable entrypoint;
+    ExtendableBondRegistry public immutable registry;
     CakePool public immutable pancakePool;
     MasterChefV2 public immutable pancakeMasterChef;
     IPancakePair public immutable pairTokenAddress__CAKE_BUSD;
@@ -56,14 +56,14 @@ contract ExtendableBondedCakeReader is ExtendableBondReader {
     IPancakePair public immutable pairTokenAddress__DUET_CAKE;
 
     constructor (
-        ExtendableBondAdmin entrypoint_,
+        ExtendableBondRegistry registry_,
         CakePool pancakePool_,
         MasterChefV2 pancakeMasterChef_,
         IPancakePair pairTokenAddress__CAKE_BUSD_,
         IPancakePair pairTokenAddress__DUET_BUSD_,  // optional. if so, the next should be required
         IPancakePair pairTokenAddress__DUET_CAKE_   // optional, if so, the previous should be required
     ) {
-        entrypoint = entrypoint_;
+        registry = registry_;
         pancakePool = pancakePool_;
         pancakeMasterChef = pancakeMasterChef_;
         pairTokenAddress__CAKE_BUSD = pairTokenAddress__CAKE_BUSD_;
@@ -92,7 +92,7 @@ contract ExtendableBondedCakeReader is ExtendableBondReader {
     function extendableBondGroupInfo(string calldata groupName_) view external returns (ExtendableBondGroupInfo memory) {
         uint256 allEbStacked;
         uint256 sumCakePrices;
-        address[] memory addresses = entrypoint.groupedAddresses(groupName_);
+        address[] memory addresses = registry.groupedAddresses(groupName_);
         uint256 maxDuetSideAPR;
         for (uint256 i; i < addresses.length; i++) {
             address ebAddress = addresses[i];
