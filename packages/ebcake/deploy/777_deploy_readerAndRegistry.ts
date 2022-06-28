@@ -7,7 +7,7 @@ import { HardhatDeployRuntimeEnvironment } from '../types/hardhat-deploy';
 import { useNetworkName, advancedDeploy } from './.defines';
 
 enum Names {
-  ExtendableBondAdmin = 'ExtendableBondAdmin',
+  ExtendableBondRegistry = 'ExtendableBondRegistry',
   ExtendableBondedCakeReader = 'ExtendableBondedCakeReader',
 }
 
@@ -24,16 +24,23 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
 
 
-  const extendableBondAdmin = await advancedDeploy({
+  const ebRegistry = await advancedDeploy({
     hre,
     logger,
-    name: Names.ExtendableBondAdmin,
+    name: Names.ExtendableBondRegistry,
   }, async ({ name }) => {
 
     return await deploy(name, {
       from: deployer,
       contract: name,
-      args: [deployer],
+      proxy: {
+        execute: {
+          init: {
+            methodName: 'initialize',
+            args: [deployer],
+          },
+        },
+      },
       log: true,
       autoMine: true, // speed up deployment on local network (ganache, hardhat), no effect on live networks
     })
@@ -50,7 +57,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
       from: deployer,
       contract: name,
       args: [
-        extendableBondAdmin.address,
+        ebRegistry.address,
         config.address.CakePool[networkName], config.address.CakeMasterChefV2[networkName],
         config.address.PancakeLpTokenPair__CAKE_BUSD[networkName],
         config.address.PancakeLpTokenPair__DUET_BUSD[networkName] || ZERO_ADDRESS,

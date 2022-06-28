@@ -3,19 +3,18 @@ pragma solidity 0.8.9;
 pragma abicoder v2;
 
 
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "./libs/Adminable.sol";
 
 
-contract ExtendableBondAdmin is Adminable {
+contract ExtendableBondRegistry is Initializable, Adminable {
 
     string[] private groups;
     mapping(string => address[]) private groupedExtendableBonds;
 
-    constructor(
-        address admin_
-    ) Adminable() {
+    function initialize(address admin_) public initializer {
         require(admin_ != address(0), "Cant set admin to zero address");
-        _setAdmin(msg.sender);
+        _setAdmin(admin_);
     }
 
     function groupNames() view external returns (string[] memory) {
