@@ -51,8 +51,14 @@ _deposit to pancakeswap_
 ### secondsToPancakeLockExtend
 
 ```solidity
-function secondsToPancakeLockExtend() public view returns (uint256)
+function secondsToPancakeLockExtend(bool deposit_) public view returns (uint256 secondsToExtend)
 ```
+
+_calculate lock extend seconds_
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| deposit_ | bool | whether use as deposit param. |
 
 ### withdrawAllCakesFromPancake
 
@@ -65,8 +71,12 @@ _Withdraw cake from cake pool._
 ### extendPancakeLockDuration
 
 ```solidity
-function extendPancakeLockDuration() public
+function extendPancakeLockDuration(bool force_) public
 ```
 
 _extend pancake lock duration if needs_
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| force_ | bool | force extend even it's unnecessary |
 

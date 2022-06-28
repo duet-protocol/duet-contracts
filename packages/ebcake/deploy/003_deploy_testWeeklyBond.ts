@@ -1,6 +1,6 @@
 /* eslint-disable node/no-unpublished-import,node/no-missing-import */
 import { DeployFunction } from 'hardhat-deploy/types';
-import { advancedDeploy, testId, useNetworkName } from './.defines';
+import { advancedDeploy, useNetworkName } from './.defines';
 import { HardhatRuntimeEnvironment } from 'hardhat/types/runtime';
 import moment from 'moment';
 import config from '../config';
@@ -47,7 +47,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     return await deploy(name, {
       from: deployer,
       contract: 'BondToken',
-      args: [`test weekly ebCAKE ${testId}`, `ebCAKE-W-${testId}`, deployer],
+      args: [`test weekly ebCAKE 0603`, `ebCAKE-W-0603`, deployer],
       log: true,
       autoMine: true, // speed up deployment on local network (ganache, hardhat), no effect on live networks
     })

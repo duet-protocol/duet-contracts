@@ -3,7 +3,7 @@
 import { DeployFunction } from 'hardhat-deploy/types';
 import { HardhatRuntimeEnvironment } from 'hardhat/types';
 import { parseEther } from 'ethers/lib/utils';
-import { advancedDeploy, testId, useNetworkName, writeExtraMeta } from './.defines';
+import { advancedDeploy, useNetworkName, writeExtraMeta } from './.defines';
 import { HardhatDeployRuntimeEnvironment } from '../types/hardhat-deploy';
 import { MasterChefDeployNames } from './001_deploy_masterchef';
 import { ethers } from 'hardhat';
@@ -39,7 +39,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
       // string memory name,
       // string memory symbol,
       // uint256 supply
-      args: [`mock bDUET ${testId}`, `bDUET-MOCK-${testId}`, parseEther(bDuetMintAmount.toString())],
+      args: [`mock bDUET 0603`, `bDUET-MOCK-0603`, parseEther(bDuetMintAmount.toString())],
       log: true,
       autoMine: true, // speed up deployment on local network (ganache, hardhat), no effect on live networks
     });

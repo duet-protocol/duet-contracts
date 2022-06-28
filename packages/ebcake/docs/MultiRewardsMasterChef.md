@@ -193,6 +193,12 @@ function addRewardSpec(contract IERC20 token, uint256 rewardPerBlock, uint256 st
 function setRewardSpec(uint256 rewardId, uint256 rewardPerBlock, uint256 startedAtBlock, uint256 endedAtBlock) public
 ```
 
+### previewSetRewardSpec
+
+```solidity
+function previewSetRewardSpec(uint256 rewardId, uint256 rewardPerBlock, uint256 startedAtBlock, uint256 endedAtBlock) public view returns (uint256 depositAmount, uint256 refundAmount)
+```
+
 ### getRewardSpecsLength
 
 ```solidity

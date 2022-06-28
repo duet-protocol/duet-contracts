@@ -35,7 +35,7 @@ contract IBondFarmingPool siblingPool
 ### masterChef
 
 ```solidity
-contract MultiRewardsMasterChef masterChef
+contract IMultiRewardsMasterChef masterChef
 ```
 
 ### masterChefPid
@@ -86,7 +86,7 @@ function initialize(contract IERC20Upgradeable bondToken_, contract IExtendableB
 ### setMasterChef
 
 ```solidity
-function setMasterChef(contract MultiRewardsMasterChef masterChef_, uint256 masterChefPid_) public
+function setMasterChef(contract IMultiRewardsMasterChef masterChef_, uint256 masterChefPid_) public
 ```
 
 ### setSiblingPool

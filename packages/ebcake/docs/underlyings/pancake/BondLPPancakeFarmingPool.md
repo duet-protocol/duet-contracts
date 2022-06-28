@@ -28,6 +28,16 @@ uint256 accPancakeRewardsPerShares
 
 _accumulated cake rewards of each lp token._
 
+### remoteEnabled
+
+```solidity
+bool remoteEnabled
+```
+
+It cannot be modified from true to false as this may cause accounting problems.
+
+_whether remote staking enabled (stake to PancakeSwap LP farming pool)._
+
 ### PancakeUserInfo
 
 ```solidity
@@ -48,6 +58,20 @@ mapping(address => struct BondLPPancakeFarmingPool.PancakeUserInfo) pancakeUsers
 
 ```solidity
 function initPancake(contract IERC20Upgradeable cakeToken_, contract IPancakeMasterChefV2 pancakeMasterChef_, uint256 pancakeMasterChefPid_) external
+```
+
+### remoteEnable
+
+```solidity
+function remoteEnable() external
+```
+
+_enable remote staking (stake to PancakeSwap LP farming pool)._
+
+### _stakeBalanceToRemote
+
+```solidity
+function _stakeBalanceToRemote() internal
 ```
 
 ### _requirePancakeSettled
