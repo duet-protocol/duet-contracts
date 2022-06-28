@@ -365,8 +365,11 @@ contract ExtendableBond is IExtendableBond, ReentrancyGuardUpgradeable, Pausable
         require(totalFeeRate <= PERCENTAGE_FACTOR, "Total fee rate greater than 100%.");
     }
 
-    function removeFeeSpec(uint256 feeSpecIndex) external onlyAdmin {
-        delete feeSpecs[feeSpecIndex];
+    function removeFeeSpec(uint256 feeSpecIndex_) external onlyAdmin {
+        uint256 length = feeSpecs.length;
+        require(feeSpecIndex_ >=0 && feeSpecIndex_ < length, "Invalid Index");
+        feeSpecs[feeSpecIndex_] = feeSpecs[length - 1];
+        feeSpecs.pop();
     }
 
     function depositToRemote(uint256 amount_) public onlyAdminOrKeeper {
