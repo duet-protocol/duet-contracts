@@ -19,7 +19,6 @@ export function useNetworkName() {
   return network.name as NetworkName;
 }
 
-
 export enum ContractTag {
   BOND_TOKEN = 'BOND_TOKEN',
   BOND_FARM = 'BOND_FARM',
@@ -62,7 +61,7 @@ export async function deployBond(input: {
   };
 }) {
   const {
-    name,
+    name: tokenName,
     symbol,
     instancePrefix,
     hre,
@@ -80,51 +79,51 @@ export async function deployBond(input: {
 
   const { deployer } = await getNamedAccounts();
 
+  const bondToken = await advancedDeploy(
+    {
+      hre,
+      logger,
+      name: deployNames.ExtendableBondToken,
+      class: 'BondToken',
+      instance: instancePrefix + 'ExtendableBondToken',
+    },
+    async ({ name }) => {
+      return await deploy(name, {
+        from: deployer,
+        contract: 'BondToken',
+        args: [tokenName, symbol, deployer],
+        log: true,
+        autoMine: true, // speed up deployment on local network (ganache, hardhat), no effect on live networks
+      });
+    },
+  );
 
-  const bondToken = await advancedDeploy({
-    hre,
-    logger,
-    name: deployNames.ExtendableBondToken,
-    class: 'BondToken',
-    instance: instancePrefix + 'ExtendableBondToken'
-  }, async ({ name }) => {
-
-    return await deploy(name, {
-      from: deployer,
-      contract: 'BondToken',
-      args: [name, symbol, deployer],
-      log: true,
-      autoMine: true, // speed up deployment on local network (ganache, hardhat), no effect on live networks
-    })
-  })
-
-
-  const bond = await advancedDeploy({
-    hre,
-    logger,
-    name: deployNames.ExtendableBondedCake,
-    proxied: true,
-    class: 'ExtendableBondedCake',
-    instance: instancePrefix + 'ExtendableBondedCake'
-  }, async ({ name }) => {
-
-    return await deploy(name, {
-      from: deployer,
-      contract: 'ExtendableBondedCake',
-      proxy: {
-        execute: {
-          init: {
-            methodName: 'initialize',
-            args: [bondToken.address, config.address.CakeToken[networkName], deployer],
+  const bond = await advancedDeploy(
+    {
+      hre,
+      logger,
+      name: deployNames.ExtendableBondedCake,
+      proxied: true,
+      class: 'ExtendableBondedCake',
+      instance: instancePrefix + 'ExtendableBondedCake',
+    },
+    async ({ name }) => {
+      return await deploy(name, {
+        from: deployer,
+        contract: 'ExtendableBondedCake',
+        proxy: {
+          execute: {
+            init: {
+              methodName: 'initialize',
+              args: [bondToken.address, config.address.CakeToken[networkName], deployer],
+            },
           },
         },
-      },
-      log: true,
-      autoMine: true, // speed up deployment on local network (ganache, hardhat), no effect on live networks
-    })
-  })
-
-
+        log: true,
+        autoMine: true, // speed up deployment on local network (ganache, hardhat), no effect on live networks
+      });
+    },
+  );
 
   if (bond.newlyDeployed && bond?.numDeployments === 1) {
     logger.info('initializing', deployNames.ExtendableBondedCake);
@@ -139,61 +138,61 @@ export async function deployBond(input: {
     logger.info('initialized', deployNames.ExtendableBondedCake);
   }
 
-
-  const bondFarmingPool = await advancedDeploy({
-    hre,
-    logger,
-    name: deployNames.BondFarmingPool,
-    proxied: true,
-    class: 'BondFarmingPool',
-    instance: instancePrefix + 'BondFarmingPool'
-  }, async ({ name }) => {
-
-    return await deploy(name, {
-      from: deployer,
-      contract: 'BondFarmingPool',
-      // IERC20 bondToken_,
-      // IExtendableBond bond_
-      proxy: {
-        execute: {
-          init: {
-            methodName: 'initialize',
-            args: [bondToken.address, bond.address, deployer],
+  const bondFarmingPool = await advancedDeploy(
+    {
+      hre,
+      logger,
+      name: deployNames.BondFarmingPool,
+      proxied: true,
+      class: 'BondFarmingPool',
+      instance: instancePrefix + 'BondFarmingPool',
+    },
+    async ({ name }) => {
+      return await deploy(name, {
+        from: deployer,
+        contract: 'BondFarmingPool',
+        // IERC20 bondToken_,
+        // IExtendableBond bond_
+        proxy: {
+          execute: {
+            init: {
+              methodName: 'initialize',
+              args: [bondToken.address, bond.address, deployer],
+            },
           },
         },
-      },
-      log: true,
-      autoMine: true, // speed up deployment on local network (ganache, hardhat), no effect on live networks
-    })
-  })
+        log: true,
+        autoMine: true, // speed up deployment on local network (ganache, hardhat), no effect on live networks
+      });
+    },
+  );
 
-
-  const bondLPFarmingPool = await advancedDeploy({
-    hre,
-    logger,
-    name: deployNames.BondLPFarmingPool,
-    proxied: true,
-    class: 'BondLPFarmingPool',
-    instance: instancePrefix + 'BondLPFarmingPool'
-  }, async ({ name }) => {
-
-    return await deploy(name, {
-      from: deployer,
-      contract: bondLPFarmingContract,
-      proxy: {
-        execute: {
-          init: {
-            methodName: 'initialize',
-            args: [bondToken.address, bond.address, deployer],
+  const bondLPFarmingPool = await advancedDeploy(
+    {
+      hre,
+      logger,
+      name: deployNames.BondLPFarmingPool,
+      proxied: true,
+      class: 'BondLPFarmingPool',
+      instance: instancePrefix + 'BondLPFarmingPool',
+    },
+    async ({ name }) => {
+      return await deploy(name, {
+        from: deployer,
+        contract: bondLPFarmingContract,
+        proxy: {
+          execute: {
+            init: {
+              methodName: 'initialize',
+              args: [bondToken.address, bond.address, deployer],
+            },
           },
         },
-      },
-      log: true,
-      autoMine: true, // speed up deployment on local network (ganache, hardhat), no effect on live networks
-    })
-  })
-
-
+        log: true,
+        autoMine: true, // speed up deployment on local network (ganache, hardhat), no effect on live networks
+      });
+    },
+  );
 
   if (bondLPFarmingPool.newlyDeployed && bondLPFarmingPool?.numDeployments === 1) {
     logger.info('initializing', deployNames.BondLPFarmingPool);
@@ -295,47 +294,57 @@ export async function deployBond(input: {
   }
 }
 
-export async function writeExtraMeta(name: string, meta?: { class?: string, instance?: string } | string) {
-  const directory = resolve(__dirname, '..', 'deployments', useNetworkName(), '.extraMeta')
-  await mkdir(directory, { recursive: true })
+export async function writeExtraMeta(name: string, meta?: { class?: string; instance?: string } | string) {
+  const directory = resolve(__dirname, '..', 'deployments', useNetworkName(), '.extraMeta');
+  await mkdir(directory, { recursive: true });
 
-  const className = typeof meta === 'string' ? meta : meta?.class || name
-  const instanceName = typeof meta === 'string' ? meta : meta?.instance || className
-  await writeFile(resolve(directory, name + '.json'), JSON.stringify({ class: className, instance: instanceName }, null, 2))
+  const className = typeof meta === 'string' ? meta : meta?.class || name;
+  const instanceName = typeof meta === 'string' ? meta : meta?.instance || className;
+  await writeFile(
+    resolve(directory, name + '.json'),
+    JSON.stringify({ class: className, instance: instanceName }, null, 2),
+  );
 }
 
-export async function isProxiedContractDeployable(hre: HardhatRuntimeEnvironment | HardhatDeployRuntimeEnvironment, name: string) {
-  const { deployments } = hre as unknown as HardhatDeployRuntimeEnvironment
+export async function isProxiedContractDeployable(
+  hre: HardhatRuntimeEnvironment | HardhatDeployRuntimeEnvironment,
+  name: string,
+) {
+  const { deployments } = hre as unknown as HardhatDeployRuntimeEnvironment;
   const { read, all } = deployments;
   const { deployer } = await getNamedAccounts();
 
-  if (!Object.keys(await all()).includes(name)) return true
-  const owner: string = await read(name, 'owner')
-  return deployer === owner
+  if (!Object.keys(await all()).includes(name)) return true;
+  const owner: string = await read(name, 'owner');
+  return deployer === owner;
 }
 
 export async function advancedDeploy(
   options: {
-    hre: HardhatRuntimeEnvironment, name: string, logger: ReturnType<typeof useLogger>
-    proxied?: boolean, class?: string, instance?: string
+    hre: HardhatRuntimeEnvironment;
+    name: string;
+    logger: ReturnType<typeof useLogger>;
+    proxied?: boolean;
+    class?: string;
+    instance?: string;
   },
-  fn: (ctx: typeof options) => Promise<DeployResult>
+  fn: (ctx: typeof options) => Promise<DeployResult>,
 ): Promise<DeployResult> {
-
   const complete = async () => {
-    const result = await fn(options)
+    const result = await fn(options);
     options.logger.info(`[deployed] ${options.name}`, result.address);
-    await writeExtraMeta(options.name, { class: options.class, instance: options.instance })
-    return result
-  }
+    await writeExtraMeta(options.name, { class: options.class, instance: options.instance });
+    return result;
+  };
 
-  if (!options.proxied) await complete()
+  if (!options.proxied) await complete();
   if (!(await isProxiedContractDeployable(options.hre, options.name))) {
-    options.logger.warn(`${options.name} is a proxied contract, but you are not allowed to deploy.`)
-    const { deployments: { get } } = options.hre as unknown as HardhatDeployRuntimeEnvironment
-    return { ...await get(options.name), newlyDeployed: false }
+    options.logger.warn(`${options.name} is a proxied contract, but you are not allowed to deploy.`);
+    const {
+      deployments: { get },
+    } = options.hre as unknown as HardhatDeployRuntimeEnvironment;
+    return { ...(await get(options.name)), newlyDeployed: false };
   }
-  options.logger.info(`${options.name} is a proxied contract, and you are allowed to deploy`)
-  return await complete()
+  options.logger.info(`${options.name} is a proxied contract, and you are allowed to deploy`);
+  return await complete();
 }
-
