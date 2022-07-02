@@ -1,36 +1,38 @@
 {
-    "name": "duet_bond_farm",
-    "version": "1.0.0",
-    "description": "",
-    "main": "hardhat.config.ts",
-    "scripts": {
-        "compile": "npx hardhat compile",
-        "compile:watch": "npx hardhat watch compile",
-        "abi": "hardhat export-abi",
-        "build:client": "ts-node scripts/build-for-client.ts"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git@github.com:duet-protocol/bond-farming.git"
-    },
-    "author": "Simon",
-    "license": "MIT",
-    "devDependencies": {
-        "@nomiclabs/hardhat-ethers": "^2.0.2",
-        "@nomiclabs/hardhat-etherscan": "^2.1.8",
-        "@nomiclabs/hardhat-waffle": "^2.0.2",
-        "@openzeppelin/contracts": "^4.3.2",
-        "@openzeppelin/hardhat-upgrades": "^1.14.0",
-        "assertion-error": "^2.0.0",
-        "chai": "^4.3.6",
-        "dotenv": "^10.0.0",
-        "ethereum-waffle": "^3.4.0",
-        "hardhat": "^2.6.6",
-        "hardhat-abi-exporter": "^2.8.0"
-    },
-    "dependencies": {
-        "@openzeppelin/contracts": "4.5.0",
-        "@openzeppelin/contracts-upgradeable": "4.5.2",
-        "hardhat-abi-exporter": "^2.4.0"
-    }
+  "name": "duet_bond_farm",
+  "version": "1.0.0",
+  "description": "",
+  "main": "hardhat.config.ts",
+  "scripts": {
+    "compile": "npx hardhat compile",
+    "compile:watch": "npx hardhat watch compile",
+    "abi": "hardhat export-abi"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:duet-protocol/bond-farming.git"
+  },
+  "duet": {
+    "sdk": true
+  },
+  "author": "Simon",
+  "license": "MIT",
+  "devDependencies": {
+    "@nomiclabs/hardhat-ethers": "^2.0.2",
+    "@nomiclabs/hardhat-etherscan": "^2.1.8",
+    "@nomiclabs/hardhat-waffle": "^2.0.2",
+    "@openzeppelin/contracts": "^4.3.2",
+    "@openzeppelin/hardhat-upgrades": "^1.14.0",
+    "assertion-error": "^2.0.0",
+    "chai": "^4.3.6",
+    "dotenv": "^10.0.0",
+    "ethereum-waffle": "^3.4.0",
+    "hardhat": "^2.6.6",
+    "hardhat-abi-exporter": "^2.8.0"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "4.5.0",
+    "@openzeppelin/contracts-upgradeable": "4.5.2",
+    "hardhat-abi-exporter": "^2.4.0"
+  }
 }

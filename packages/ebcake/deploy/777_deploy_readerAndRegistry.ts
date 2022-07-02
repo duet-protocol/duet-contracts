@@ -27,6 +27,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const ebRegistry = await advancedDeploy({
     hre,
     logger,
+    proxied: true,
     name: Names.ExtendableBondRegistry,
   }, async ({ name }) => {
 
@@ -50,19 +51,27 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   await advancedDeploy({
     hre,
     logger,
+    proxied: true,
     name: Names.ExtendableBondedCakeReader,
   }, async ({ name }) => {
 
     return await deploy(name, {
       from: deployer,
       contract: name,
-      args: [
-        ebRegistry.address,
-        config.address.CakePool[networkName], config.address.CakeMasterChefV2[networkName],
-        config.address.PancakeLpTokenPair__CAKE_BUSD[networkName],
-        config.address.PancakeLpTokenPair__DUET_BUSD[networkName] || ZERO_ADDRESS,
-        config.address.PancakeLpTokenPair__DUET_CAKE[networkName] || ZERO_ADDRESS,
-      ],
+      proxy: {
+        execute: {
+          init: {
+            methodName: 'initialize',
+            args: [
+              ebRegistry.address,
+              config.address.CakePool[networkName], config.address.CakeMasterChefV2[networkName],
+              config.address.PancakeLpTokenPair__CAKE_BUSD[networkName],
+              config.address.PancakeLpTokenPair__DUET_BUSD[networkName] || ZERO_ADDRESS,
+              config.address.PancakeLpTokenPair__DUET_CAKE[networkName] || ZERO_ADDRESS,
+            ],
+          },
+        },
+      },
       log: true,
       autoMine: true, // speed up deployment on local network (ganache, hardhat), no effect on live networks
     })

@@ -252,14 +252,14 @@ contract MultiRewardsMasterChef is ReentrancyGuard, Initializable, IMultiRewards
             ? (block.number - rewardSpec.startedAtBlock) * rewardSpec.rewardPerBlock
             : 0;
         uint256 tokenBalance = rewardSpec.token.balanceOf(address(this));
-        uint256 amountDebt = minedAwards - rewardSpec.claimedAmount;
-        uint256 usableBalance = tokenBalance - amountDebt;
+        int256 amountDebt = int256(minedAwards) - int256(rewardSpec.claimedAmount);
+        int256 usableBalance = int256(tokenBalance) - amountDebt;
         uint256 requiredAmount = (endedAtBlock - block.number) * rewardPerBlock;
 
-        if (requiredAmount > usableBalance) {
-            depositAmount = requiredAmount - usableBalance;
-        } else if (requiredAmount < usableBalance) {
-            refundAmount = usableBalance - requiredAmount;
+        if (int256(requiredAmount) > usableBalance) {
+            depositAmount = uint256(int256(requiredAmount) - usableBalance);
+        } else if (int256(requiredAmount) < usableBalance) {
+            refundAmount = uint256(usableBalance - int256(requiredAmount));
         }
         return (depositAmount, refundAmount);
     }

@@ -6,12 +6,14 @@
   "scripts": {
     "compile": "npx hardhat compile",
     "compile:watch": "npx hardhat watch compile",
-    "abi": "hardhat export-abi",
-    "build:client": "ts-node scripts/build-for-client.ts"
+    "abi": "hardhat export-abi"
   },
   "repository": {
     "type": "git",
     "url": "git@github.com:duet-protocol/Duet-Over-Collateralization-us.git"
+  },
+  "duet": {
+    "sdk": true
   },
   "author": "",
   "license": "ISC",

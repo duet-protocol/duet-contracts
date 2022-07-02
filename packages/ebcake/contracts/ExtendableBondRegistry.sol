@@ -12,6 +12,13 @@ contract ExtendableBondRegistry is Initializable, Adminable {
     string[] private groups;
     mapping(string => address[]) private groupedExtendableBonds;
 
+    event GroupCreated(string indexed groupTopic);
+    event GroupDestroyed(string indexed groupTopic);
+    event GroupItemAppended(string indexed groupTopic, address item);
+    event GroupItemRemoved(string indexed groupTopic, address item);
+
+    // --------------
+
     function initialize(address admin_) public initializer {
         require(admin_ != address(0), "Cant set admin to zero address");
         _setAdmin(admin_);
@@ -39,6 +46,7 @@ contract ExtendableBondRegistry is Initializable, Adminable {
         address[] memory newList;
         groupedExtendableBonds[groupName_] = newList;
         groups.push(groupName_);
+        emit GroupCreated(groupName_);
     }
 
     function destroyGroup(
@@ -55,6 +63,7 @@ contract ExtendableBondRegistry is Initializable, Adminable {
         groups[uint256(indexOf)] = groups[groups.length - 1];
         groups.pop();
         delete groupedExtendableBonds[groupName_];
+        emit GroupDestroyed(groupName_);
     }
 
     function appendGroupItem(
@@ -66,6 +75,7 @@ contract ExtendableBondRegistry is Initializable, Adminable {
             if (group[i] == itemAddress_) revert('Duplicate address in group');
         }
         group.push(itemAddress_);
+        emit GroupItemAppended(groupName_, itemAddress_);
     }
 
 
@@ -79,6 +89,7 @@ contract ExtendableBondRegistry is Initializable, Adminable {
             if (group[i] != itemAddress_) continue;
             group[i] = group[group.length - 1];
             group.pop();
+            emit GroupItemRemoved(groupName_, itemAddress_);
             break;
         }
     }

@@ -3,7 +3,7 @@
 import { DeployFunction } from 'hardhat-deploy/types';
 import { HardhatRuntimeEnvironment } from 'hardhat/types';
 import { parseEther } from 'ethers/lib/utils';
-import { advancedDeploy, useNetworkName, writeExtraMeta } from './.defines';
+import { advancedDeploy, useNetworkName } from './.defines';
 import { HardhatDeployRuntimeEnvironment } from '../types/hardhat-deploy';
 import { MasterChefDeployNames } from './001_deploy_masterchef';
 import { ethers } from 'hardhat';

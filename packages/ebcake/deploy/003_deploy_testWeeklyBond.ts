@@ -147,7 +147,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const bondLPFarmingPool = await advancedDeploy({
     hre,
     logger,
-    name: DeployNames.testWeekly_BondFarmingPool,
+    name: DeployNames.testWeekly_BondLPFarmingPool,
     class: 'BondLPFarmingPool',
     instance: 'Weekly_BondLPFarmingPool'
   }, async ({ name }) => {

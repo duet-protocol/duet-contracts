@@ -1,4 +1,4 @@
 {
-  "class": "BondLPFarmingPool",
-  "instance": "Weekly_BondLPFarmingPool"
+  "class": "BondFarmingPool",
+  "instance": "Weekly_BondFarmingPool"
 }

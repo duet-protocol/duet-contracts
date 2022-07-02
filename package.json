@@ -5,6 +5,7 @@
   "main": "index.js",
   "private": true,
   "scripts": {
+    "sdk": "pnpm -F \"./packages/*\" compile && ts-node scripts/sdk.ts",
     "test": "yarn run test"
   },
   "repository": {
