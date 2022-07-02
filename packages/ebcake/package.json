@@ -5,6 +5,9 @@
   "version": "1.0.0",
   "license": "GPL-3.0",
   "private": true,
+  "duet": {
+    "sdk": true
+  },
   "scripts": {
     "compile": "npx hardhat compile",
     "compile:watch": "npx hardhat watch compile",
@@ -22,7 +25,6 @@
     "test:watch": "npx hardhat watch test",
     "test:coverage": "npx hardhat coverage",
     "test:size-contracts": "npx hardhat size-contracts",
-    "build:client": "ts-node scripts/build-for-client.ts",
     "docgen": "rm -rf ./docs && npx hardhat docgen",
     "prettier": "prettier --write 'contracts/**/*.sol'"
   },

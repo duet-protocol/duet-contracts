@@ -2,17 +2,16 @@
 pragma solidity 0.8.9;
 pragma abicoder v2;
 
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "./ExtendableBond.sol";
 import "./MultiRewardsMasterChef.sol";
 import "./BondFarmingPool.sol";
 import "./BondLPFarmingPool.sol";
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-
-
-uint constant BLOCKS_PER_YEAR = (60 / 3) * 60 * 24 * 365;
 
 
 abstract contract ExtendableBondReader {
+
+    uint constant BLOCKS_PER_YEAR = (60 / 3) * 60 * 24 * 365;
 
     struct ExtendableBondPackagePublicInfo {
         string name;

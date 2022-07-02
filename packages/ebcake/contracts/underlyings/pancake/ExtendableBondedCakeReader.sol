@@ -3,6 +3,7 @@ pragma solidity 0.8.9;
 pragma abicoder v2;
 
 import "@openzeppelin/contracts/utils/math/Math.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "./ExtendableBondedCake.sol";
 import "./BondLPPancakeFarmingPool.sol";
 import "../../ExtendableBond.sol";
@@ -12,22 +13,16 @@ import "../../interfaces/ICakePool.sol";
 import "../../interfaces/IPancakePair.sol";
 import "../../mocks/CakePool.sol";
 import "../../mocks/MasterChefV2.sol";
-import "../../BondToken.sol";
 
 
-uint constant BOOST_WEIGHT = 2e13;
-uint constant DURATION_FACTOR = 365 * 24 * 60 * 60;
-uint constant PRECISION_FACTOR = 1e12;
-uint constant WEI_PER_EHTER = 1e18;
-uint constant PANCAKE_CAKE_POOL_ID = 0;
-
-
-
-  // --------
-
-
-contract ExtendableBondedCakeReader is ExtendableBondReader {
+contract ExtendableBondedCakeReader is Initializable, ExtendableBondReader {
     using Math for uint256;
+
+    uint constant BOOST_WEIGHT = 2e13;
+    uint constant DURATION_FACTOR = 365 * 24 * 60 * 60;
+    uint constant PRECISION_FACTOR = 1e12;
+    uint constant WEI_PER_EHTER = 1e18;
+    uint constant PANCAKE_CAKE_POOL_ID = 0;
 
     struct ExtendableBondGroupInfo {
         uint256 allEbStacked;
@@ -42,46 +37,52 @@ contract ExtendableBondedCakeReader is ExtendableBondReader {
       address lpToken;
       address bondFarmingPool;
       address bondLpFarmingPool;
-      address multiRewardsMasterChef;
       uint256 bondFarmingPoolId;
       uint256 bondLpFarmingPoolId;
       address pancakePool;
     }
 
-    ExtendableBondRegistry public immutable registry;
-    CakePool public immutable pancakePool;
-    MasterChefV2 public immutable pancakeMasterChef;
-    IPancakePair public immutable pairTokenAddress__CAKE_BUSD;
-    IPancakePair public immutable pairTokenAddress__DUET_BUSD;
-    IPancakePair public immutable pairTokenAddress__DUET_CAKE;
+    ExtendableBondRegistry public registry;
+    CakePool public pancakePool;
+    MasterChefV2 public pancakeMasterChef;
+    IPancakePair public pairTokenAddress__CAKE_BUSD;
+    IPancakePair public pairTokenAddress__DUET_BUSD;
+    IPancakePair public pairTokenAddress__DUET_CAKE;
 
-    constructor (
-        ExtendableBondRegistry registry_,
-        CakePool pancakePool_,
-        MasterChefV2 pancakeMasterChef_,
-        IPancakePair pairTokenAddress__CAKE_BUSD_,
-        IPancakePair pairTokenAddress__DUET_BUSD_,  // optional. if so, the next should be required
-        IPancakePair pairTokenAddress__DUET_CAKE_   // optional, if so, the previous should be required
-    ) {
-        registry = registry_;
-        pancakePool = pancakePool_;
-        pancakeMasterChef = pancakeMasterChef_;
-        pairTokenAddress__CAKE_BUSD = pairTokenAddress__CAKE_BUSD_;
-        pairTokenAddress__DUET_BUSD = pairTokenAddress__DUET_BUSD_;
-        pairTokenAddress__DUET_CAKE = pairTokenAddress__DUET_CAKE_;
+    function initialize(
+      address registry_,
+      address pancakePool_,
+      address pancakeMasterChef_,
+      address pairTokenAddress__CAKE_BUSD_,
+      address pairTokenAddress__DUET_BUSD_,  // optional. if so, the next should be required
+      address pairTokenAddress__DUET_CAKE_   // optional, if so, the previous should be required
+    ) public initializer {
+        require(registry_ != address(0), "Cant set Registry to zero address");
+        registry = ExtendableBondRegistry(registry_);
+        require(pancakePool_ != address(0), "Cant set PancakePool to zero address");
+        pancakePool = CakePool(pancakePool_);
+        require(pancakeMasterChef_ != address(0), "Cant set PancakeMasterChef to zero address");
+        pancakeMasterChef = MasterChefV2(pancakeMasterChef_);
+        require(pairTokenAddress__CAKE_BUSD_ != address(0), "Cant set PairTokenAddress__CAKE_BUSD to zero address");
+        pairTokenAddress__CAKE_BUSD = IPancakePair(pairTokenAddress__CAKE_BUSD_);
+
+        require(
+          pairTokenAddress__DUET_BUSD_ != address(0) || pairTokenAddress__DUET_CAKE_ != address(0),
+          "Must set atlease one non-zero address in (PairTokenAddress__DUET_BUSD, PairTokenAddress__DUET_CAKE)"
+        );
+        pairTokenAddress__DUET_BUSD = IPancakePair(pairTokenAddress__DUET_BUSD_);
+        pairTokenAddress__DUET_CAKE = IPancakePair(pairTokenAddress__DUET_CAKE_);
     }
 
     function addressBook(ExtendableBondedCake eb_) view external returns (AddressBook memory book) {
       BondFarmingPool bondFarmingPool = BondFarmingPool(address(eb_.bondFarmingPool()));
       BondLPPancakeFarmingPool bondLpFarmingPool = BondLPPancakeFarmingPool(address(eb_.bondLPFarmingPool()));
-      MultiRewardsMasterChef multiRewardsMasterChef = MultiRewardsMasterChef(address(bondFarmingPool.masterChef()));
 
       book.underlyingToken = address(eb_.underlyingToken());
       book.bondToken = address(eb_.bondToken());
       book.lpToken = address(bondLpFarmingPool.lpToken());
       book.bondFarmingPool = address(eb_.bondFarmingPool());
       book.bondLpFarmingPool = address(eb_.bondLPFarmingPool());
-      book.multiRewardsMasterChef = address(multiRewardsMasterChef);
       book.bondFarmingPoolId = bondFarmingPool.masterChefPid();
       book.bondLpFarmingPoolId = bondLpFarmingPool.masterChefPid();
       book.pancakePool = address(eb_.cakePool());
