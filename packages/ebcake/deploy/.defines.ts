@@ -311,12 +311,20 @@ export async function isProxiedContractDeployable(
   name: string,
 ) {
   const { deployments } = hre as unknown as HardhatDeployRuntimeEnvironment;
-  const { read, all } = deployments;
+  const { all, get } = deployments;
   const { deployer } = await getNamedAccounts();
 
-  if (!Object.keys(await all()).includes(name)) return true
-  const owner: string = await read(name, 'owner') // @TODO: try `bytes32(uint256(keccak256('eip1967.proxy.implementation')) - 1)`
-  return deployer === owner
+  if (!Object.keys(await all()).includes(name)) return true;
+  // bytes32(uint256(keccak256('eip1967.proxy.admin')) - 1) see: https://eips.ethereum.org/EIPS/eip-1967
+  const proxyAdminSlot = '0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103';
+  const adminSlotValue = await ethers.provider.getStorageAt((await get(name)).address, proxyAdminSlot);
+  // not proxy or not deployed yet
+  if (adminSlotValue === '0x0000000000000000000000000000000000000000000000000000000000000000') {
+    return true;
+  }
+
+  const owner = `0x${adminSlotValue.substring(26).toLowerCase()}`;
+  return deployer.toLowerCase() === owner;
 }
 
 export async function advancedDeploy(
@@ -331,24 +339,28 @@ export async function advancedDeploy(
   },
   fn: (ctx: typeof options) => Promise<DeployResult>,
 ): Promise<DeployResult> {
-  const { deployments: { get } } = options.hre as unknown as HardhatDeployRuntimeEnvironment
+  const {
+    deployments: { get },
+  } = options.hre as unknown as HardhatDeployRuntimeEnvironment;
   const deploy =
-    (options.dryRun || process.env.DEPLOY_DRY_RUN === '1') !== true ? fn : async () => {
-      options.logger.info(`[DRY] [DEPLOYING]`);
-      return { ...await get(options.name), newlyDeployed: false }
-    }
+    (options.dryRun || process.env.DEPLOY_DRY_RUN === '1') !== true
+      ? fn
+      : async () => {
+          options.logger.info(`[DRY] [DEPLOYING]`);
+          return { ...(await get(options.name)), newlyDeployed: false };
+        };
 
   const complete = async () => {
-    const result = await deploy(options)
+    const result = await deploy(options);
     options.logger.info(`${options.name}`, result.address);
-    await writeExtraMeta(options.name, { class: options.class, instance: options.instance })
-    return result
-  }
+    await writeExtraMeta(options.name, { class: options.class, instance: options.instance });
+    return result;
+  };
 
-  if (process.env.DEPLOY_NO_PROXY_OWNER_VALIDATION === '1' || !options.proxied) return await complete()
+  if (process.env.DEPLOY_NO_PROXY_OWNER_VALIDATION === '1' || !options.proxied) return await complete();
   if (!(await isProxiedContractDeployable(options.hre, options.name))) {
-    options.logger.warn(`${options.name} is a proxied contract, but you are not allowed to deploy.`)
-    return { ...await get(options.name), newlyDeployed: false }
+    options.logger.warn(`${options.name} is a proxied contract, but you are not allowed to deploy.`);
+    return { ...(await get(options.name)), newlyDeployed: false };
   }
   options.logger.info(`${options.name} is a proxied contract, and you are allowed to deploy`);
   return await complete();
