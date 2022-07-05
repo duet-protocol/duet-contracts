@@ -1,0 +1,14 @@
+[
+  "function MAX_LOCK_DURATION() view returns (uint256)",
+  "function calculateOverdueFee(address) view returns (uint256)",
+  "function calculatePerformanceFee(address) view returns (uint256)",
+  "function calculateWithdrawFee(address,uint256) view returns (uint256)",
+  "function deposit(uint256,uint256)",
+  "function freeWithdrawFeeUsers(address) view returns (bool)",
+  "function getPricePerFullShare() view returns (uint256)",
+  "function userInfo(address) view returns (tuple(uint256,uint256,uint256,uint256,uint256,uint256,uint256,bool,uint256))",
+  "function withdraw(uint256)",
+  "function withdrawAll()",
+  "function withdrawByAmount(uint256)",
+  "function withdrawFeePeriod() view returns (uint256)"
+]

@@ -4,7 +4,8 @@ pragma solidity 0.8.9;
 import "hardhat/console.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
-import "./MockBEP20.sol";
+import "@private/shared/mocks/MockBEP20.sol";
+
 import "../interfaces/IExtendableBond.sol";
 import "../interfaces/IBondFarmingPool.sol";
 import "../BondToken.sol";

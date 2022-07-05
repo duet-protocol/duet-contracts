@@ -3,7 +3,8 @@ pragma solidity 0.8.9;
 
 import "hardhat/console.sol";
 
-import "../../interfaces/IPancakeMasterChefV2.sol";
+import "@private/shared/3rd/pancake/IPancakeMasterChefV2.sol";
+
 import "../../BondLPFarmingPool.sol";
 
 contract BondLPPancakeFarmingPool is BondLPFarmingPool {

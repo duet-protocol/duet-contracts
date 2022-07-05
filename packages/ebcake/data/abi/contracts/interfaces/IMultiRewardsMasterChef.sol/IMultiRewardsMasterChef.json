@@ -1,0 +1,6 @@
+[
+  "function deposit(uint256,uint256)",
+  "function depositForUser(uint256,uint256,address)",
+  "function withdraw(uint256,uint256)",
+  "function withdrawForUser(uint256,uint256,address)"
+]

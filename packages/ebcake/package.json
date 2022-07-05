@@ -29,13 +29,9 @@
     "prettier": "prettier --write 'contracts/**/*.sol'"
   },
   "devDependencies": {
-    "@openzeppelin/contracts": "^4.6.0",
-    "@openzeppelin/hardhat-upgrades": "^1.17.0",
+    "@private/shared": "workspace:*",
     "axios": "^0.27.2",
     "moment": "^2.29.3",
     "moment-timezone": "^0.5.34"
-  },
-  "dependencies": {
-    "@openzeppelin/contracts-upgradeable": "^4.6.0"
   }
 }
