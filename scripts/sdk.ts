@@ -12,6 +12,12 @@ import { groupBy } from 'lodash'
 config()
 
 
+const projectRoot = resolve(__dirname, '..')
+const sdkRoot = `${projectRoot}/generated-sdk`
+const chainAliases = ['bsc', 'bsctest']
+const buildId = Date.now()
+
+
 const [
   tagName, // release, dev, ...
 ] = process.argv.slice(2)
@@ -20,12 +26,8 @@ if (!tagName) {
   process.exit(1)
 }
 
-void (async () => {
 
-  const projectRoot = resolve(__dirname, '..')
-  const sdkRoot = `${projectRoot}/generated-sdk`
-  const chainAliases = ['bsc', 'bsctest']
-  const buildId = Date.now()
+void (async () => {
 
   // [0] clean previously built results
   await rm(sdkRoot, { recursive: true, force: true });

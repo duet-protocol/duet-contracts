@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity 0.8.9;
 
+import "@private/shared/3rd/pancake/ICakePool.sol";
+
 import "../../ExtendableBond.sol";
-import "../../interfaces/ICakePool.sol";
 
 contract ExtendableBondedCake is ExtendableBond {
     /**

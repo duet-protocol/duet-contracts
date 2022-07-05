@@ -1,10 +1,12 @@
 [
   "constructor(address)",
+  "function bondToken() view returns (address)",
   "function lastUpdatedPoolAt() view returns (uint256)",
   "function setSiblingPool(address)",
   "function siblingPool() view returns (address)",
   "function stake(uint256)",
   "function stakeForUser(address,uint256)",
   "function totalPendingRewards() view returns (uint256)",
-  "function updatePool()"
+  "function updatePool()",
+  "function usersAmount(address) view returns (uint256)"
 ]

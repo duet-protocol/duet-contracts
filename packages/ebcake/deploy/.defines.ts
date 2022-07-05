@@ -5,7 +5,7 @@ import { HardhatDeployRuntimeEnvironment } from '../types/hardhat-deploy';
 import config from '../config';
 import { MasterChefDeployNames } from './001_deploy_masterchef';
 import { ZERO_ADDRESS } from '../test/helpers';
-import { pancakeFactoryABI } from '../3rd/pancake';
+import { pancakeFactoryABI } from '@private/shared/3rd/pancake/abi';
 import { Event } from 'ethers';
 import { HardhatRuntimeEnvironment } from 'hardhat/types/runtime';
 import { useLogger } from '../scripts/utils';

@@ -19,15 +19,15 @@
   "license": "ISC",
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.2",
-    "@nomiclabs/hardhat-etherscan": "^2.1.7",
+    "@nomiclabs/hardhat-etherscan": "^3.0.3",
     "@nomiclabs/hardhat-waffle": "^2.0.1",
     "@openzeppelin/contracts": "^4.3.2",
     "dotenv": "^10.0.0",
     "ethereum-waffle": "^3.4.0",
+    "typescript": "^4.5.2",
     "hardhat": "^2.6.6"
   },
   "dependencies": {
-    "@nomiclabs/hardhat-etherscan": "^2.1.8",
     "@openzeppelin/contracts-upgradeable": "^4.4.2",
     "@openzeppelin/hardhat-upgrades": "^1.13.0"
   }

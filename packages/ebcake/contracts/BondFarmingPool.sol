@@ -7,10 +7,11 @@ import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 import "hardhat/console.sol";
 
+import "@private/shared/libs/DuetMath.sol";
+import "@private/shared/libs/Adminable.sol";
+
 import "./ExtendableBond.sol";
-import "./libs/DuetMath.sol";
 import "./interfaces/IMultiRewardsMasterChef.sol";
-import "./libs/Adminable.sol";
 import "./interfaces/IBondFarmingPool.sol";
 import "./interfaces/IExtendableBond.sol";
 
