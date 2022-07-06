@@ -239,29 +239,30 @@ contract MultiRewardsMasterChef is ReentrancyGuard, Initializable, IMultiRewards
     ) public view returns (uint256 depositAmount, uint256 refundAmount) {
         RewardSpec storage rewardSpec = rewardSpecs[rewardId];
 
-        if (rewardSpec.startedAtBlock <= block.number) {
-            require(
-                startedAtBlock == rewardSpec.startedAtBlock,
-                "can not modify startedAtBlock after rewards has began allocating"
-            );
-        }
-
         require(endedAtBlock > block.number, "can not modify endedAtBlock to a past block number");
         require(endedAtBlock > startedAtBlock, "endedAtBlock should be greater than startedAtBlock");
-        uint256 minedAwards = block.number > rewardSpec.startedAtBlock
-            ? (block.number - rewardSpec.startedAtBlock) * rewardSpec.rewardPerBlock
-            : 0;
-        uint256 tokenBalance = rewardSpec.token.balanceOf(address(this));
-        int256 amountDebt = int256(minedAwards) - int256(rewardSpec.claimedAmount);
-        int256 usableBalance = int256(tokenBalance) - amountDebt;
-        uint256 requiredAmount = (endedAtBlock - block.number) * rewardPerBlock;
 
-        if (int256(requiredAmount) > usableBalance) {
-            depositAmount = uint256(int256(requiredAmount) - usableBalance);
-        } else if (int256(requiredAmount) < usableBalance) {
-            refundAmount = uint256(usableBalance - int256(requiredAmount));
+        // last period ended.
+        if (rewardSpec.endedAtBlock < block.number) {
+            require(startedAtBlock > block.number, "can not modify startedAtBlock to a past period");
+            return ((endedAtBlock - startedAtBlock) * rewardPerBlock, 0);
         }
-        return (depositAmount, refundAmount);
+        uint256 unminedAmount = 0;
+        uint256 requiredAmount = 0;
+        // last period has not been started yet.
+        if (rewardSpec.startedAtBlock > block.number) {
+            require(startedAtBlock > block.number, "can not modify startedAtBlock to a past block");
+            unminedAmount = (rewardSpec.endedAtBlock - rewardSpec.startedAtBlock) * rewardSpec.rewardPerBlock;
+            requiredAmount = (endedAtBlock - startedAtBlock) * rewardPerBlock;
+        } else {
+            unminedAmount = (rewardSpec.endedAtBlock - block.number) * rewardSpec.rewardPerBlock;
+            requiredAmount = (endedAtBlock - block.number) * rewardPerBlock;
+        }
+
+        if (requiredAmount > unminedAmount) {
+            return (requiredAmount - unminedAmount, 0);
+        }
+        return (0, unminedAmount - requiredAmount);
     }
 
     function getRewardSpecsLength() public view returns (uint256) {
