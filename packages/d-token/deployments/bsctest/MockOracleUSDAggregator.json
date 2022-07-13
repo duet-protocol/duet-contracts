@@ -1,0 +1,279 @@
+{
+  "address": "0xEA2f1Be45C10e3E359D723cc74c71F03Ad5CB5a9",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "admin_",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "newAdmin",
+          "type": "address"
+        }
+      ],
+      "name": "AdminUpdated",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "admin",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "decimals",
+      "outputs": [
+        {
+          "internalType": "uint8",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "description",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint80",
+          "name": "_roundId",
+          "type": "uint80"
+        }
+      ],
+      "name": "getRoundData",
+      "outputs": [
+        {
+          "internalType": "uint80",
+          "name": "roundId",
+          "type": "uint80"
+        },
+        {
+          "internalType": "int256",
+          "name": "answer",
+          "type": "int256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "startedAt",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "updatedAt",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint80",
+          "name": "answeredInRound",
+          "type": "uint80"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "latestRoundData",
+      "outputs": [
+        {
+          "internalType": "uint80",
+          "name": "roundId",
+          "type": "uint80"
+        },
+        {
+          "internalType": "int256",
+          "name": "answer",
+          "type": "int256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "startedAt",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "updatedAt",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint80",
+          "name": "answeredInRound",
+          "type": "uint80"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "mock_r_answer",
+      "outputs": [
+        {
+          "internalType": "int256",
+          "name": "",
+          "type": "int256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newAdmin",
+          "type": "address"
+        }
+      ],
+      "name": "setAdmin",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "int256",
+          "name": "v_",
+          "type": "int256"
+        }
+      ],
+      "name": "updateMockRoundAnswer",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "version",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    }
+  ],
+  "transactionHash": "0x1fd6353af3e60cfb61e0f7a9e167bf8a5fb8a27d25fbc96d8ac9e952a9c91929",
+  "receipt": {
+    "to": null,
+    "from": "0xe7a2b8C8feD53713F69227e6c3d2384E80CF88a6",
+    "contractAddress": "0xEA2f1Be45C10e3E359D723cc74c71F03Ad5CB5a9",
+    "transactionIndex": 5,
+    "gasUsed": "327524",
+    "logsBloom": "0x00000000000000000000000000000000000000000000000000800000000000000000000000000000000000000080000000000000000004000000000000000000001000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "blockHash": "0x15421d4695fb03f466c005d1d446f8dbe34a325f4ee60f1f7b3a0fe39cacac5b",
+    "transactionHash": "0x1fd6353af3e60cfb61e0f7a9e167bf8a5fb8a27d25fbc96d8ac9e952a9c91929",
+    "logs": [
+      {
+        "transactionIndex": 5,
+        "blockNumber": 21076514,
+        "transactionHash": "0x1fd6353af3e60cfb61e0f7a9e167bf8a5fb8a27d25fbc96d8ac9e952a9c91929",
+        "address": "0xEA2f1Be45C10e3E359D723cc74c71F03Ad5CB5a9",
+        "topics": [
+          "0x101b8081ff3b56bbf45deb824d86a3b0fd38b7e3dd42421105cf8abe9106db0b",
+          "0x000000000000000000000000e7a2b8c8fed53713f69227e6c3d2384e80cf88a6",
+          "0x000000000000000000000000e7a2b8c8fed53713f69227e6c3d2384e80cf88a6"
+        ],
+        "data": "0x",
+        "logIndex": 9,
+        "blockHash": "0x15421d4695fb03f466c005d1d446f8dbe34a325f4ee60f1f7b3a0fe39cacac5b"
+      }
+    ],
+    "blockNumber": 21076514,
+    "cumulativeGasUsed": "629166",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [
+    "0xe7a2b8C8feD53713F69227e6c3d2384E80CF88a6"
+  ],
+  "numDeployments": 3,
+  "solcInputHash": "368218a8a47bc9c5b475d383a4c1db5b",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.9+commit.e5eed63a\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"admin_\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newAdmin\",\"type\":\"address\"}],\"name\":\"AdminUpdated\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"admin\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"decimals\",\"outputs\":[{\"internalType\":\"uint8\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"description\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint80\",\"name\":\"_roundId\",\"type\":\"uint80\"}],\"name\":\"getRoundData\",\"outputs\":[{\"internalType\":\"uint80\",\"name\":\"roundId\",\"type\":\"uint80\"},{\"internalType\":\"int256\",\"name\":\"answer\",\"type\":\"int256\"},{\"internalType\":\"uint256\",\"name\":\"startedAt\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"updatedAt\",\"type\":\"uint256\"},{\"internalType\":\"uint80\",\"name\":\"answeredInRound\",\"type\":\"uint80\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"latestRoundData\",\"outputs\":[{\"internalType\":\"uint80\",\"name\":\"roundId\",\"type\":\"uint80\"},{\"internalType\":\"int256\",\"name\":\"answer\",\"type\":\"int256\"},{\"internalType\":\"uint256\",\"name\":\"startedAt\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"updatedAt\",\"type\":\"uint256\"},{\"internalType\":\"uint80\",\"name\":\"answeredInRound\",\"type\":\"uint80\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"mock_r_answer\",\"outputs\":[{\"internalType\":\"int256\",\"name\":\"\",\"type\":\"int256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newAdmin\",\"type\":\"address\"}],\"name\":\"setAdmin\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"int256\",\"name\":\"v_\",\"type\":\"int256\"}],\"name\":\"updateMockRoundAnswer\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"version\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"pure\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/mocks/MockOracleUSDAggregator.sol\":\"MockOracleUSDAggregator\"},\"evmVersion\":\"london\",\"libraries\":{\":__CACHE_BREAKER__\":\"0x00000000d41867734bbee4c6863d9255b2b06ac1\"},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"@private/shared/3rd/chainlink/AggregatorV3Interface.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity ^0.8.0;\\n\\ninterface AggregatorV3Interface {\\n  function decimals() external view returns (uint8);\\n\\n  function description() external view returns (string memory);\\n\\n  function version() external view returns (uint256);\\n\\n  // getRoundData and latestRoundData should both raise \\\"No data present\\\"\\n  // if they do not have data to report, instead of returning unset values\\n  // which could be misinterpreted as actual reported values.\\n  function getRoundData(uint80 _roundId)\\n    external\\n    view\\n    returns (\\n      uint80 roundId,\\n      int256 answer,\\n      uint256 startedAt,\\n      uint256 updatedAt,\\n      uint80 answeredInRound\\n    );\\n\\n  function latestRoundData()\\n    external\\n    view\\n    returns (\\n      uint80 roundId,\\n      int256 answer,\\n      uint256 startedAt,\\n      uint256 updatedAt,\\n      uint80 answeredInRound\\n    );\\n}\\n\",\"keccak256\":\"0xf2b6c9adb3552254df1445b73563cf014434ff5e78663e9b961b6c059506ceb5\",\"license\":\"MIT\"},\"@private/shared/libs/Adminable.sol\":{\"content\":\"// SPDX-License-Identifier: GPL-3.0\\npragma solidity 0.8.9;\\n\\nabstract contract Adminable {\\n    event AdminUpdated(address indexed user, address indexed newAdmin);\\n\\n    address public admin;\\n\\n    modifier onlyAdmin() virtual {\\n        require(msg.sender == admin, \\\"UNAUTHORIZED\\\");\\n\\n        _;\\n    }\\n\\n    function setAdmin(address newAdmin) public virtual onlyAdmin {\\n        _setAdmin(newAdmin);\\n    }\\n\\n    function _setAdmin(address newAdmin) internal {\\n        require(newAdmin != address(0), \\\"Can not set admin to zero address\\\");\\n        admin = newAdmin;\\n\\n        emit AdminUpdated(msg.sender, newAdmin);\\n    }\\n}\\n\",\"keccak256\":\"0xe47c97c0e3edad2d1df3e664376a7bb46e1aaf51b4c4acc73c4a2cfdc747185f\",\"license\":\"GPL-3.0\"},\"contracts/mocks/MockOracleUSDAggregator.sol\":{\"content\":\"//SPDX-License-Identifier: MIT\\npragma solidity 0.8.9;\\n\\n\\nimport \\\"@private/shared/3rd/chainlink/AggregatorV3Interface.sol\\\";\\nimport \\\"@private/shared/libs/Adminable.sol\\\";\\n\\n\\ncontract MockOracleUSDAggregator is AggregatorV3Interface, Adminable {\\n\\n  constructor(address admin_) {\\n    require(admin_ != address(0), \\\"Cant set admin to zero address\\\");\\n    _setAdmin(admin_);\\n  }\\n\\n\\n  int256 public mock_r_answer = 720240;\\n  function updateMockRoundAnswer(int256 v_) external onlyAdmin {\\n    mock_r_answer = v_;\\n  }\\n\\n  function decimals() external pure returns (uint8) {\\n    return 8;\\n  }\\n\\n  function description() external pure returns (string memory) {\\n    return 'DuetMock / USD';\\n  }\\n\\n  function version() external pure returns (uint256) {\\n    return 0;\\n  }\\n\\n  function getRoundData(uint80 _roundId) external view returns (\\n    uint80 roundId,\\n    int256 answer,\\n    uint256 startedAt,\\n    uint256 updatedAt,\\n    uint80 answeredInRound\\n  ) {\\n    roundId = _roundId;\\n    answer = mock_r_answer;\\n    startedAt = 1657794069;\\n    updatedAt = 1657794069;\\n    answeredInRound = 36893488147419161920;\\n  }\\n\\n  function latestRoundData() external view returns (\\n    uint80 roundId,\\n    int256 answer,\\n    uint256 startedAt,\\n    uint256 updatedAt,\\n    uint80 answeredInRound\\n  ) {\\n    roundId = 36893488147419161920;\\n    answer = mock_r_answer;\\n    startedAt = 1657794069;\\n    updatedAt = 1657794069;\\n    answeredInRound = 36893488147419161920;\\n  }\\n\\n}\\n\",\"keccak256\":\"0x388970510ede900941e8ff170468b608845dcd22c98aaea3ebbde22beb0268bb\",\"license\":\"MIT\"}},\"version\":1}",
+  "bytecode": "0x6080604052620afd7060015534801561001757600080fd5b5060405161059f38038061059f8339810160408190526100369161014b565b6001600160a01b0381166100915760405162461bcd60e51b815260206004820152601e60248201527f43616e74207365742061646d696e20746f207a65726f2061646472657373000060448201526064015b60405180910390fd5b61009a816100a0565b5061017b565b6001600160a01b0381166101005760405162461bcd60e51b815260206004820152602160248201527f43616e206e6f74207365742061646d696e20746f207a65726f206164647265736044820152607360f81b6064820152608401610088565b600080546001600160a01b0319166001600160a01b0383169081178255604051909133917f101b8081ff3b56bbf45deb824d86a3b0fd38b7e3dd42421105cf8abe9106db0b9190a350565b60006020828403121561015d57600080fd5b81516001600160a01b038116811461017457600080fd5b9392505050565b6104158061018a6000396000f3fe608060405234801561001057600080fd5b50600436106100935760003560e01c80637945e188116100665780637945e188146101025780639a6fc8f514610115578063cd77060414610174578063f851a4401461017d578063feaf968c146101a857600080fd5b8063313ce5671461009857806354fd4d50146100ac578063704b6c02146100bd5780637284e416146100d2575b600080fd5b604051600881526020015b60405180910390f35b60005b6040519081526020016100a3565b6100d06100cb366004610315565b6101c2565b005b604080518082018252600e81526d111d595d135bd8dac80bc81554d160921b602082015290516100a39190610345565b6100d061011036600461039a565b61021c565b61013d6101233660046103b3565b60015490916362cfee159081906802000000000000e54090565b6040805169ffffffffffffffffffff968716815260208101959095528401929092526060830152909116608082015260a0016100a3565b6100af60015481565b600054610190906001600160a01b031681565b6040516001600160a01b0390911681526020016100a3565b6001546802000000000000e540906362cfee15808361013d565b6000546001600160a01b031633146102105760405162461bcd60e51b815260206004820152600c60248201526b15539055551213d49256915160a21b60448201526064015b60405180910390fd5b6102198161026a565b50565b6000546001600160a01b031633146102655760405162461bcd60e51b815260206004820152600c60248201526b15539055551213d49256915160a21b6044820152606401610207565b600155565b6001600160a01b0381166102ca5760405162461bcd60e51b815260206004820152602160248201527f43616e206e6f74207365742061646d696e20746f207a65726f206164647265736044820152607360f81b6064820152608401610207565b600080546001600160a01b0319166001600160a01b0383169081178255604051909133917f101b8081ff3b56bbf45deb824d86a3b0fd38b7e3dd42421105cf8abe9106db0b9190a350565b60006020828403121561032757600080fd5b81356001600160a01b038116811461033e57600080fd5b9392505050565b600060208083528351808285015260005b8181101561037257858101830151858201604001528201610356565b81811115610384576000604083870101525b50601f01601f1916929092016040019392505050565b6000602082840312156103ac57600080fd5b5035919050565b6000602082840312156103c557600080fd5b813569ffffffffffffffffffff8116811461033e57600080fdfea2646970667358221220f5e8231ad3315b6f39cb945e522e3e6e49801cc9368075f1ff76f9314aaacd9564736f6c63430008090033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b50600436106100935760003560e01c80637945e188116100665780637945e188146101025780639a6fc8f514610115578063cd77060414610174578063f851a4401461017d578063feaf968c146101a857600080fd5b8063313ce5671461009857806354fd4d50146100ac578063704b6c02146100bd5780637284e416146100d2575b600080fd5b604051600881526020015b60405180910390f35b60005b6040519081526020016100a3565b6100d06100cb366004610315565b6101c2565b005b604080518082018252600e81526d111d595d135bd8dac80bc81554d160921b602082015290516100a39190610345565b6100d061011036600461039a565b61021c565b61013d6101233660046103b3565b60015490916362cfee159081906802000000000000e54090565b6040805169ffffffffffffffffffff968716815260208101959095528401929092526060830152909116608082015260a0016100a3565b6100af60015481565b600054610190906001600160a01b031681565b6040516001600160a01b0390911681526020016100a3565b6001546802000000000000e540906362cfee15808361013d565b6000546001600160a01b031633146102105760405162461bcd60e51b815260206004820152600c60248201526b15539055551213d49256915160a21b60448201526064015b60405180910390fd5b6102198161026a565b50565b6000546001600160a01b031633146102655760405162461bcd60e51b815260206004820152600c60248201526b15539055551213d49256915160a21b6044820152606401610207565b600155565b6001600160a01b0381166102ca5760405162461bcd60e51b815260206004820152602160248201527f43616e206e6f74207365742061646d696e20746f207a65726f206164647265736044820152607360f81b6064820152608401610207565b600080546001600160a01b0319166001600160a01b0383169081178255604051909133917f101b8081ff3b56bbf45deb824d86a3b0fd38b7e3dd42421105cf8abe9106db0b9190a350565b60006020828403121561032757600080fd5b81356001600160a01b038116811461033e57600080fd5b9392505050565b600060208083528351808285015260005b8181101561037257858101830151858201604001528201610356565b81811115610384576000604083870101525b50601f01601f1916929092016040019392505050565b6000602082840312156103ac57600080fd5b5035919050565b6000602082840312156103c557600080fd5b813569ffffffffffffffffffff8116811461033e57600080fdfea2646970667358221220f5e8231ad3315b6f39cb945e522e3e6e49801cc9368075f1ff76f9314aaacd9564736f6c63430008090033",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [
+      {
+        "astId": 3574,
+        "contract": "contracts/mocks/MockOracleUSDAggregator.sol:MockOracleUSDAggregator",
+        "label": "admin",
+        "offset": 0,
+        "slot": "0",
+        "type": "t_address"
+      },
+      {
+        "astId": 5775,
+        "contract": "contracts/mocks/MockOracleUSDAggregator.sol:MockOracleUSDAggregator",
+        "label": "mock_r_answer",
+        "offset": 0,
+        "slot": "1",
+        "type": "t_int256"
+      }
+    ],
+    "types": {
+      "t_address": {
+        "encoding": "inplace",
+        "label": "address",
+        "numberOfBytes": "20"
+      },
+      "t_int256": {
+        "encoding": "inplace",
+        "label": "int256",
+        "numberOfBytes": "32"
+      }
+    }
+  }
+}
