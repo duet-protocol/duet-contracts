@@ -30,7 +30,6 @@
     "@openzeppelin/contracts": "4.3.2",
     "@openzeppelin/hardhat-upgrades": "^1.15.0",
     "chai": "^4.3.4",
-    "csv": "^6.2.0",
     "csv-stringify": "^6.2.0",
     "dotenv": "^10.0.0",
     "ethereum-waffle": "^3.4.0",
