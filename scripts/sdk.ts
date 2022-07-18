@@ -45,9 +45,10 @@ void (async () => {
   // [1] scan packages and build many indexes for following steps
   await Promise.all(
     (await readdir(`${projectRoot}/packages`)).map(async (packageName) => {
-      if (packageName.startsWith('.') || packageName.startsWith('_'))return
+      if (packageName.startsWith('.') || packageName.startsWith('_')) return
       const packageRoot = `${projectRoot}/packages/${packageName}`
 
+      if (!existsSync(`${packageRoot}/package.json`)) return
       const packageManifest = JSON.parse(`${await readFile(`${packageRoot}/package.json`)}`)
       if (packageManifest?.duet?.sdk !== true) return
       console.info(`Duet SDK definition detected at "${packageRoot}"`)
