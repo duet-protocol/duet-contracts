@@ -1,0 +1,409 @@
+{
+  "address": "0x2ef22dcA277B44d6043677B6672DA7A1E0AC0D74",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "dyTokenVaults",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "dyTokens",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_underlying",
+          "type": "address"
+        }
+      ],
+      "name": "getValueConf",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "oracle",
+          "type": "address"
+        },
+        {
+          "internalType": "uint16",
+          "name": "dr",
+          "type": "uint16"
+        },
+        {
+          "internalType": "uint16",
+          "name": "pr",
+          "type": "uint16"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_underlying",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_oracle",
+          "type": "address"
+        },
+        {
+          "internalType": "uint16",
+          "name": "_discound",
+          "type": "uint16"
+        },
+        {
+          "internalType": "uint16",
+          "name": "_premium",
+          "type": "uint16"
+        }
+      ],
+      "name": "setOracles",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_dyToken",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_vault",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "vtype",
+          "type": "uint256"
+        }
+      ],
+      "name": "setVault",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_vault",
+          "type": "address"
+        },
+        {
+          "components": [
+            {
+              "internalType": "bool",
+              "name": "enabled",
+              "type": "bool"
+            },
+            {
+              "internalType": "bool",
+              "name": "enableDeposit",
+              "type": "bool"
+            },
+            {
+              "internalType": "bool",
+              "name": "enableWithdraw",
+              "type": "bool"
+            },
+            {
+              "internalType": "bool",
+              "name": "enableBorrow",
+              "type": "bool"
+            },
+            {
+              "internalType": "bool",
+              "name": "enableRepay",
+              "type": "bool"
+            },
+            {
+              "internalType": "bool",
+              "name": "enableLiquidate",
+              "type": "bool"
+            }
+          ],
+          "internalType": "struct MockController.VaultState",
+          "name": "_state",
+          "type": "tuple"
+        }
+      ],
+      "name": "setVaultStates",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "vaultStates",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "enabled",
+          "type": "bool"
+        },
+        {
+          "internalType": "bool",
+          "name": "enableDeposit",
+          "type": "bool"
+        },
+        {
+          "internalType": "bool",
+          "name": "enableWithdraw",
+          "type": "bool"
+        },
+        {
+          "internalType": "bool",
+          "name": "enableBorrow",
+          "type": "bool"
+        },
+        {
+          "internalType": "bool",
+          "name": "enableRepay",
+          "type": "bool"
+        },
+        {
+          "internalType": "bool",
+          "name": "enableLiquidate",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "transactionHash": "0x02cf7a8c3a939b9b356f9e715c967cda39d1f2ef08119f9f7e49ea1fe656a5e7",
+  "receipt": {
+    "to": null,
+    "from": "0xe7a2b8C8feD53713F69227e6c3d2384E80CF88a6",
+    "contractAddress": "0x2ef22dcA277B44d6043677B6672DA7A1E0AC0D74",
+    "transactionIndex": 1,
+    "gasUsed": "353854",
+    "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "blockHash": "0x45ebaff22c612aff4340e7ff70c0a0f1cdbaab4c1476eaf4ce2ba47f65031eb5",
+    "transactionHash": "0x02cf7a8c3a939b9b356f9e715c967cda39d1f2ef08119f9f7e49ea1fe656a5e7",
+    "logs": [],
+    "blockNumber": 21066644,
+    "cumulativeGasUsed": "398111",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [],
+  "numDeployments": 2,
+  "solcInputHash": "cc60261b11b492291aec3641d3261706",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.9+commit.e5eed63a\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"dyTokenVaults\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"dyTokens\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_underlying\",\"type\":\"address\"}],\"name\":\"getValueConf\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"oracle\",\"type\":\"address\"},{\"internalType\":\"uint16\",\"name\":\"dr\",\"type\":\"uint16\"},{\"internalType\":\"uint16\",\"name\":\"pr\",\"type\":\"uint16\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_underlying\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_oracle\",\"type\":\"address\"},{\"internalType\":\"uint16\",\"name\":\"_discound\",\"type\":\"uint16\"},{\"internalType\":\"uint16\",\"name\":\"_premium\",\"type\":\"uint16\"}],\"name\":\"setOracles\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_dyToken\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_vault\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"vtype\",\"type\":\"uint256\"}],\"name\":\"setVault\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_vault\",\"type\":\"address\"},{\"components\":[{\"internalType\":\"bool\",\"name\":\"enabled\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"enableDeposit\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"enableWithdraw\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"enableBorrow\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"enableRepay\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"enableLiquidate\",\"type\":\"bool\"}],\"internalType\":\"struct MockController.VaultState\",\"name\":\"_state\",\"type\":\"tuple\"}],\"name\":\"setVaultStates\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"vaultStates\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"enabled\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"enableDeposit\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"enableWithdraw\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"enableBorrow\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"enableRepay\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"enableLiquidate\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/mocks/MockController.sol\":\"MockController\"},\"evmVersion\":\"london\",\"libraries\":{\":__CACHE_BREAKER__\":\"0x00000000d41867734bbee4c6863d9255b2b06ac1\"},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"contracts/mocks/MockController.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity >=0.8.9;\\n\\ncontract MockController {\\n\\n  struct ValueConf {\\n    address oracle;\\n    uint16 dr;  // discount rate\\n    uint16 pr;  // premium rate\\n  }\\n\\n  struct VaultState {\\n    bool enabled;\\n    bool enableDeposit;\\n    bool enableWithdraw;\\n    bool enableBorrow;\\n    bool enableRepay;\\n    bool enableLiquidate;\\n  }\\n\\n  mapping(address => address) public dyTokens;\\n  mapping(address => address) public dyTokenVaults;\\n  mapping(address => ValueConf) internal valueConfs;\\n  mapping(address => VaultState) public vaultStates;\\n\\n  function getValueConf(address _underlying) public view returns (address oracle, uint16 dr, uint16 pr) {\\n    ValueConf memory conf = valueConfs[_underlying];\\n    oracle = conf.oracle;\\n    dr = conf.dr;\\n    pr = conf.pr;\\n  }\\n\\n  function setVault(address _dyToken, address _vault, uint vtype) external {\\n    dyTokenVaults[_dyToken] = _vault;\\n  }\\n\\n  function setVaultStates(address _vault, VaultState memory _state) external {\\n    vaultStates[_vault] = _state;\\n  }\\n\\n  function setOracles(address _underlying, address _oracle, uint16 _discound, uint16 _premium) external {\\n    ValueConf storage conf = valueConfs[_underlying];\\n    conf.oracle = _oracle;\\n    conf.dr = _discound;\\n    conf.pr = _premium;\\n  }\\n\\n}\\n\\n\\n\",\"keccak256\":\"0x802d2297493dc003b7f0a45bc5c3c3c11107832ba88868c78866498b16c66898\",\"license\":\"MIT\"}},\"version\":1}",
+  "bytecode": "0x608060405234801561001057600080fd5b50610572806100206000396000f3fe608060405234801561001057600080fd5b506004361061007d5760003560e01c80635f49202f1161005b5780635f49202f146101b55780636af2482d1461024457806383d576501461030e578063aaace6011461034f57600080fd5b80630d37a290146100825780631acd8c9c146100e857806359e27fc414610178575b600080fd5b6100e66100903660046103a6565b6001600160a01b0393841660009081526002602052604090208054939094166001600160b01b031990931692909217600160a01b61ffff928316021761ffff60b01b1916600160b01b9290911691909102179055565b005b6101496100f63660046103fa565b6001600160a01b039081166000908152600260209081526040918290208251606081018452905493841680825261ffff600160a01b86048116938301849052600160b01b90950490941692018290529192565b604080516001600160a01b03909416845261ffff92831660208501529116908201526060015b60405180910390f35b6100e661018636600461041c565b506001600160a01b03918216600090815260016020526040902080546001600160a01b03191691909216179055565b61020b6101c33660046103fa565b60036020526000908152604090205460ff8082169161010081048216916201000082048116916301000000810482169164010000000082048116916501000000000090041686565b604080519615158752941515602087015292151593850193909352151560608401529015156080830152151560a082015260c00161016f565b6100e6610252366004610468565b6001600160a01b039091166000908152600360209081526040918290208351815492850151938501516060860151608087015160a0909701511515650100000000000265ff000000000019971515640100000000029790971665ffff000000001991151563010000000263ff0000001993151562010000029390931663ffff0000199715156101000261ff00199515159590951661ffff1990971696909617939093179590951693909317929092179290921617919091179055565b61033761031c3660046103fa565b6001602052600090815260409020546001600160a01b031681565b6040516001600160a01b03909116815260200161016f565b61033761035d3660046103fa565b6000602081905290815260409020546001600160a01b031681565b80356001600160a01b038116811461038f57600080fd5b919050565b803561ffff8116811461038f57600080fd5b600080600080608085870312156103bc57600080fd5b6103c585610378565b93506103d360208601610378565b92506103e160408601610394565b91506103ef60608601610394565b905092959194509250565b60006020828403121561040c57600080fd5b61041582610378565b9392505050565b60008060006060848603121561043157600080fd5b61043a84610378565b925061044860208501610378565b9150604084013590509250925092565b8035801515811461038f57600080fd5b60008082840360e081121561047c57600080fd5b61048584610378565b925060c0601f198201121561049957600080fd5b5060405160c0810181811067ffffffffffffffff821117156104cb57634e487b7160e01b600052604160045260246000fd5b6040526104da60208501610458565b81526104e860408501610458565b60208201526104f960608501610458565b604082015261050a60808501610458565b606082015261051b60a08501610458565b608082015261052c60c08501610458565b60a082015280915050925092905056fea2646970667358221220856d246cdc3cde749158c23b0e19787f804440e83a9e0b04d055376970f9aed964736f6c63430008090033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b506004361061007d5760003560e01c80635f49202f1161005b5780635f49202f146101b55780636af2482d1461024457806383d576501461030e578063aaace6011461034f57600080fd5b80630d37a290146100825780631acd8c9c146100e857806359e27fc414610178575b600080fd5b6100e66100903660046103a6565b6001600160a01b0393841660009081526002602052604090208054939094166001600160b01b031990931692909217600160a01b61ffff928316021761ffff60b01b1916600160b01b9290911691909102179055565b005b6101496100f63660046103fa565b6001600160a01b039081166000908152600260209081526040918290208251606081018452905493841680825261ffff600160a01b86048116938301849052600160b01b90950490941692018290529192565b604080516001600160a01b03909416845261ffff92831660208501529116908201526060015b60405180910390f35b6100e661018636600461041c565b506001600160a01b03918216600090815260016020526040902080546001600160a01b03191691909216179055565b61020b6101c33660046103fa565b60036020526000908152604090205460ff8082169161010081048216916201000082048116916301000000810482169164010000000082048116916501000000000090041686565b604080519615158752941515602087015292151593850193909352151560608401529015156080830152151560a082015260c00161016f565b6100e6610252366004610468565b6001600160a01b039091166000908152600360209081526040918290208351815492850151938501516060860151608087015160a0909701511515650100000000000265ff000000000019971515640100000000029790971665ffff000000001991151563010000000263ff0000001993151562010000029390931663ffff0000199715156101000261ff00199515159590951661ffff1990971696909617939093179590951693909317929092179290921617919091179055565b61033761031c3660046103fa565b6001602052600090815260409020546001600160a01b031681565b6040516001600160a01b03909116815260200161016f565b61033761035d3660046103fa565b6000602081905290815260409020546001600160a01b031681565b80356001600160a01b038116811461038f57600080fd5b919050565b803561ffff8116811461038f57600080fd5b600080600080608085870312156103bc57600080fd5b6103c585610378565b93506103d360208601610378565b92506103e160408601610394565b91506103ef60608601610394565b905092959194509250565b60006020828403121561040c57600080fd5b61041582610378565b9392505050565b60008060006060848603121561043157600080fd5b61043a84610378565b925061044860208501610378565b9150604084013590509250925092565b8035801515811461038f57600080fd5b60008082840360e081121561047c57600080fd5b61048584610378565b925060c0601f198201121561049957600080fd5b5060405160c0810181811067ffffffffffffffff821117156104cb57634e487b7160e01b600052604160045260246000fd5b6040526104da60208501610458565b81526104e860408501610458565b60208201526104f960608501610458565b604082015261050a60808501610458565b606082015261051b60a08501610458565b608082015261052c60c08501610458565b60a082015280915050925092905056fea2646970667358221220856d246cdc3cde749158c23b0e19787f804440e83a9e0b04d055376970f9aed964736f6c63430008090033",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [
+      {
+        "astId": 25,
+        "contract": "contracts/mocks/MockController.sol:MockController",
+        "label": "dyTokens",
+        "offset": 0,
+        "slot": "0",
+        "type": "t_mapping(t_address,t_address)"
+      },
+      {
+        "astId": 29,
+        "contract": "contracts/mocks/MockController.sol:MockController",
+        "label": "dyTokenVaults",
+        "offset": 0,
+        "slot": "1",
+        "type": "t_mapping(t_address,t_address)"
+      },
+      {
+        "astId": 34,
+        "contract": "contracts/mocks/MockController.sol:MockController",
+        "label": "valueConfs",
+        "offset": 0,
+        "slot": "2",
+        "type": "t_mapping(t_address,t_struct(ValueConf)8_storage)"
+      },
+      {
+        "astId": 39,
+        "contract": "contracts/mocks/MockController.sol:MockController",
+        "label": "vaultStates",
+        "offset": 0,
+        "slot": "3",
+        "type": "t_mapping(t_address,t_struct(VaultState)21_storage)"
+      }
+    ],
+    "types": {
+      "t_address": {
+        "encoding": "inplace",
+        "label": "address",
+        "numberOfBytes": "20"
+      },
+      "t_bool": {
+        "encoding": "inplace",
+        "label": "bool",
+        "numberOfBytes": "1"
+      },
+      "t_mapping(t_address,t_address)": {
+        "encoding": "mapping",
+        "key": "t_address",
+        "label": "mapping(address => address)",
+        "numberOfBytes": "32",
+        "value": "t_address"
+      },
+      "t_mapping(t_address,t_struct(ValueConf)8_storage)": {
+        "encoding": "mapping",
+        "key": "t_address",
+        "label": "mapping(address => struct MockController.ValueConf)",
+        "numberOfBytes": "32",
+        "value": "t_struct(ValueConf)8_storage"
+      },
+      "t_mapping(t_address,t_struct(VaultState)21_storage)": {
+        "encoding": "mapping",
+        "key": "t_address",
+        "label": "mapping(address => struct MockController.VaultState)",
+        "numberOfBytes": "32",
+        "value": "t_struct(VaultState)21_storage"
+      },
+      "t_struct(ValueConf)8_storage": {
+        "encoding": "inplace",
+        "label": "struct MockController.ValueConf",
+        "members": [
+          {
+            "astId": 3,
+            "contract": "contracts/mocks/MockController.sol:MockController",
+            "label": "oracle",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_address"
+          },
+          {
+            "astId": 5,
+            "contract": "contracts/mocks/MockController.sol:MockController",
+            "label": "dr",
+            "offset": 20,
+            "slot": "0",
+            "type": "t_uint16"
+          },
+          {
+            "astId": 7,
+            "contract": "contracts/mocks/MockController.sol:MockController",
+            "label": "pr",
+            "offset": 22,
+            "slot": "0",
+            "type": "t_uint16"
+          }
+        ],
+        "numberOfBytes": "32"
+      },
+      "t_struct(VaultState)21_storage": {
+        "encoding": "inplace",
+        "label": "struct MockController.VaultState",
+        "members": [
+          {
+            "astId": 10,
+            "contract": "contracts/mocks/MockController.sol:MockController",
+            "label": "enabled",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_bool"
+          },
+          {
+            "astId": 12,
+            "contract": "contracts/mocks/MockController.sol:MockController",
+            "label": "enableDeposit",
+            "offset": 1,
+            "slot": "0",
+            "type": "t_bool"
+          },
+          {
+            "astId": 14,
+            "contract": "contracts/mocks/MockController.sol:MockController",
+            "label": "enableWithdraw",
+            "offset": 2,
+            "slot": "0",
+            "type": "t_bool"
+          },
+          {
+            "astId": 16,
+            "contract": "contracts/mocks/MockController.sol:MockController",
+            "label": "enableBorrow",
+            "offset": 3,
+            "slot": "0",
+            "type": "t_bool"
+          },
+          {
+            "astId": 18,
+            "contract": "contracts/mocks/MockController.sol:MockController",
+            "label": "enableRepay",
+            "offset": 4,
+            "slot": "0",
+            "type": "t_bool"
+          },
+          {
+            "astId": 20,
+            "contract": "contracts/mocks/MockController.sol:MockController",
+            "label": "enableLiquidate",
+            "offset": 5,
+            "slot": "0",
+            "type": "t_bool"
+          }
+        ],
+        "numberOfBytes": "32"
+      },
+      "t_uint16": {
+        "encoding": "inplace",
+        "label": "uint16",
+        "numberOfBytes": "2"
+      }
+    }
+  }
+}

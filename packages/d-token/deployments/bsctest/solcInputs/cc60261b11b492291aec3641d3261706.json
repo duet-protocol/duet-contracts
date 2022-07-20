@@ -1,0 +1,40 @@
+{
+  "language": "Solidity",
+  "sources": {
+    "contracts/mocks/MockController.sol": {
+      "content": "// SPDX-License-Identifier: MIT\npragma solidity >=0.8.9;\n\ncontract MockController {\n\n  struct ValueConf {\n    address oracle;\n    uint16 dr;  // discount rate\n    uint16 pr;  // premium rate\n  }\n\n  struct VaultState {\n    bool enabled;\n    bool enableDeposit;\n    bool enableWithdraw;\n    bool enableBorrow;\n    bool enableRepay;\n    bool enableLiquidate;\n  }\n\n  mapping(address => address) public dyTokens;\n  mapping(address => address) public dyTokenVaults;\n  mapping(address => ValueConf) internal valueConfs;\n  mapping(address => VaultState) public vaultStates;\n\n  function getValueConf(address _underlying) public view returns (address oracle, uint16 dr, uint16 pr) {\n    ValueConf memory conf = valueConfs[_underlying];\n    oracle = conf.oracle;\n    dr = conf.dr;\n    pr = conf.pr;\n  }\n\n  function setVault(address _dyToken, address _vault, uint vtype) external {\n    dyTokenVaults[_dyToken] = _vault;\n  }\n\n  function setVaultStates(address _vault, VaultState memory _state) external {\n    vaultStates[_vault] = _state;\n  }\n\n  function setOracles(address _underlying, address _oracle, uint16 _discound, uint16 _premium) external {\n    ValueConf storage conf = valueConfs[_underlying];\n    conf.oracle = _oracle;\n    conf.dr = _discound;\n    conf.pr = _premium;\n  }\n\n}\n\n\n"
+    }
+  },
+  "settings": {
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "outputSelection": {
+      "*": {
+        "*": [
+          "abi",
+          "evm.bytecode",
+          "evm.deployedBytecode",
+          "evm.methodIdentifiers",
+          "metadata",
+          "storageLayout",
+          "devdoc",
+          "userdoc",
+          "evm.gasEstimates"
+        ],
+        "": [
+          "ast"
+        ]
+      }
+    },
+    "metadata": {
+      "useLiteralContent": true
+    },
+    "libraries": {
+      "": {
+        "__CACHE_BREAKER__": "0x00000000d41867734bbee4c6863d9255b2b06ac1"
+      }
+    }
+  }
+}
