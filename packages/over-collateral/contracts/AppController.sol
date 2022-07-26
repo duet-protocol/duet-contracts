@@ -4,17 +4,24 @@ pragma solidity 0.8.9;
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 import "./interfaces/IVault.sol";
 import "./interfaces/IDepositVault.sol";
 import "./interfaces/IMintVault.sol";
 import "./interfaces/IController.sol";
 import "./interfaces/IStrategy.sol";
+import "./interfaces/IUSDOracle.sol";
+import "./interfaces/IDYToken.sol";
 import "./Constants.sol";
+
+// import "@openzeppelin/contracts/utils/Strings.sol";
 
 contract AppController is Constants, IController, OwnableUpgradeable {
 
   using EnumerableSet for EnumerableSet.AddressSet;
+  using SafeERC20 for IERC20;
 
   uint constant JOINED_VAULT_LIMIT = 20;
 
@@ -25,17 +32,17 @@ contract AppController is Constants, IController, OwnableUpgradeable {
 
   struct ValueConf {
     address oracle;
-    uint16 dr;  // discount rate 
-    uint16 pr;  // premium rate 
+    uint16 dr;  // discount rate
+    uint16 pr;  // premium rate
   }
 
-  // underlying => orcale 
+  // underlying => orcale
   mapping(address => ValueConf ) internal valueConfs;
 
   //  dyToken => vault
   mapping(address => address) public override dyTokenVaults;
 
-  // user => vaults 
+  // user => vaults
   mapping(address => EnumerableSet.AddressSet) internal userJoinedDepositVaults;
 
   mapping(address => EnumerableSet.AddressSet) internal userJoinedBorrowVaults;
@@ -50,7 +57,7 @@ contract AppController is Constants, IController, OwnableUpgradeable {
     bool enableLiquidate;
   }
 
-  // Vault => VaultStatus 
+  // Vault => VaultStatus
   mapping(address => VaultState) public vaultStates;
 
 
@@ -61,22 +68,24 @@ contract AppController is Constants, IController, OwnableUpgradeable {
   // is anyone can call Liquidate.
   bool public isOpenLiquidate;
 
-  mapping(address => bool) public allowedLiquidator;  
+  mapping(address => bool) public allowedLiquidator;
 
   // vault => ValidVault
   // Initialize once
   mapping(address => ValidVault) public override validVaults;
 
   // vault => user => ValidVault
-  // set by user 
+  // set by user
   mapping(address => mapping(address => ValidVault)) public override validVaultsOfUser;
 
+  // global risk control
+  VaultState public globalVaultState;
 
   // EVENT
   event UnderlyingDTokenChanged(address indexed underlying, address oldDToken, address newDToken);
   event UnderlyingStrategyChanged(address indexed underlying, address oldStrage, address newDToken, uint stype);
   event DTokenVaultChanged(address indexed dToken, address oldVault, address newVault, uint vtype);
-  
+
   event ValueConfChanged(address indexed underlying, address oracle, uint discount, uint premium);
 
   event LiquidateRateChanged(uint liquidateRate);
@@ -90,7 +99,14 @@ contract AppController is Constants, IController, OwnableUpgradeable {
   event InitValidVault(address vault, ValidVault state);
   event SetValidVault(address vault, address user, ValidVault state);
 
-  constructor() {  
+  event ReleaseAdvance(address user, uint amount); // amount as USD
+  event ReleaseWithDebit(address user, uint amount); // amount as USD
+  event ReleaseWithPayback(address user, address underlying, address vault, uint amount); // amount as USD
+  event ReleaseByBorrowLiquidation(address user, address liqudator, address vault, uint amount); // amount as underlying
+  event ReleaseByDepositLiquidation(address user, address liqudator, address vault, uint amount); // amount as underlying
+  // event DebugMessage(string message);
+
+  constructor() {
   }
 
   function initialize() external initializer {
@@ -110,7 +126,7 @@ contract AppController is Constants, IController, OwnableUpgradeable {
 
 
   // set or update strategy
-  // stype: 1: pancakeswap 
+  // stype: 1: pancakeswap
   function setStrategy(address _underlying, address _strategy, uint stype) external onlyOwner {
     require(_strategy != address(0), "Strategies Disabled");
 
@@ -136,7 +152,7 @@ contract AppController is Constants, IController, OwnableUpgradeable {
   function updateAllowedLiquidator(address liquidator, bool allowed) external onlyOwner {
     allowedLiquidator[liquidator] = allowed;
     emit AllowedLiquidatorChanged(liquidator, allowed);
-  } 
+  }
 
   function setLiquidateRate(uint _liquidateRate) external onlyOwner {
     liquidateRate = _liquidateRate;
@@ -167,7 +183,7 @@ contract AppController is Constants, IController, OwnableUpgradeable {
     address oracle1, uint16 dr1, uint16 pr1) {
       (oracle0, dr0, pr0) = getValueConf(token0);
       (oracle1, dr1, pr1) = getValueConf(token1);
-  } 
+  }
 
   // get DiscountRate and PremiumRate
   function getValueConf(address _underlying) public view returns (address oracle, uint16 dr, uint16 pr) {
@@ -187,7 +203,7 @@ contract AppController is Constants, IController, OwnableUpgradeable {
 
   function joinVault(address _user, bool isDepositVault) external {
     address vault = msg.sender;
-    require(vaultStates[vault].enabled, "INVALID_CALLER");
+    require(vaultStates[vault].enabled, "VAULT_DISABLED");
 
     EnumerableSet.AddressSet storage set = isDepositVault ? userJoinedDepositVaults[_user] : userJoinedBorrowVaults[_user];
     require(set.length() < JOINED_VAULT_LIMIT, "JOIN_TOO_MUCH");
@@ -196,7 +212,7 @@ contract AppController is Constants, IController, OwnableUpgradeable {
 
   function exitVault(address _user, bool isDepositVault) external {
     address vault = msg.sender;
-    require(vaultStates[vault].enabled, "INVALID_CALLER");
+    require(vaultStates[vault].enabled, "VAULT_DISABLED");
 
     EnumerableSet.AddressSet storage set = isDepositVault ? userJoinedDepositVaults[_user] : userJoinedBorrowVaults[_user];
     set.remove(vault);
@@ -205,6 +221,10 @@ contract AppController is Constants, IController, OwnableUpgradeable {
   function setVaultStates(address _vault, VaultState memory _state) external onlyOwner {
     vaultStates[_vault] = _state;
     emit SetVaultStates(_vault, _state);
+  }
+
+  function setGlobalVaultState(VaultState memory _state) external onlyOwner {
+    globalVaultState = _state;
   }
 
   function initValidVault(address[] memory _vault, ValidVault[] memory _state) external onlyOwner {
@@ -286,7 +306,7 @@ contract AppController is Constants, IController, OwnableUpgradeable {
   /**
     * @notice predict total valid vault value after the user operating vault (i.e., Vault of deposit only counts collateral)
     * @param  _user depositors
-    * @param  _vault target vault 
+    * @param  _vault target vault
     * @param  _amount the amount of deposits or withdrawals
     * @param _dp  discount or premium
     */
@@ -298,7 +318,7 @@ contract AppController is Constants, IController, OwnableUpgradeable {
   /**
     * @notice  predict total vault value after the user operating Vault
     * @param  _user depositors
-    * @param  _vault target vault 
+    * @param  _vault target vault
     * @param  _amount the amount of deposits or withdrawals
     * @param _dp  discount or premium
     */
@@ -319,7 +339,7 @@ contract AppController is Constants, IController, OwnableUpgradeable {
   * @dev return total value of vault
   *
   * @param _user address of user
-  * @param set all address of vault 
+  * @param set all address of vault
   * @param _dp Discount or Premium
   */
   function accVaultVaule(address _user, EnumerableSet.AddressSet storage set, bool _dp) internal view returns (uint totalValue) {
@@ -348,10 +368,10 @@ contract AppController is Constants, IController, OwnableUpgradeable {
   }
 
   function accPendingValue(
-    address _user, 
-    EnumerableSet.AddressSet storage set, 
-    IVault vault, 
-    int amount, 
+    address _user,
+    EnumerableSet.AddressSet storage set,
+    IVault vault,
+    int amount,
     bool _dp
   ) internal view returns(uint totalValue) {
     uint len = set.length();
@@ -375,9 +395,9 @@ contract AppController is Constants, IController, OwnableUpgradeable {
   }
 
   function accValidPendingValue(
-    address _user, 
-    IVault vault, 
-    int amount, 
+    address _user,
+    IVault vault,
+    int amount,
     bool _dp
   ) internal view returns (uint totalValue) {
     EnumerableSet.AddressSet storage set = userJoinedDepositVaults[_user];
@@ -416,16 +436,26 @@ contract AppController is Constants, IController, OwnableUpgradeable {
     if(state == ValidVault.Yes) return true; // vault can be collateralized
     return false;
   }
-  
+
   /**
     * @notice Risk control check before deposit
     * param _user depositors
-    * @param _vault address of deposit market 
+    * @param _vault address of deposit market
     * param  _amount deposit amount
     */
   function beforeDeposit(address , address _vault, uint) external view {
     VaultState memory state =  vaultStates[_vault];
-    require(state.enabled && state.enableDeposit, "DEPOSITE_DISABLE");
+    require(
+      owner() == _msgSender() ||
+      globalVaultState.enabled && globalVaultState.enableDeposit &&
+      state.enabled && state.enableDeposit,
+      "DEPOSITE_DISABLE"
+    );
+
+    address underlying = IVault(_vault).underlying();
+    (address oracle, , ) = getValueConf(underlying);
+    uint price = IUSDOracle(oracle).getPrice(underlying);
+    require(price > 0, "NOT_ACCPET_ZERO_PRICE_TOKEN");
   }
 
   /**
@@ -436,7 +466,17 @@ contract AppController is Constants, IController, OwnableUpgradeable {
     */
   function beforeBorrow(address _user, address _vault, uint256 _amount) external view {
     VaultState memory state =  vaultStates[_vault];
-    require(state.enabled && state.enableBorrow, "BORROW_DISABLED");
+    require(
+      owner() == _msgSender() ||
+      globalVaultState.enabled && globalVaultState.enableBorrow &&
+      state.enabled && state.enableBorrow,
+      "BORROW_DISABLED"
+    );
+
+    address underlying = IVault(_vault).underlying();
+    (address oracle, , ) = getValueConf(underlying);
+    uint price = IUSDOracle(oracle).getPrice(underlying);
+    require(price > 0, "NOT_ACCPET_ZERO_PRICE_TOKEN");
 
     uint totalDepositValue = accValidVaultVaule(_user, true);
     uint pendingBrorowValue = accPendingValue(_user, userJoinedBorrowVaults[_user], IVault(_vault), int(_amount), true);
@@ -445,7 +485,12 @@ contract AppController is Constants, IController, OwnableUpgradeable {
 
   function beforeWithdraw(address _user, address _vault, uint256 _amount) external view {
     VaultState memory state = vaultStates[_vault];
-    require(state.enabled && state.enableWithdraw, "WITHDRAW_DISABLED");
+    require(
+      owner() == _msgSender() ||
+      globalVaultState.enabled && globalVaultState.enableWithdraw &&
+      state.enabled && state.enableWithdraw,
+      "WITHDRAW_DISABLED"
+    );
 
     if(isCollateralizedVault(_vault, _user)) {
       uint pendingDepositValidValue = accValidPendingValue(_user, IVault(_vault), int(0) - int(_amount), true);
@@ -456,7 +501,12 @@ contract AppController is Constants, IController, OwnableUpgradeable {
 
   function beforeRepay(address _repayer, address _vault, uint256 _amount) external view {
     VaultState memory state =  vaultStates[_vault];
-    require(state.enabled && state.enableRepay, "REPAY_DISABLED");
+    require(
+      owner() == _msgSender() ||
+      globalVaultState.enabled && globalVaultState.enableRepay &&
+      state.enabled && state.enableRepay,
+      "REPAY_DISABLED"
+    );
   }
 
   function liquidate(address _borrower, bytes calldata data) external {
@@ -489,8 +539,130 @@ contract AppController is Constants, IController, OwnableUpgradeable {
 
   function beforeLiquidate(address _borrower, address _vault) internal view {
     VaultState memory state =  vaultStates[_vault];
-    require(state.enabled && state.enableLiquidate, "LIQ_DISABLED");
+    require(
+      owner() == _msgSender() ||
+      globalVaultState.enabled && globalVaultState.enableLiquidate &&
+      state.enabled && state.enableLiquidate,
+      "LIQ_DISABLED"
+    );
   }
+
+  // @NOTE make sure FeeConf [liq_fee=0]
+  function releaseVaults(
+    address[] calldata users_, address[] calldata borrowVaults_,
+    address liquidator_
+  ) public onlyOwner {
+    for (uint i = 0; i < users_.length; i++) {
+      releaseVaultFor(users_[i], borrowVaults_, liquidator_);
+    }
+  }
+
+  // @NOTE make sure [liq_fee=0]
+  function releaseVaultFor(
+    address user_, address[] calldata borrowVaults_,
+    address liquidator_
+  ) public onlyOwner {
+    uint advance;
+
+    for (uint i = 0; i < borrowVaults_.length; i ++) {
+      address vaultAddress = borrowVaults_[i];
+      if (!userJoinedBorrowVaults[user_].contains(vaultAddress)) continue;
+      // emit DebugMessage(string(abi.encodePacked(
+      //   "joined borrow vault: ",
+      //   Strings.toString(i)
+      // )));
+
+      uint debit = releaseBorrowVaultFor(user_, vaultAddress, liquidator_);
+      // emit DebugMessage(string(abi.encodePacked(
+      //   "debit: ",
+      //   Strings.toString(debit)
+      // )));
+
+      require(!userJoinedBorrowVaults[user_].contains(vaultAddress), 'NOT COMPLELTELY REPAIED MINT VAULT');
+      advance += debit;
+    }
+    if (advance <= 0) return;
+    emit ReleaseAdvance(user_, advance);
+
+    EnumerableSet.AddressSet storage depositVaults = userJoinedDepositVaults[user_];
+    for (uint i = depositVaults.length(); advance > 0 && i > 0; i --) {
+      address vaultAddress = depositVaults.at(i - 1);
+      if (!canBeLiquidatedForVaultReleasing(user_, vaultAddress)) continue;
+
+      uint collateral = releaseDespoitVaultFor(user_, vaultAddress, advance, liquidator_);
+      // emit DebugMessage(string(abi.encodePacked(
+      //   "collateral: ",
+      //   Strings.toString(collateral)
+      // )));
+      advance -= collateral;
+    }
+    if (advance > 0) emit ReleaseWithDebit(user_, advance);
+
+  }
+
+  function canBeLiquidatedForVaultReleasing(address user_, address vault_) view internal returns (bool) {
+    (, uint dr, ) = getValueConf(IVault(vault_).underlying());
+    if (dr <= 0) return false;
+    if (!isCollateralizedVault(vault_, user_)) return false;
+    return true;
+  }
+
+  function releaseBorrowVaultFor(
+    address user_, address vault_,
+    address liquidator_
+  ) internal returns (uint debit) {
+    debit = IVault(vault_).userValue(user_, false);
+    uint amount = IMintVault(vault_).borrows(user_);
+
+    bool originalEnabled = vaultStates[vault_].enabled;
+    bool originalEnableLiquidate = vaultStates[vault_].enableLiquidate;
+    vaultStates[vault_].enabled = true;
+    vaultStates[vault_].enableLiquidate = true;
+
+    IVault(vault_).liquidate(liquidator_, user_, "0x01");
+    emit ReleaseByBorrowLiquidation(user_, liquidator_, vault_, amount);
+
+    vaultStates[vault_].enabled = originalEnabled;
+    vaultStates[vault_].enableLiquidate = originalEnableLiquidate;
+  }
+
+  function releaseDespoitVaultFor(
+    address user_, address vault_, uint advance_,
+    address liquidator_
+  ) internal returns (uint collateral) {
+    collateral = IVault(vault_).userValue(user_, false);
+    uint amount = IDepositVault(vault_).deposits(user_);
+
+    bool originalEnabled = vaultStates[vault_].enabled;
+    bool originalEnableLiquidate = vaultStates[vault_].enableLiquidate;
+    vaultStates[vault_].enabled = true;
+    vaultStates[vault_].enableLiquidate = true;
+
+    IVault(vault_).liquidate(liquidator_, user_, "0x01");
+    emit ReleaseByDepositLiquidation(user_, liquidator_, vault_, amount);
+
+    if (collateral > advance_) {
+      uint offset = collateral - advance_;
+      uint payback = amount * offset * 1e12 / collateral / 1e12;
+      repayWhileReleasingVaultFor(user_, vault_, liquidator_, payback);
+      emit ReleaseWithPayback(user_, IVault(vault_).underlying(), vault_, offset);
+      collateral = advance_;
+    }
+
+    vaultStates[vault_].enabled = originalEnabled;
+    vaultStates[vault_].enableLiquidate = originalEnableLiquidate;
+  }
+
+  function repayWhileReleasingVaultFor(
+    address user_, address vault_, address liquidator_,
+    uint amount_
+  ) internal {
+    IDYToken dytoken = IDYToken(IVault(vault_).underlying());
+    IERC20(dytoken.underlying()).safeTransferFrom(liquidator_, address(this), amount_);
+    IDepositVault(vault_).depositTo(address(dytoken), user_, amount_);
+  }
+
+
   //  ======   vault end =======
 
 }

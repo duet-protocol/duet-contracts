@@ -54,32 +54,30 @@ void (async () => {
       console.info(`Duet SDK definition detected at "${packageRoot}"`)
 
       for (const chainAlias of chainAliases) {
-        const deploymentPath = `${packageRoot}/deployments/${chainAlias}`
-        if (!existsSync(deploymentPath)) {
-          console.warn(`Deployment record of ${packageName}@${chainAlias} is resolvable, skipped`)
-          continue
+        for (const deploymentDirname of ['legacy-deployments', 'deployments']) {
+          const deploymentPath = `${packageRoot}/${deploymentDirname}/${chainAlias}`
+          if (!existsSync(deploymentPath)) continue
+
+          const availableItems = await resolveContractNamesOfTypeChainPackage(packageRoot)
+          const typeChainPath = `${packageRoot}/typechain`
+
+          for (const name of availableItems) {
+            const typeFilename = `${typeChainPath}/${name}.d.ts`
+            const factoryFilename = `${typeChainPath}/factories/${name}__factory.ts`
+            if (!exportingStore.has(name)) exportingStore.set(name, [])
+            exportingStore.get(name)!.push({
+              module: packageName,
+              hash: (
+                await Promise.all([getFileHash(typeFilename), getFileHash(factoryFilename)])
+              ).join('+')
+            })
+          }
+
+          const { chain, contracts } = await ensureDeploymentMetaIndex(deploymentPath)
+          for (const contract of contracts) metaSheet.push({ module: packageName, chain, contract })
+
+          builtinFiles.set(`common.d.ts`, `${typeChainPath}/common.d.ts`)
         }
-
-        const availableItems = await resolveContractNamesOfTypeChainPackage(packageRoot)
-        const typeChainPath = `${packageRoot}/typechain`
-
-        for (const name of availableItems) {
-          const typeFilename = `${typeChainPath}/${name}.d.ts`
-          const factoryFilename = `${typeChainPath}/factories/${name}__factory.ts`
-          if (!exportingStore.has(name)) exportingStore.set(name, [])
-          exportingStore.get(name)!.push({
-            module: packageName,
-            hash: (
-              await Promise.all([getFileHash(typeFilename), getFileHash(factoryFilename)])
-            ).join('+')
-          })
-        }
-
-        const { chain, contracts } = await ensureDeploymentMetaIndex(deploymentPath)
-        for (const contract of contracts) metaSheet.push({ module: packageName, chain, contract })
-
-        builtinFiles.set(`common.d.ts`, `${typeChainPath}/common.d.ts`)
-
       }
 
     })
