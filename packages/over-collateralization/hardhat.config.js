@@ -3,10 +3,11 @@ require('@nomiclabs/hardhat-etherscan');
 require('@openzeppelin/hardhat-upgrades');
 require('hardhat-abi-exporter');
 require('@typechain/hardhat');
+require('hardhat-deploy');
 
-const dotenv = require('dotenv');
-dotenv.config({ path: './.env_product' });
-
+require('dotenv').config();
+const tenderly = require('@tenderly/hardhat-tenderly');
+tenderly.setup();
 // const { setGlobalDispatcher, ProxyAgent } = require('undici')
 // const proxyAgent = new ProxyAgent('http://127.0.0.1:7890')
 // setGlobalDispatcher(proxyAgent)
@@ -70,7 +71,11 @@ module.exports = {
         mnemonic: mnemonic,
       },
     },
-
+    forked: {
+      url: process.env.FORK_URL,
+      chainId: 56,
+      accounts: [process.env.KEY_BSC_MAINNET],
+    },
     main: {
       url: `https://mainnet.infura.io/v3/${infurakey}`,
       accounts: {
