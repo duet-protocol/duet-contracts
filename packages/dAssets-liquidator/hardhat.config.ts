@@ -19,6 +19,7 @@ import { useLogger } from './scripts/utils';
 import * as path from 'path';
 import * as fs from 'fs';
 import ethers from 'ethers';
+import BigNumber from 'bignumber.js';
 
 dotenv.config();
 
@@ -104,7 +105,7 @@ const config: HardhatUserConfig = {
             accounts: [
               {
                 privateKey: process.env.FORK_KEY!,
-                balance: ethers.utils.parseEther('1000').toString(),
+                balance: new BigNumber(1000).multipliedBy(1e18).toFixed(),
               },
             ],
           }
