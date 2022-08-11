@@ -8,9 +8,9 @@
   "scripts": {
     "compile": "npx hardhat compile",
     "compile:watch": "npx hardhat watch compile",
-    "deploy:bsc": "npx hardhat deploy --network bsc",
-    "deploy:bsctest": "npx hardhat deploy --network bsctest",
-    "deploy:local": "npx hardhat deploy --network local",
+    "deploy:bsc": "npx hardhat deploy --network bsc &&  ts-node -T ./scripts/clean-solc-inputs.ts",
+    "deploy:bsctest": "npx hardhat deploy --network bsctest &&  ts-node -T ./scripts/clean-solc-inputs.ts",
+    "deploy:local": "npx hardhat deploy --network local &&  ts-node -T ./scripts/clean-solc-inputs.ts",
     "verify:bsc": "npx hardhat --network bsc etherscan-verify &&  npx hardhat --network bsc verify:duet",
     "verify:bsctest": "npx hardhat --network bsctest etherscan-verify &&  npx hardhat --network bsctest verify:duet",
     "abi": "hardhat export-abi",

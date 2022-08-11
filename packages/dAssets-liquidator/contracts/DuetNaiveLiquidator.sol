@@ -8,6 +8,7 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "./interfaces/ILiquidateCallee.sol";
 import "./interfaces/IController.sol";
 import "./libs/Adminable.sol";
+import "./interfaces/IDYToken.sol";
 
 contract DuetNaiveLiquidator is ILiquidateCallee, Adminable, Initializable {
     IController public controller;
@@ -59,6 +60,20 @@ contract DuetNaiveLiquidator is ILiquidateCallee, Adminable, Initializable {
 
     function transferToken(IERC20Upgradeable token_, address to_) public onlyAdmin {
         transferTokenByAmount(token_, to_, token_.balanceOf(address(this)));
+    }
+
+    function transferTokens(IERC20Upgradeable[] calldata tokens_) public onlyAdmin {
+        for (uint256 i = 0; i < tokens_.length; i++) {
+            IERC20Upgradeable token = tokens_[i];
+            transferTokenByAmount(token, msg.sender, token.balanceOf(address(this)));
+        }
+    }
+
+    function withdrawDyTokens(IDYToken[] calldata dyTokens_) external onlyAdmin {
+        for (uint256 i = 0; i < dyTokens_.length; i++) {
+            IDYToken dyToken = dyTokens_[i];
+            dyToken.withdraw(msg.sender, IERC20Upgradeable(address(dyToken)).balanceOf(address(this)), false);
+        }
     }
 
     function approveTokenByAmount(
