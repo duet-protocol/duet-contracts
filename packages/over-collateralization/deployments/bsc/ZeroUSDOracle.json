@@ -1,0 +1,60 @@
+{
+  "address": "0xDEe31240CC3601EbCdf707ECF55EC1b8D9b095B4",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        }
+      ],
+      "name": "getPrice",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "transactionHash": "0x2321a11ec47061b20a7a3166646b58a76e99693e36c2dccd18dc139a068052ca",
+  "receipt": {
+    "to": null,
+    "from": "0x00d7A6a2F161d3f4971a3d1B071Ef55b284FD3Bf",
+    "contractAddress": "0xDEe31240CC3601EbCdf707ECF55EC1b8D9b095B4",
+    "transactionIndex": 49,
+    "gasUsed": "92295",
+    "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "blockHash": "0x63b529bb265e80b961d7163860ab9334f359af55d33deb95155da4ffece1ad7e",
+    "transactionHash": "0x2321a11ec47061b20a7a3166646b58a76e99693e36c2dccd18dc139a068052ca",
+    "logs": [],
+    "blockNumber": 20349250,
+    "cumulativeGasUsed": "4599906",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [],
+  "numDeployments": 1,
+  "solcInputHash": "bd640888a598675b6d369327b02f7e3e",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.9+commit.e5eed63a\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\"}],\"name\":\"getPrice\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/oracle/ZeroUSDOracle.sol\":\"ZeroUSDOracle\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"contracts/interfaces/IUSDOracle.sol\":{\"content\":\"//SPDX-License-Identifier: MIT\\n\\npragma solidity >=0.6.0;\\n\\ninterface IUSDOracle {\\n  // Must 8 dec, same as chainlink decimals.\\n  function getPrice(address token) external view returns (uint256);\\n}\\n\",\"keccak256\":\"0xb2d61b8e116a91ee462037152382f40dda542cb4d40bbd2891472dff6dd057ef\",\"license\":\"MIT\"},\"contracts/oracle/ZeroUSDOracle.sol\":{\"content\":\"//SPDX-License-Identifier: MIT\\npragma solidity 0.8.9;\\n\\nimport \\\"../interfaces/IUSDOracle.sol\\\";\\n\\ncontract ZeroUSDOracle is IUSDOracle {\\n  function getPrice(address token) external view returns (uint256) {\\n    return 0;\\n  }\\n}\\n\",\"keccak256\":\"0xab24b88c01b7b6333fe201416992793bebb75b5b455c491f251701301f33e7b3\",\"license\":\"MIT\"}},\"version\":1}",
+  "bytecode": "0x608060405234801561001057600080fd5b5060b48061001f6000396000f3fe6080604052348015600f57600080fd5b506004361060285760003560e01c806341976e0914602d575b600080fd5b603e60383660046050565b50600090565b60405190815260200160405180910390f35b600060208284031215606157600080fd5b81356001600160a01b0381168114607757600080fd5b939250505056fea2646970667358221220e7bdba9ae03552fb5da8526ccb5a1411ba2fc48f5a88d69ffb08f93c44d3bfbc64736f6c63430008090033",
+  "deployedBytecode": "0x6080604052348015600f57600080fd5b506004361060285760003560e01c806341976e0914602d575b600080fd5b603e60383660046050565b50600090565b60405190815260200160405180910390f35b600060208284031215606157600080fd5b81356001600160a01b0381168114607757600080fd5b939250505056fea2646970667358221220e7bdba9ae03552fb5da8526ccb5a1411ba2fc48f5a88d69ffb08f93c44d3bfbc64736f6c63430008090033",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [],
+    "types": null
+  }
+}

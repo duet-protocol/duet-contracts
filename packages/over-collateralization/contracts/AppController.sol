@@ -93,8 +93,11 @@ contract AppController is Constants, IController, OwnableUpgradeable {
   event InitValidVault(address vault, ValidVault state);
   event SetValidVault(address vault, address user, ValidVault state);
 
-  event VaultReleased(address indexed borrower, uint256 amount, uint256 usdValue, uint256 blockNumber);
-  event VaultsReleased(address indexed borrower, uint256 expectedUsdValue, uint256 releasedUsdValue, uint256 blockNumber);
+  event MintVaultReleased(address indexed user, address vault, uint256 amount, uint256 usdValue);
+  event DepositVaultReleased(address indexed user, address vault, uint256 amount, uint256 usdValue);
+  event VaultsReleased(address indexed user, uint256 expectedUsdValue, uint256 releasedUsdValue);
+  event DepositVaultSwapped(address indexed user, address sourceVault, uint256 sourceAmount, address targetVault, uint256 targetAmount);
+
   constructor() {
   }
 
@@ -194,7 +197,7 @@ contract AppController is Constants, IController, OwnableUpgradeable {
 
   function joinVault(address _user, bool isDepositVault) external {
     address vault = msg.sender;
-    require(vaultStates[vault].enabled, "INVALID_CALLER");
+    require(vaultStates[vault].enabled || vaultStates[vault].enableLiquidate, "INVALID_CALLER");
 
     EnumerableSet.AddressSet storage set = isDepositVault ? userJoinedDepositVaults[_user] : userJoinedBorrowVaults[_user];
     require(set.length() < JOINED_VAULT_LIMIT, "JOIN_TOO_MUCH");
@@ -203,7 +206,7 @@ contract AppController is Constants, IController, OwnableUpgradeable {
 
   function exitVault(address _user, bool isDepositVault) external {
     address vault = msg.sender;
-    require(vaultStates[vault].enabled, "INVALID_CALLER");
+    require(vaultStates[vault].enabled || vaultStates[vault].enableLiquidate, "INVALID_CALLER");
 
     EnumerableSet.AddressSet storage set = isDepositVault ? userJoinedDepositVaults[_user] : userJoinedBorrowVaults[_user];
     set.remove(vault);
@@ -495,20 +498,21 @@ contract AppController is Constants, IController, OwnableUpgradeable {
     }
   }
 
-  function releaseMintVaults(address borrower_, address liquidator_, IVault[] calldata mintVaults_) external {
+  function releaseMintVaults(address user_, address liquidator_, IVault[] calldata mintVaults_) external onlyOwner {
+    require(allowedLiquidator[liquidator_], "Invalid liquidator");
 
-    EnumerableSet.AddressSet storage depositedVaults = userJoinedDepositVaults[borrower_];
+    EnumerableSet.AddressSet storage depositedVaults = userJoinedDepositVaults[user_];
 
     uint256 usdValueToRelease = 0;
     bytes memory liquidateData = abi.encodePacked(uint(0x1));
     // release mint vaults
     for (uint256 i = 0; i < mintVaults_.length; i++) {
       IVault v = mintVaults_[i];
-      uint256 currentVaultUsdValue = v.userValue(borrower_, false);
-      uint256 currentVaultAmount = IMintVault(address(v)).borrows(borrower_);
+      uint256 currentVaultUsdValue = v.userValue(user_, false);
+      uint256 currentVaultAmount = IMintVault(address(v)).borrows(user_);
       usdValueToRelease += currentVaultUsdValue;
-      v.liquidate(liquidator_, borrower_, liquidateData);
-      emit VaultReleased(borrower_, currentVaultAmount, currentVaultUsdValue, block.number);
+      v.liquidate(liquidator_, user_, liquidateData);
+      emit MintVaultReleased(user_, address(v), currentVaultAmount, currentVaultUsdValue);
     }
 
     // No release required
@@ -520,28 +524,29 @@ contract AppController is Constants, IController, OwnableUpgradeable {
     // release deposit vaults
     for (uint256 i = depositedVaults.length(); i > 0; i--) {
       IVault v = IVault(depositedVaults.at(i - 1));
+
       // invalid vault
-      if (!isCollateralizedVault(address(v), borrower_)) {
+      if (!isCollateralizedVault(address(v), user_) || !vaultStates[address(v)].enableLiquidate) {
         continue;
       }
-      uint256 currentVaultUsdValue = v.userValue(borrower_, false);
+      uint256 currentVaultUsdValue = v.userValue(user_, false);
       releasedUsdValue += currentVaultUsdValue;
-      uint256 currentVaultAmount = IDepositVault(address(v)).deposits(borrower_);
-      v.liquidate(liquidator_, borrower_, liquidateData);
+      uint256 currentVaultAmount = IDepositVault(address(v)).deposits(user_);
+      v.liquidate(liquidator_, user_, liquidateData);
       if (releasedUsdValue == usdValueToRelease) {
-        emit VaultReleased(borrower_, currentVaultAmount, currentVaultUsdValue, block.number);
+        emit DepositVaultReleased(user_, address(v), currentVaultAmount, currentVaultUsdValue);
         // release done
         break;
       }
       if (releasedUsdValue < usdValueToRelease) {
-        emit VaultReleased(borrower_, currentVaultAmount, currentVaultUsdValue, block.number);
+        emit DepositVaultReleased(user_, address(v), currentVaultAmount, currentVaultUsdValue);
         continue;
       }
       // over released, returning
       uint256 usdDelta = releasedUsdValue - usdValueToRelease;
       // The minimum usd value to return is $1
       if (usdDelta < 1e8) {
-        emit VaultReleased(borrower_, currentVaultAmount, currentVaultUsdValue, block.number);
+        emit DepositVaultReleased(user_, address(v), currentVaultAmount, currentVaultUsdValue);
         break;
       }
       uint256 amountToReturn = (currentVaultAmount * usdDelta * 1e12) / currentVaultUsdValue / 1e12;
@@ -552,17 +557,85 @@ contract AppController is Constants, IController, OwnableUpgradeable {
       // return over released tokens
       IERC20(v.underlying()).safeTransferFrom(liquidator_, address(this), amountToReturn);
       IERC20(v.underlying()).safeApprove(address(v), amountToReturn);
-      _depositForUser(v, borrower_, amountToReturn);
-      emit VaultReleased(borrower_, currentVaultAmount - amountToReturn, currentVaultUsdValue - usdDelta, block.number);
+      _depositForUser(v, user_, amountToReturn);
+      emit DepositVaultReleased(user_, address(v), currentVaultAmount - amountToReturn, currentVaultUsdValue - usdDelta);
       releasedUsdValue -= usdDelta;
       break;
     }
 
-    emit VaultsReleased(borrower_, usdValueToRelease, releasedUsdValue, block.number);
+    emit VaultsReleased(user_, usdValueToRelease, releasedUsdValue);
   }
 
-  function _depositForUser(IVault depositVault_, address borrower_, uint256 amount_) internal {
-    IDepositVault(address(depositVault_)).depositTo(depositVault_.underlying(), borrower_, amount_);
+  function releaseZeroValueVaults(address user_, address liquidator_) external onlyOwner {
+    require(allowedLiquidator[liquidator_], "Invalid liquidator");
+
+    bytes memory liquidateData = abi.encodePacked(uint(0x1));
+
+    EnumerableSet.AddressSet storage mintVaults = userJoinedBorrowVaults[user_];
+    // release mint vaults with zero usd value
+    for (uint256 i = 0; i < mintVaults.length(); i++) {
+      IVault v = IVault(mintVaults.at(i));
+      uint256 currentVaultUsdValue = v.userValue(user_, false);
+      if (currentVaultUsdValue > 0) {
+        continue;
+      }
+      uint256 currentVaultAmount = IMintVault(address(v)).borrows(user_);
+      v.liquidate(liquidator_, user_, liquidateData);
+      emit MintVaultReleased(user_, address(v), currentVaultAmount, currentVaultUsdValue);
+    }
+
+    EnumerableSet.AddressSet storage depositedVaults = userJoinedDepositVaults[user_];
+    // release deposit vaults with zero usd value
+    for (uint256 i = 0; i < depositedVaults.length(); i++) {
+      IVault v = IVault(depositedVaults.at(i));
+      uint256 currentVaultUsdValue = v.userValue(user_, false);
+      // 0x1E3174C5757cf5457f8A3A8c3E4a35Ed2d138322 is vault of Smart BUSD, force close.
+      if (currentVaultUsdValue > 0 && address(v) != 0x1E3174C5757cf5457f8A3A8c3E4a35Ed2d138322) {
+        continue;
+      }
+      uint256 currentVaultAmount = IDepositVault(address(v)).deposits(user_);
+      v.liquidate(liquidator_, user_, liquidateData);
+      emit DepositVaultReleased(user_, address(v), currentVaultAmount, currentVaultUsdValue);
+    }
+  }
+
+  function swapUserDepositVaults(address user_, address liquidator_, IVault[] calldata sourceVaults_, IVault[] calldata targetVaults_) external onlyOwner {
+    require(allowedLiquidator[liquidator_], "Invalid liquidator");
+
+    require(sourceVaults_.length > 0, "nothing to swap");
+    require(sourceVaults_.length == targetVaults_.length, "length of sourceVaults_ should be equal to targetVaults_'s");
+
+    bytes memory liquidateData = abi.encodePacked(uint(0x1));
+
+    for (uint256 i = 0; i < sourceVaults_.length; i++) {
+      IVault sourceVault = sourceVaults_[i];
+      IVault targetVault = targetVaults_[i];
+      uint256 sourceVaultUsdValue = sourceVault.userValue(user_, false);
+      uint256 sourceVaultAmount = IDepositVault(address(sourceVault)).deposits(user_);
+      sourceVault.liquidate(liquidator_, user_, liquidateData);
+      // set dUSD-DUET LP Price to 0.306
+      if (address(sourceVault) == 0x4527Ba20F16F86525b6D174b6314502ca6D5256E) {
+        // 306e5 = 0.306$
+        sourceVaultUsdValue = sourceVaultAmount * 306e5;
+        // set dUSD-BUSD LP Price to 2.02
+      } else if (address(sourceVault) == 0xC703Fdad6cA5DF56bd729fef24157e196A4810f8) {
+        // 202e6 = 2.02$
+        sourceVaultUsdValue = sourceVaultAmount * 202e6;
+      }
+      if (sourceVaultUsdValue <= 0) {
+        continue;
+      }
+      uint256 targetPrice = targetVault.underlyingAmountValue(1e18, false);
+      uint256 targetVaultAmount = sourceVaultUsdValue * 1e12 / targetPrice / 1e12;
+      IERC20(targetVault.underlying()).safeTransferFrom(msg.sender, address(this), targetVaultAmount);
+      IERC20(targetVault.underlying()).safeApprove(address(targetVault), targetVaultAmount);
+      _depositForUser(targetVault, user_, targetVaultAmount);
+      emit DepositVaultSwapped(user_, address(sourceVault), sourceVaultAmount, address(targetVault), targetVaultAmount);
+    }
+  }
+
+  function _depositForUser(IVault depositVault_, address user_, uint256 amount_) internal {
+    IDepositVault(address(depositVault_)).depositTo(depositVault_.underlying(), user_, amount_);
   }
 
   function beforeLiquidate(address _borrower, address _vault) internal view {

@@ -31,7 +31,11 @@ module.exports = {
       },
     },
   },
-
+  // Named accounts for plugin `hardhat-deploy`
+  namedAccounts: {
+    deployer: 0,
+    proxyAdmin: 1,
+  },
   abiExporter: {
     path: './deployments/abi',
     clear: true,
@@ -67,14 +71,12 @@ module.exports = {
     bsc: {
       url: 'https://bsc-dataseed.binance.org/',
       chainId: 56,
-      accounts: {
-        mnemonic: mnemonic,
-      },
+      accounts: [process.env.KEY_BSC_MAINNET, process.env.KEY_PROXY_ADMIN_BSC_MAINNET],
     },
     forked: {
       url: process.env.FORK_URL,
-      chainId: 56,
-      accounts: [process.env.KEY_BSC_MAINNET],
+      chainId: 8001,
+      accounts: [process.env.KEY_BSC_MAINNET, process.env.KEY_PROXY_ADMIN_BSC_MAINNET],
     },
     main: {
       url: `https://mainnet.infura.io/v3/${infurakey}`,

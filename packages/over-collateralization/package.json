@@ -6,7 +6,9 @@
   "scripts": {
     "compile": "npx hardhat compile",
     "compile:watch": "npx hardhat watch compile",
-    "abi": "hardhat export-abi"
+    "abi": "hardhat export-abi",
+    "deploy:bsc": "npx hardhat deploy --network bsc &&  ts-node -T ./scripts/clean-solc-inputs.ts",
+    "deploy:bsctest": "npx hardhat deploy --network bsctest &&  ts-node -T ./scripts/clean-solc-inputs.ts"
   },
   "repository": {
     "type": "git",
@@ -28,6 +30,8 @@
     "@openzeppelin/contracts": "4.3.2",
     "@openzeppelin/hardhat-upgrades": "^1.15.0",
     "chai": "^4.3.4",
+    "csv": "^6.2.0",
+    "csv-stringify": "^6.2.0",
     "dotenv": "^10.0.0",
     "ethereum-waffle": "^3.4.0",
     "hardhat": "^2.6.6",

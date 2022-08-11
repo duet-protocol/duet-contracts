@@ -1,6 +1,7 @@
 import * as path from 'path';
-import chalk from 'chalk';
-import moment from 'moment';
+const chalk = require('chalk')
+const moment = require('moment')
+
 
 const repoBasePath = path.resolve(path.dirname(path.join(__dirname, '/../../../../')));
 
