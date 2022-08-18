@@ -1,0 +1,4 @@
+{
+  "class": "MockOracleUSDAggregator",
+  "instance": "MockOracleUSDAggregator"
+}
