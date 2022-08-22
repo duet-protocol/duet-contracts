@@ -1,0 +1,35 @@
+{
+  "name": "dAssets-liquidator",
+  "description": "Projects can bid with $Cake to win a 7-day farm",
+  "main": "index.js",
+  "version": "1.0.0",
+  "license": "GPL-3.0",
+  "private": true,
+  "scripts": {
+    "compile": "npx hardhat compile",
+    "compile:watch": "npx hardhat watch compile",
+    "deploy:bsc": "npx hardhat deploy --network bsc &&  ts-node -T ./scripts/clean-solc-inputs.ts",
+    "deploy:bsctest": "npx hardhat deploy --network bsctest &&  ts-node -T ./scripts/clean-solc-inputs.ts",
+    "deploy:local": "npx hardhat deploy --network local &&  ts-node -T ./scripts/clean-solc-inputs.ts",
+    "verify:bsc": "npx hardhat --network bsc etherscan-verify &&  npx hardhat --network bsc verify:duet",
+    "verify:bsctest": "npx hardhat --network bsctest etherscan-verify &&  npx hardhat --network bsctest verify:duet",
+    "abi": "hardhat export-abi",
+    "hint": "npx hardhat check",
+    "test": "REPORT_GAS=true npx hardhat test",
+    "test:node": "npx hardhat node",
+    "test:watch": "npx hardhat watch test",
+    "test:coverage": "npx hardhat coverage",
+    "test:size-contracts": "npx hardhat size-contracts",
+    "docgen": "rm -rf ./docs && npx hardhat docgen",
+    "prettier": "prettier --write 'contracts/**/*.sol'"
+  },
+  "devDependencies": {
+    "@openzeppelin/contracts": "^4.6.0",
+    "@openzeppelin/hardhat-upgrades": "^1.17.0",
+    "moment": "^2.29.3",
+    "moment-timezone": "^0.5.34"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts-upgradeable": "^4.6.0"
+  }
+}
