@@ -1,0 +1,83 @@
+// SPDX-License-Identifier: GPL-3.0
+pragma solidity 0.6.9;
+pragma experimental ABIEncoderV2;
+
+import {DecimalMath} from "./lib/DecimalMath.sol";
+import {ReentrancyGuard} from "./lib/ReentrancyGuard.sol";
+import {SafeMath} from "./lib/SafeMath.sol";
+import {IDODOV2} from "./intf/IDODOV2.sol";
+import {DuetDppLp} from "./DuetDppLp.sol";
+
+contract DuetDppLpFunding is DuetDppLp, ReentrancyGuard  {
+    using SafeMath for uint256;
+    // ============ Events ============
+
+    event BuyShares(address to, uint256 increaseShares, uint256 totalShares);
+
+    event SellShares(address payer, address to, uint256 decreaseShares, uint256 totalShares);
+
+    // ============ Buy & Sell Shares ============
+
+    // buy shares [round down]
+    function _buyShares(
+        address to
+    )
+        internal
+        returns (
+            uint256 shares,
+            uint256 baseInput,
+            uint256 quoteInput
+        )
+    {
+        uint256 baseBalance = _BASE_TOKEN_.balanceOf(_DPP_ADDRESS_);
+        uint256 quoteBalance = _QUOTE_TOKEN_.balanceOf(_DPP_ADDRESS_);
+        (uint256 baseReserve, uint256 quoteReserve) = IDODOV2(_DPP_ADDRESS_).getVaultReserve();
+
+        baseInput = baseBalance.sub(baseReserve);
+        quoteInput = quoteBalance.sub(quoteReserve);
+        require(baseInput > 0, "NO_BASE_INPUT");
+
+        // Round down when withdrawing. Therefore, never be a situation occuring balance is 0 but totalsupply is not 0
+        // But May Happen，reserve >0 But totalSupply = 0
+        if (totalSupply == 0) {
+            // case 1. initial supply
+            require(baseBalance >= 10**3, "INSUFFICIENT_LIQUIDITY_MINED");
+            shares = baseBalance; // 以免出现balance很大但shares很小的情况
+        } else if (baseReserve > 0 && quoteReserve == 0) {
+            // case 2. supply when quote reserve is 0
+            shares = baseInput.mul(totalSupply).div(baseReserve);
+        } else if (baseReserve > 0 && quoteReserve > 0) {
+            // case 3. normal case
+            uint256 baseInputRatio = DecimalMath.divFloor(baseInput, baseReserve);
+            uint256 quoteInputRatio = DecimalMath.divFloor(quoteInput, quoteReserve);
+            uint256 mintRatio = quoteInputRatio < baseInputRatio ? quoteInputRatio : baseInputRatio;
+            shares = DecimalMath.mulFloor(totalSupply, mintRatio);
+        }
+        _mint(to, shares);
+        emit BuyShares(to, shares, _SHARES_[to]);
+    }
+
+    // sell shares [round down]
+    function _sellShares(
+        uint256 shareAmount,
+        address to,
+        uint256 baseMinAmount,
+        uint256 quoteMinAmount
+    ) internal returns (uint256 baseAmount, uint256 quoteAmount) {
+        require(shareAmount <= _SHARES_[to], "DLP_NOT_ENOUGH");
+        (uint256 baseBalance, uint256 quoteBalance) = IDODOV2(_DPP_ADDRESS_).getVaultReserve();
+        uint256 totalShares = totalSupply;
+
+        baseAmount = baseBalance.mul(shareAmount).div(totalShares);
+        quoteAmount = quoteBalance.mul(shareAmount).div(totalShares);
+
+        require(
+            baseAmount >= baseMinAmount && quoteAmount >= quoteMinAmount,
+            "WITHDRAW_NOT_ENOUGH"
+        );
+
+        _burn(to, shareAmount);
+        
+        emit SellShares(to, to, shareAmount, _SHARES_[to]);
+    }
+}
