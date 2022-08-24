@@ -1,8 +1,7 @@
-
-pragma solidity 0.6.9;
+pragma solidity 0.8.9;
 pragma experimental ABIEncoderV2;
 
-import {SafeMath} from "./SafeMath.sol";
+import { SafeMath } from "./SafeMath.sol";
 
 /**
  * @title DecimalMath
@@ -42,11 +41,11 @@ library DecimalMath {
 
     function powFloor(uint256 target, uint256 e) internal pure returns (uint256) {
         if (e == 0) {
-            return 10 ** 18;
+            return 10**18;
         } else if (e == 1) {
             return target;
         } else {
-            uint p = powFloor(target, e.div(2));
+            uint256 p = powFloor(target, e.div(2));
             p = p.mul(p) / (10**18);
             if (e % 2 == 1) {
                 p = p.mul(target) / (10**18);

@@ -5,17 +5,17 @@
 
 */
 
-pragma solidity 0.6.9;
+pragma solidity 0.8.9;
 pragma experimental ABIEncoderV2;
 
-import {InitializableOwnable} from "../../lib/InitializableOwnable.sol";
-import {SafeMath} from "../../lib/SafeMath.sol";
-import {DecimalMath} from "../../lib/DecimalMath.sol";
-import {ReentrancyGuard} from "../../lib/ReentrancyGuard.sol";
-import {IFeeRateModel} from "../lib/FeeRateModel.sol";
-import {IERC20} from "../../intf/IERC20.sol";
-import {PMMPricing} from "../lib/PMMPricing.sol";
-import {IOracle} from "../intf/IOracle.sol";
+import { InitializableOwnable } from "../../lib/InitializableOwnable.sol";
+import { SafeMath } from "../../lib/SafeMath.sol";
+import { DecimalMath } from "../../lib/DecimalMath.sol";
+import { ReentrancyGuard } from "../../lib/ReentrancyGuard.sol";
+import { IFeeRateModel } from "../lib/FeeRateModel.sol";
+import { IERC20 } from "../../interfaces/IERC20.sol";
+import { PMMPricing } from "../lib/PMMPricing.sol";
+import { IOracle } from "../interfaces/IOracle.sol";
 
 contract DPPStorage is InitializableOwnable, ReentrancyGuard {
     using SafeMath for uint256;
@@ -43,7 +43,7 @@ contract DPPStorage is InitializableOwnable, ReentrancyGuard {
     // ============ Variables for Pricing ============
 
     IFeeRateModel public _MT_FEE_RATE_MODEL_;
-    
+
     uint64 public _LP_FEE_RATE_;
     uint64 public _K_;
     uint128 public _I_;
@@ -66,9 +66,9 @@ contract DPPStorage is InitializableOwnable, ReentrancyGuard {
         PMMPricing.adjustedTarget(state);
     }
 
-    function getPMMStateForCall() 
-        external 
-        view 
+    function getPMMStateForCall()
+        external
+        view
         returns (
             uint256 i,
             uint256 K,

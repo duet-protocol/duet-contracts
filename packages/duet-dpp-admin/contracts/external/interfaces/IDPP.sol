@@ -1,17 +1,27 @@
+/*
 
+    Copyright 2020 DODO ZOO.
+    SPDX-License-Identifier: Apache-2.0
 
-pragma solidity 0.6.9;
+*/
+
+pragma solidity 0.8.9;
 pragma experimental ABIEncoderV2;
 
-
-interface IDPPOracleAdmin {
+interface IDPP {
     function init(
         address owner,
-        address dpp,
-        address operator,
-        address dodoApproveProxy
+        address maintainer,
+        address baseTokenAddress,
+        address quoteTokenAddress,
+        uint256 lpFeeRate,
+        address mtFeeRateModel,
+        uint256 k,
+        uint256 i,
+        bool isOpenTWAP
     ) external;
 
+    function _MT_FEE_RATE_MODEL_() external returns (address);
 
     //=========== admin ==========
     function ratioSync() external;
@@ -33,7 +43,7 @@ interface IDPPOracleAdmin {
         uint256 minQuoteReserve
     ) external returns (bool);
 
-
+    //========== advanced ========
     function tuneParameters(
         uint256 newLpFeeRate,
         uint256 newI,
@@ -47,10 +57,4 @@ interface IDPPOracleAdmin {
         uint256 minBaseReserve,
         uint256 minQuoteReserve
     ) external returns (bool);
-
-    function changeOracle(address newOracle) external;
-
-    function enableOracle() external;
-
-    function disableOracle(uint256 newI) external;
 }

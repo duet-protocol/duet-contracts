@@ -1,20 +1,20 @@
 // SPDX-License-Identifier: GPL-3.0
 
-pragma solidity 0.6.9;
+pragma solidity 0.8.9;
 pragma experimental ABIEncoderV2;
 
-import {InitializableOwnable} from "../lib/InitializableOwnable.sol";
-import {ICloneFactory} from "../lib/CloneFactory.sol";
-import {IDPPOracle} from "../intf/IDPPOracle.sol";
-import {IDPPController} from "../intf/IDPPController.sol";
-import {IDPPOracleAdmin} from "../intf/IDPPOracleAdmin.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import { ICloneFactory } from "../lib/CloneFactory.sol";
+import { IDPPOracle } from "../interfaces/IDPPOracle.sol";
+import { IDPPController } from "../interfaces/IDPPController.sol";
+import { IDPPOracleAdmin } from "../interfaces/IDPPOracleAdmin.sol";
+import "../lib/Adminable.sol";
 
-
-contract DuetDPPFactory is InitializableOwnable {
+contract DuetDPPFactory is Adminable, Initializable {
     // ============ default ============
 
-    address public immutable cloneFactory;
-    address public immutable weth;
+    address public CLONE_FACTORY;
+    address public WETH;
     address public dodoDefautMtFeeRateModel;
     address public dodoApproveProxy;
     address public dodoDefaultMaintainer;
@@ -27,7 +27,6 @@ contract DuetDPPFactory is InitializableOwnable {
 
     // ============registry and adminlist ==========
 
-    mapping (address => bool) public isAdminListed;
     // base->quote->dppController
     mapping(address => mapping(address => address)) public registry;
     // registry dppController
@@ -35,19 +34,10 @@ contract DuetDPPFactory is InitializableOwnable {
 
     // ============ Events ============
 
-    event NewDPP(
-        address baseToken,
-        address quoteToken,
-        address creator,
-        address dpp,
-        address dppController
-    );
+    event NewDPP(address baseToken, address quoteToken, address creator, address dpp, address dppController);
 
-    event addAdmin(address admin);
-    event removeAdmin(address admin);
-
-    constructor(
-        address owner_,
+    function initialize(
+        address admin_,
         address cloneFactory_,
         address dppTemplate_,
         address dppAdminTemplate_,
@@ -56,11 +46,11 @@ contract DuetDPPFactory is InitializableOwnable {
         address defaultMtFeeRateModel_,
         address dodoApproveProxy_,
         address weth_
-    ) public {
-        initOwner(owner_);
-        weth = weth_;
+    ) public initializer {
+        _setAdmin(admin_);
+        WETH = weth_;
 
-        cloneFactory = cloneFactory_;
+        CLONE_FACTORY = cloneFactory_;
         dppTemplate = dppTemplate_;
         dppAdminTemplate = dppAdminTemplate_;
         dppControllerTemplate = dppControllerTemplate_;
@@ -72,48 +62,38 @@ contract DuetDPPFactory is InitializableOwnable {
 
     // ============ Admin Operation Functions ============
 
-    function updateDefaultMaintainer(address newMaintainer_) external onlyOwner {
+    function updateDefaultMaintainer(address newMaintainer_) external onlyAdmin {
         dodoDefaultMaintainer = newMaintainer_;
     }
 
-    function updateDefaultFeeModel(address newFeeModel_) external onlyOwner {
+    function updateDefaultFeeModel(address newFeeModel_) external onlyAdmin {
         dodoDefautMtFeeRateModel = newFeeModel_;
     }
 
-    function updateDodoApprove(address newDodoApprove_) external onlyOwner {
+    function updateDodoApprove(address newDodoApprove_) external onlyAdmin {
         dodoApproveProxy = newDodoApprove_;
     }
 
-    function updateDppTemplate(address newDPPTemplate_) external onlyOwner {
-       dppTemplate = newDPPTemplate_;
+    function updateDppTemplate(address newDPPTemplate_) external onlyAdmin {
+        dppTemplate = newDPPTemplate_;
     }
 
-    function updateAdminTemplate(address newDPPAdminTemplate_) external onlyOwner {
+    function updateAdminTemplate(address newDPPAdminTemplate_) external onlyAdmin {
         dppAdminTemplate = newDPPAdminTemplate_;
     }
 
-    function updateControllerTemplate(address newController_) external onlyOwner {
+    function updateControllerTemplate(address newController_) external onlyAdmin {
         dppControllerTemplate = newController_;
-    }
-
-    function addAdminList (address contractAddr_) external onlyOwner {
-        isAdminListed[contractAddr_] = true;
-        emit addAdmin(contractAddr_);
-    }
-
-    function removeAdminList (address contractAddr_) external onlyOwner {
-        isAdminListed[contractAddr_] = false;
-        emit removeAdmin(contractAddr_);
     }
 
     // ============ Functions ============
 
-    function createDODOPrivatePool() public returns (address newPrivatePool) {
-        newPrivatePool = ICloneFactory(cloneFactory).clone(dppTemplate);
+    function _createDODOPrivatePool() internal returns (address newPrivatePool) {
+        newPrivatePool = ICloneFactory(CLONE_FACTORY).clone(dppTemplate);
     }
 
-    function createDPPAdminModel() public returns (address newDppAdminModel) {
-        newDppAdminModel = ICloneFactory(cloneFactory).clone(dppAdminTemplate);
+    function _createDPPAdminModel() internal returns (address newDppAdminModel) {
+        newDppAdminModel = ICloneFactory(CLONE_FACTORY).clone(dppAdminTemplate);
     }
 
     function createDPPController(
@@ -122,18 +102,17 @@ contract DuetDPPFactory is InitializableOwnable {
         address quoteToken_,
         uint256 lpFeeRate_, // 单位是10**18，范围是[0,10**18] ，代表的是交易手续费
         uint256 k_, // adjust curve's type
-        uint256 i_, // 代表的是base 对 quote的价格比例.decimals 18 - baseTokenDecimals+ quoteTokenDecimals. If use oracle, i set here wouldn't be used. 
+        uint256 i_, // 代表的是base 对 quote的价格比例.decimals 18 - baseTokenDecimals+ quoteTokenDecimals. If use oracle, i set here wouldn't be used.
         address o_, // oracle address
         bool isOpenTwap_, // use twap price or not
         bool isOracleEnabled_ // use oracle or not
-    ) external {
-        require(isAdminListed[msg.sender], "ACCESS_DENIED");
+    ) external onlyAdmin {
         require(registry[baseToken_][quoteToken_] == address(0), "HAVE CREATED");
         address dppAddress;
         address dppController;
         {
-            dppAddress = createDODOPrivatePool();
-            address dppAdminModel = createDPPAdminModel();
+            dppAddress = _createDODOPrivatePool();
+            address dppAdminModel = _createDPPAdminModel();
             IDPPOracle(dppAddress).init(
                 dppAdminModel,
                 dodoDefaultMaintainer,
@@ -148,11 +127,7 @@ contract DuetDPPFactory is InitializableOwnable {
                 isOracleEnabled_
             );
 
-            dppController = _createDPPController(
-                creator_,
-                dppAddress,
-                dppAdminModel
-            );
+            dppController = _createDPPController(creator_, dppAddress, dppAdminModel);
 
             IDPPOracleAdmin(dppAdminModel).init(dppController, dppAddress, creator_, dodoApproveProxy);
         }
@@ -166,9 +141,8 @@ contract DuetDPPFactory is InitializableOwnable {
         address admin_,
         address dppAddress_,
         address dppAdminAddress_
-    ) internal returns(address dppController) {
-        dppController = ICloneFactory(cloneFactory).clone(dppControllerTemplate);
-        IDPPController(dppController).init(admin_, dppAddress_, dppAdminAddress_, weth);
+    ) internal returns (address dppController) {
+        dppController = ICloneFactory(CLONE_FACTORY).clone(dppControllerTemplate);
+        IDPPController(dppController).init(admin_, dppAddress_, dppAdminAddress_, WETH);
     }
-
 }

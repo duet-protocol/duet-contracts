@@ -196,6 +196,21 @@ importers:
       moment: 2.29.3
       moment-timezone: 0.5.34
 
+  packages/dodo-private-pool-admin:
+    specifiers:
+      '@openzeppelin/contracts': ^4.6.0
+      '@openzeppelin/contracts-upgradeable': ^4.6.0
+      '@openzeppelin/hardhat-upgrades': ^1.17.0
+      moment: ^2.29.3
+      moment-timezone: ^0.5.34
+    dependencies:
+      '@openzeppelin/contracts-upgradeable': 4.6.0
+    devDependencies:
+      '@openzeppelin/contracts': 4.6.0
+      '@openzeppelin/hardhat-upgrades': 1.18.1_pynpa2wptwkj3g6xnuduudxc6a
+      moment: 2.29.3
+      moment-timezone: 0.5.34
+
   packages/ebcake:
     specifiers:
       '@private/shared': workspace:*
@@ -2103,7 +2118,7 @@ packages:
       hardhat: ^2.0.0
     dependencies:
       ethers: 5.6.8
-      hardhat: 2.9.9_3u6mezahkkqoy6xqszupxyezbi
+      hardhat: 2.9.9
 
   /@nomiclabs/hardhat-etherscan/3.1.0_hardhat@2.9.9:
     resolution: {integrity: sha512-JroYgfN1AlYFkQTQ3nRwFi4o8NtZF7K/qFR2dxDUgHbCtIagkUseca9L4E/D2ScUm4XT40+8PbCdqZi+XmHyQA==}
@@ -2182,7 +2197,7 @@ packages:
       '@nomiclabs/hardhat-etherscan': 3.1.0_hardhat@2.9.9
       '@openzeppelin/upgrades-core': 1.15.0
       chalk: 4.1.2
-      hardhat: 2.9.9_3u6mezahkkqoy6xqszupxyezbi
+      hardhat: 2.9.9
       proper-lockfile: 4.1.2
     transitivePeerDependencies:
       - supports-color
@@ -3269,7 +3284,7 @@ packages:
   /axios/0.21.4:
     resolution: {integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==}
     dependencies:
-      follow-redirects: 1.15.1_debug@4.3.4
+      follow-redirects: 1.15.1
     transitivePeerDependencies:
       - debug
     dev: true
@@ -3277,14 +3292,14 @@ packages:
   /axios/0.21.4_debug@4.3.4:
     resolution: {integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==}
     dependencies:
-      follow-redirects: 1.15.1_debug@4.3.4
+      follow-redirects: 1.15.1
     transitivePeerDependencies:
       - debug
 
   /axios/0.27.2:
     resolution: {integrity: sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ==}
     dependencies:
-      follow-redirects: 1.15.1_debug@4.3.4
+      follow-redirects: 1.15.1
       form-data: 4.0.0
     transitivePeerDependencies:
       - debug
@@ -6525,6 +6540,15 @@ packages:
     dependencies:
       imul: 1.0.1
 
+  /follow-redirects/1.15.1:
+    resolution: {integrity: sha512-yLAMQs+k0b2m7cVxpS1VKJVvoz7SS9Td1zss3XRwXj+ZDH00RJgnuLx7E44wx02kQLrdM3aOOy+FpzS7+8OizA==}
+    engines: {node: '>=4.0'}
+    peerDependencies:
+      debug: '*'
+    peerDependenciesMeta:
+      debug:
+        optional: true
+
   /follow-redirects/1.15.1_debug@4.3.4:
     resolution: {integrity: sha512-yLAMQs+k0b2m7cVxpS1VKJVvoz7SS9Td1zss3XRwXj+ZDH00RJgnuLx7E44wx02kQLrdM3aOOy+FpzS7+8OizA==}
     engines: {node: '>=4.0'}
@@ -7158,7 +7182,6 @@ packages:
       - bufferutil
       - supports-color
       - utf-8-validate
-    dev: false
 
   /hardhat/2.9.9_3u6mezahkkqoy6xqszupxyezbi:
     resolution: {integrity: sha512-Qv7SXnRc0zq1kGXruNnSKpP3eFccXMR5Qv6GVX9hBIJ5efN0PflKPq92aQ5Cv3jrjJeRevLznWZVz7bttXhVfw==}

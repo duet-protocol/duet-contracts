@@ -1,24 +1,24 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity 0.6.9;
+pragma solidity 0.8.9;
 
-import {UniversalERC20} from "./lib/UniversalERC20.sol";
-import {SafeERC20} from "./lib/SafeERC20.sol";
-import {DecimalMath} from "./lib/DecimalMath.sol";
-import {ReentrancyGuard} from "./lib/ReentrancyGuard.sol";
-import {SafeMath} from "./lib/SafeMath.sol";
-import {IDODOV2} from "./intf/IDODOV2.sol";
-import {IDPPOracleAdmin} from "./intf/IDPPOracleAdmin.sol";
-import {IERC20} from "./intf/IERC20.sol";
-import {IWETH} from "./intf/IWETH.sol";
-import {Adminable} from "./lib/Adminable.sol";
-import {DuetDppLpFunding} from "./DuetDppLpFunding.sol";
-
+import { UniversalERC20 } from "./lib/UniversalERC20.sol";
+import { SafeERC20 } from "./lib/SafeERC20.sol";
+import { DecimalMath } from "./lib/DecimalMath.sol";
+import { ReentrancyGuard } from "./lib/ReentrancyGuard.sol";
+import { SafeMath } from "./lib/SafeMath.sol";
+import { IDODOV2 } from "./interfaces/IDODOV2.sol";
+import { IDPPOracleAdmin } from "./interfaces/IDPPOracleAdmin.sol";
+import { IERC20 } from "./interfaces/IERC20.sol";
+import { IWETH } from "./interfaces/IWETH.sol";
+import { Adminable } from "./lib/Adminable.sol";
+import { DuetDppLpFunding } from "./DuetDppLpFunding.sol";
 
 contract DuetDppController is Adminable, DuetDppLpFunding {
     using SafeMath for uint256;
     using UniversalERC20 for IERC20;
+    using SafeERC20 for IERC20;
 
-    address public _WETH_ ;
+    address public _WETH_;
     bool flagInit = false;
 
     /** 主要用于frontrun保护，当项目方发起交易，修改池子参数时，可能会造成池子的价格改变，
@@ -47,7 +47,8 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
         address dppAddress,
         address dppAdminAddress,
         address weth
-    ) external notInitialized { // 改init
+    ) external notInitialized {
+        // 改init
         _WETH_ = weth;
         _DPP_ADDRESS_ = dppAddress;
         _DPP_ADMIN_ADDRESS_ = dppAdminAddress;
@@ -89,12 +90,7 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
         uint256 minBaseReserve_,
         uint256 minQuoteReserve_
     ) external onlyAdmin returns (bool) {
-
-        IDPPOracleAdmin(_DPP_ADMIN_ADDRESS_).tunePrice(
-            newI,
-            minBaseReserve_,
-            minQuoteReserve_
-        );
+        IDPPOracleAdmin(_DPP_ADMIN_ADDRESS_).tunePrice(newI, minBaseReserve_, minQuoteReserve_);
         _updateDppInfo();
         return true;
     }
@@ -106,7 +102,6 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
         uint256 minBaseReserve_,
         uint256 minQuoteReserve_
     ) external onlyAdmin returns (bool) {
-
         IDPPOracleAdmin(_DPP_ADMIN_ADDRESS_).tuneParameters(
             newLpFeeRate,
             newI,
@@ -123,11 +118,11 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
     }
 
     function enableOracle() external onlyAdmin {
-        IDPPOracleAdmin(_DPP_ADMIN_ADDRESS_).enableOracle(); 
+        IDPPOracleAdmin(_DPP_ADMIN_ADDRESS_).enableOracle();
     }
 
     function disableOracle(uint256 newI) external onlyAdmin {
-        IDPPOracleAdmin(_DPP_ADMIN_ADDRESS_).disableOracle(newI); 
+        IDPPOracleAdmin(_DPP_ADMIN_ADDRESS_).disableOracle(newI);
     }
 
     function changeMinRes(uint256 newBaseR_, uint256 newQuoteR_) external onlyAdmin {
@@ -144,7 +139,7 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
         uint256 quoteMinAmount,
         uint8 flag, // 0 - ERC20, 1 - baseInETH, 2 - quoteInETH
         uint256 deadLine
-    ) 
+    )
         external
         payable
         preventReentrant
@@ -155,10 +150,7 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
             uint256 quoteAdjustedInAmount
         )
     {
-        (baseAdjustedInAmount, quoteAdjustedInAmount) = _adjustedAddLiquidityInAmount(
-            baseInAmount,
-            quoteInAmount
-        );
+        (baseAdjustedInAmount, quoteAdjustedInAmount) = _adjustedAddLiquidityInAmount(baseInAmount, quoteInAmount);
         require(
             baseAdjustedInAmount >= baseMinAmount && quoteAdjustedInAmount >= quoteMinAmount,
             "Duet Dpp Controller: deposit amount is not enough"
@@ -166,25 +158,32 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
 
         _deposit(msg.sender, _DPP_ADDRESS_, IDODOV2(_DPP_ADDRESS_)._BASE_TOKEN_(), baseAdjustedInAmount, flag == 1);
         _deposit(msg.sender, _DPP_ADDRESS_, IDODOV2(_DPP_ADDRESS_)._QUOTE_TOKEN_(), quoteAdjustedInAmount, flag == 2);
-        
+
         //mint lp tokens to users
-        
+
         (shares, , ) = _buyShares(msg.sender);
         // reset dpp pool
-        require(IDODOV2(IDODOV2(_DPP_ADDRESS_)._OWNER_()).reset(
-            address(this),
-            _LP_FEE_RATE_,
-            _I_,
-            _K_,
-            0,
-            0,
-            minBaseReserve, // minBaseReserve
-            minQuoteReserve // minQuoteReserve
-        ), "Reset Failed");
+        require(
+            IDODOV2(IDODOV2(_DPP_ADDRESS_)._OWNER_()).reset(
+                address(this),
+                _LP_FEE_RATE_,
+                _I_,
+                _K_,
+                0,
+                0,
+                minBaseReserve, // minBaseReserve
+                minQuoteReserve // minQuoteReserve
+            ),
+            "Reset Failed"
+        );
 
         // refund dust eth
-        if (flag == 1 && msg.value > baseAdjustedInAmount) msg.sender.transfer(msg.value - baseAdjustedInAmount);
-        if (flag == 2 && msg.value > quoteAdjustedInAmount) msg.sender.transfer(msg.value - quoteAdjustedInAmount);
+        if (flag == 1 && msg.value > baseAdjustedInAmount) {
+            payable(msg.sender).transfer(msg.value - baseAdjustedInAmount);
+        }
+        if (flag == 2 && msg.value > quoteAdjustedInAmount) {
+            payable(msg.sender).transfer(msg.value - quoteAdjustedInAmount);
+        }
     }
 
     function removeDuetDppLiquidity(
@@ -193,7 +192,7 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
         uint256 quoteMinAmount,
         uint8 flag, // 0 - ERC20, 1 - baseInETH, 2 - quoteInETH, 3 - baseOutETH, 4 - quoteOutETH
         uint256 deadLine
-    ) 
+    )
         external
         preventReentrant
         judgeExpired(deadLine)
@@ -206,29 +205,34 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
         //mint lp tokens to users
         (baseOutAmount, quoteOutAmount) = _sellShares(shareAmount, msg.sender, baseMinAmount, quoteMinAmount);
         // reset dpp pool
-        require(IDODOV2(IDODOV2(_DPP_ADDRESS_)._OWNER_()).reset(
-            address(this),
-            _LP_FEE_RATE_,
-            _I_,
-            _K_,
-            baseOutAmount,
-            quoteOutAmount,
-            minBaseReserve, //minBaseReserve,
-            minQuoteReserve //minQuoteReserve
-        ), "Reset Failed");
+        require(
+            IDODOV2(IDODOV2(_DPP_ADDRESS_)._OWNER_()).reset(
+                address(this),
+                _LP_FEE_RATE_,
+                _I_,
+                _K_,
+                baseOutAmount,
+                quoteOutAmount,
+                minBaseReserve, //minBaseReserve,
+                minQuoteReserve //minQuoteReserve
+            ),
+            "Reset Failed"
+        );
 
-        _withdraw(msg.sender, IDODOV2(_DPP_ADDRESS_)._BASE_TOKEN_(), baseOutAmount, flag == 3);
-        _withdraw(msg.sender, IDODOV2(_DPP_ADDRESS_)._QUOTE_TOKEN_(), quoteOutAmount, flag == 4);
+        _withdraw(payable(msg.sender), IDODOV2(_DPP_ADDRESS_)._BASE_TOKEN_(), baseOutAmount, flag == 3);
+        _withdraw(payable(msg.sender), IDODOV2(_DPP_ADDRESS_)._QUOTE_TOKEN_(), quoteOutAmount, flag == 4);
         shares = shareAmount;
     }
 
-    function _adjustedAddLiquidityInAmount(
-        uint256 baseInAmount,
-        uint256 quoteInAmount
-    ) internal view returns (uint256 baseAdjustedInAmount, uint256 quoteAdjustedInAmount) {
+    function _adjustedAddLiquidityInAmount(uint256 baseInAmount, uint256 quoteInAmount)
+        internal
+        view
+        returns (uint256 baseAdjustedInAmount, uint256 quoteAdjustedInAmount)
+    {
         (uint256 baseReserve, uint256 quoteReserve) = IDODOV2(_DPP_ADDRESS_).getVaultReserve();
         if (quoteReserve == 0 && baseReserve == 0) {
-            require(msg.sender == admin, "Must initialized by admin"); // Must initialized by admin
+            require(msg.sender == admin, "Must initialized by admin");
+            // Must initialized by admin
             baseAdjustedInAmount = baseInAmount;
             quoteAdjustedInAmount = quoteInAmount;
         }
@@ -266,8 +270,9 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
     ) internal {
         if (isETH) {
             if (amount > 0) {
-                require(msg.value >= amount, "ETH_VALUE_WRONG"); // case:msg.value > adjustAmount
-                IWETH(_WETH_).deposit{value: amount}();
+                require(msg.value >= amount, "ETH_VALUE_WRONG");
+                // case:msg.value > adjustAmount
+                IWETH(_WETH_).deposit{ value: amount }();
                 if (to != address(this)) SafeERC20.safeTransfer(IERC20(_WETH_), to, amount);
             }
         } else {
@@ -298,7 +303,7 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
     // =================================================
 
     function addressToShortString(address _addr) public pure returns (string memory) {
-        bytes32 value = bytes32(uint256(_addr));
+        bytes32 value = bytes32(uint256(uint160(_addr)));
         bytes memory alphabet = "0123456789abcdef";
 
         bytes memory str = new bytes(8);

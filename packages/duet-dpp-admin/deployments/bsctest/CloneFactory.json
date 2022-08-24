@@ -1,0 +1,60 @@
+{
+  "address": "0x99A50e4f640E03EF1eeD2167aA9F985207BA9DF6",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "prototype",
+          "type": "address"
+        }
+      ],
+      "name": "clone",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "proxy",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "transactionHash": "0x5efc55528b0621c87c18b23ae60a7b9df286c653ab1af3f277f3d91fdb1492e3",
+  "receipt": {
+    "to": null,
+    "from": "0xe7a2b8C8feD53713F69227e6c3d2384E80CF88a6",
+    "contractAddress": "0x99A50e4f640E03EF1eeD2167aA9F985207BA9DF6",
+    "transactionIndex": 17,
+    "gasUsed": "111757",
+    "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "blockHash": "0x0f4e251d2de8109750ada652ee882de0d98569a1a3ecaa8e6c16645d96e9c7fd",
+    "transactionHash": "0x5efc55528b0621c87c18b23ae60a7b9df286c653ab1af3f277f3d91fdb1492e3",
+    "logs": [],
+    "blockNumber": 22240212,
+    "cumulativeGasUsed": "6640726",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [],
+  "numDeployments": 1,
+  "solcInputHash": "4c79fe16aaf1bed84cf3db391f24b3d1",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.9+commit.e5eed63a\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"prototype\",\"type\":\"address\"}],\"name\":\"clone\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"proxy\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/lib/CloneFactory.sol\":\"CloneFactory\"},\"evmVersion\":\"london\",\"libraries\":{\":__CACHE_BREAKER__\":\"0x00000000d41867734bbee4c6863d9255b2b06ac1\"},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"contracts/lib/CloneFactory.sol\":{\"content\":\"/*\\n\\n    Copyright 2020 DODO ZOO.\\n    SPDX-License-Identifier: Apache-2.0\\n\\n*/\\n\\npragma solidity 0.8.9;\\npragma experimental ABIEncoderV2;\\n\\ninterface ICloneFactory {\\n    function clone(address prototype) external returns (address proxy);\\n}\\n\\n// introduction of proxy mode design: https://docs.openzeppelin.com/upgrades/2.8/\\n// minimum implementation of transparent proxy: https://eips.ethereum.org/EIPS/eip-1167\\n\\ncontract CloneFactory is ICloneFactory {\\n    function clone(address prototype) external override returns (address proxy) {\\n        bytes20 targetBytes = bytes20(prototype);\\n        assembly {\\n            let clone := mload(0x40)\\n            mstore(clone, 0x3d602d80600a3d3981f3363d3d373d3d3d363d73000000000000000000000000)\\n            mstore(add(clone, 0x14), targetBytes)\\n            mstore(add(clone, 0x28), 0x5af43d82803e903d91602b57fd5bf30000000000000000000000000000000000)\\n            proxy := create(0, clone, 0x37)\\n        }\\n        return proxy;\\n    }\\n}\\n\",\"keccak256\":\"0xfdc78317ec0e26ba3f439da26cad975ff0c939a7ce86ac3ad8af80485556f104\",\"license\":\"Apache-2.0\"}},\"version\":1}",
+  "bytecode": "0x608060405234801561001057600080fd5b5061010e806100206000396000f3fe6080604052348015600f57600080fd5b506004361060285760003560e01c80638124b78e14602d575b600080fd5b603c603836600460aa565b6058565b6040516001600160a01b03909116815260200160405180910390f35b6000808260601b9050604051733d602d80600a3d3981f3363d3d373d3d3d363d7360601b81528160148201526e5af43d82803e903d91602b57fd5bf360881b60288201526037816000f0949350505050565b60006020828403121560bb57600080fd5b81356001600160a01b038116811460d157600080fd5b939250505056fea2646970667358221220bd782f5ca495ee7e905aef1424360ac2e844f2123c8fe504595789cb45f88dff64736f6c63430008090033",
+  "deployedBytecode": "0x6080604052348015600f57600080fd5b506004361060285760003560e01c80638124b78e14602d575b600080fd5b603c603836600460aa565b6058565b6040516001600160a01b03909116815260200160405180910390f35b6000808260601b9050604051733d602d80600a3d3981f3363d3d373d3d3d363d7360601b81528160148201526e5af43d82803e903d91602b57fd5bf360881b60288201526037816000f0949350505050565b60006020828403121560bb57600080fd5b81356001600160a01b038116811460d157600080fd5b939250505056fea2646970667358221220bd782f5ca495ee7e905aef1424360ac2e844f2123c8fe504595789cb45f88dff64736f6c63430008090033",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [],
+    "types": null
+  }
+}

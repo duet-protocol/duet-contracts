@@ -5,15 +5,15 @@
 
 */
 
-pragma solidity 0.6.9;
+pragma solidity 0.8.9;
 pragma experimental ABIEncoderV2;
 
-import {DPPVault} from "./DPPVault.sol";
-import {SafeMath} from "../../lib/SafeMath.sol";
-import {DecimalMath} from "../../lib/DecimalMath.sol";
-import {PMMPricing} from "../lib/PMMPricing.sol";
-import {IDODOCallee} from "../intf/IDODOCallee.sol";
-import {IOracle} from "../intf/IOracle.sol";
+import { DPPVault } from "./DPPVault.sol";
+import { SafeMath } from "../../lib/SafeMath.sol";
+import { DecimalMath } from "../../lib/DecimalMath.sol";
+import { PMMPricing } from "../lib/PMMPricing.sol";
+import { IDODOCallee } from "../interfaces/IDODOCallee.sol";
+import { IOracle } from "../interfaces/IOracle.sol";
 
 contract DPPTrader is DPPVault {
     using SafeMath for uint256;
@@ -29,23 +29,13 @@ contract DPPTrader is DPPVault {
         address receiver
     );
 
-    event DODOFlashLoan(
-        address borrower,
-        address assetTo,
-        uint256 baseAmount,
-        uint256 quoteAmount
-    );
+    event DODOFlashLoan(address borrower, address assetTo, uint256 baseAmount, uint256 quoteAmount);
 
     event RChange(PMMPricing.RState newRState);
 
-
     // ============ Trade Functions ============
 
-    function sellBase(address to)
-        external
-        preventReentrant
-        returns (uint256 receiveQuoteAmount)
-    {
+    function sellBase(address to) external preventReentrant returns (uint256 receiveQuoteAmount) {
         uint256 baseBalance = _BASE_TOKEN_.balanceOf(address(this));
         uint256 baseInput = baseBalance.sub(uint256(_BASE_RESERVE_));
         uint256 mtFee;
@@ -55,10 +45,10 @@ contract DPPTrader is DPPVault {
 
         _transferQuoteOut(to, receiveQuoteAmount);
         _transferQuoteOut(_MAINTAINER_, mtFee);
-        
+
         // update TARGET
         if (_RState_ != uint32(newRState)) {
-            require(newBaseTarget <= uint112(-1),"OVERFLOW");
+            require(newBaseTarget <= type(uint112).max, "OVERFLOW");
             _BASE_TARGET_ = uint112(newBaseTarget);
             _RState_ = uint32(newRState);
             emit RChange(newRState);
@@ -66,37 +56,23 @@ contract DPPTrader is DPPVault {
 
         _setReserve(baseBalance, _QUOTE_TOKEN_.balanceOf(address(this)));
 
-        emit DODOSwap(
-            address(_BASE_TOKEN_),
-            address(_QUOTE_TOKEN_),
-            baseInput,
-            receiveQuoteAmount,
-            msg.sender,
-            to
-        );
+        emit DODOSwap(address(_BASE_TOKEN_), address(_QUOTE_TOKEN_), baseInput, receiveQuoteAmount, msg.sender, to);
     }
 
-    function sellQuote(address to)
-        external
-        preventReentrant
-        returns (uint256 receiveBaseAmount)
-    {
+    function sellQuote(address to) external preventReentrant returns (uint256 receiveBaseAmount) {
         uint256 quoteBalance = _QUOTE_TOKEN_.balanceOf(address(this));
         uint256 quoteInput = quoteBalance.sub(uint256(_QUOTE_RESERVE_));
         uint256 mtFee;
         uint256 newQuoteTarget;
         PMMPricing.RState newRState;
-        (receiveBaseAmount, mtFee, newRState, newQuoteTarget) = querySellQuote(
-            tx.origin,
-            quoteInput
-        );
+        (receiveBaseAmount, mtFee, newRState, newQuoteTarget) = querySellQuote(tx.origin, quoteInput);
 
         _transferBaseOut(to, receiveBaseAmount);
         _transferBaseOut(_MAINTAINER_, mtFee);
 
         // update TARGET
         if (_RState_ != uint32(newRState)) {
-            require(newQuoteTarget <= uint112(-1),"OVERFLOW");
+            require(newQuoteTarget <= type(uint112).max, "OVERFLOW");
             _QUOTE_TARGET_ = uint112(newQuoteTarget);
             _RState_ = uint32(newRState);
             emit RChange(newRState);
@@ -104,14 +80,7 @@ contract DPPTrader is DPPVault {
 
         _setReserve(_BASE_TOKEN_.balanceOf(address(this)), quoteBalance);
 
-        emit DODOSwap(
-            address(_QUOTE_TOKEN_),
-            address(_BASE_TOKEN_),
-            quoteInput,
-            receiveBaseAmount,
-            msg.sender,
-            to
-        );
+        emit DODOSwap(address(_QUOTE_TOKEN_), address(_BASE_TOKEN_), quoteInput, receiveBaseAmount, msg.sender, to);
     }
 
     function flashLoan(
@@ -124,17 +93,13 @@ contract DPPTrader is DPPVault {
         _transferBaseOut(assetTo, baseAmount);
         _transferQuoteOut(assetTo, quoteAmount);
 
-        if (data.length > 0)
-            IDODOCallee(assetTo).DPPFlashLoanCall(msg.sender, baseAmount, quoteAmount, data);
+        if (data.length > 0) IDODOCallee(assetTo).DPPFlashLoanCall(msg.sender, baseAmount, quoteAmount, data);
 
         uint256 baseBalance = _BASE_TOKEN_.balanceOf(address(this));
         uint256 quoteBalance = _QUOTE_TOKEN_.balanceOf(address(this));
 
         // no input -> pure loss
-        require(
-            baseBalance >= _BASE_RESERVE_ || quoteBalance >= _QUOTE_RESERVE_,
-            "FLASH_LOAN_FAILED"
-        );
+        require(baseBalance >= _BASE_RESERVE_ || quoteBalance >= _QUOTE_RESERVE_, "FLASH_LOAN_FAILED");
 
         // sell quote case
         // quote input + base output
@@ -150,7 +115,7 @@ contract DPPTrader is DPPVault {
 
             _transferBaseOut(_MAINTAINER_, mtFee);
             if (_RState_ != uint32(newRState)) {
-                require(newQuoteTarget <= uint112(-1),"OVERFLOW");
+                require(newQuoteTarget <= type(uint112).max, "OVERFLOW");
                 _QUOTE_TARGET_ = uint112(newQuoteTarget);
                 _RState_ = uint32(newRState);
                 emit RChange(newRState);
@@ -179,7 +144,7 @@ contract DPPTrader is DPPVault {
 
             _transferQuoteOut(_MAINTAINER_, mtFee);
             if (_RState_ != uint32(newRState)) {
-                require(newBaseTarget <= uint112(-1),"OVERFLOW");
+                require(newBaseTarget <= type(uint112).max, "OVERFLOW");
                 _BASE_TARGET_ = uint112(newBaseTarget);
                 _RState_ = uint32(newRState);
                 emit RChange(newRState);
@@ -195,7 +160,7 @@ contract DPPTrader is DPPVault {
         }
 
         _sync();
-        
+
         emit DODOFlashLoan(msg.sender, assetTo, baseAmount, quoteAmount);
     }
 
@@ -217,9 +182,7 @@ contract DPPTrader is DPPVault {
         uint256 lpFeeRate = _LP_FEE_RATE_;
         uint256 mtFeeRate = _MT_FEE_RATE_MODEL_.getFeeRate(trader);
         mtFee = DecimalMath.mulFloor(receiveQuoteAmount, mtFeeRate);
-        receiveQuoteAmount = receiveQuoteAmount
-            .sub(DecimalMath.mulFloor(receiveQuoteAmount, lpFeeRate))
-            .sub(mtFee);
+        receiveQuoteAmount = receiveQuoteAmount.sub(DecimalMath.mulFloor(receiveQuoteAmount, lpFeeRate)).sub(mtFee);
         newBaseTarget = state.B0;
     }
 
@@ -239,9 +202,7 @@ contract DPPTrader is DPPVault {
         uint256 lpFeeRate = _LP_FEE_RATE_;
         uint256 mtFeeRate = _MT_FEE_RATE_MODEL_.getFeeRate(trader);
         mtFee = DecimalMath.mulFloor(receiveBaseAmount, mtFeeRate);
-        receiveBaseAmount = receiveBaseAmount
-            .sub(DecimalMath.mulFloor(receiveBaseAmount, lpFeeRate))
-            .sub(mtFee);
+        receiveBaseAmount = receiveBaseAmount.sub(DecimalMath.mulFloor(receiveBaseAmount, lpFeeRate)).sub(mtFee);
         newQuoteTarget = state.Q0;
     }
 }

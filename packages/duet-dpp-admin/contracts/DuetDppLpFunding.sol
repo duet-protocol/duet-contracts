@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity 0.6.9;
+pragma solidity 0.8.9;
 pragma experimental ABIEncoderV2;
 
-import {DecimalMath} from "./lib/DecimalMath.sol";
-import {ReentrancyGuard} from "./lib/ReentrancyGuard.sol";
-import {SafeMath} from "./lib/SafeMath.sol";
-import {IDODOV2} from "./intf/IDODOV2.sol";
-import {DuetDppLp} from "./DuetDppLp.sol";
+import { DecimalMath } from "./lib/DecimalMath.sol";
+import { ReentrancyGuard } from "./lib/ReentrancyGuard.sol";
+import { SafeMath } from "./lib/SafeMath.sol";
+import { IDODOV2 } from "./interfaces/IDODOV2.sol";
+import { DuetDppLp } from "./DuetDppLp.sol";
 
-contract DuetDppLpFunding is DuetDppLp, ReentrancyGuard  {
+contract DuetDppLpFunding is DuetDppLp, ReentrancyGuard {
     using SafeMath for uint256;
     // ============ Events ============
 
@@ -19,9 +19,7 @@ contract DuetDppLpFunding is DuetDppLp, ReentrancyGuard  {
     // ============ Buy & Sell Shares ============
 
     // buy shares [round down]
-    function _buyShares(
-        address to
-    )
+    function _buyShares(address to)
         internal
         returns (
             uint256 shares,
@@ -71,13 +69,10 @@ contract DuetDppLpFunding is DuetDppLp, ReentrancyGuard  {
         baseAmount = baseBalance.mul(shareAmount).div(totalShares);
         quoteAmount = quoteBalance.mul(shareAmount).div(totalShares);
 
-        require(
-            baseAmount >= baseMinAmount && quoteAmount >= quoteMinAmount,
-            "WITHDRAW_NOT_ENOUGH"
-        );
+        require(baseAmount >= baseMinAmount && quoteAmount >= quoteMinAmount, "WITHDRAW_NOT_ENOUGH");
 
         _burn(to, shareAmount);
-        
+
         emit SellShares(to, to, shareAmount, _SHARES_[to]);
     }
 }

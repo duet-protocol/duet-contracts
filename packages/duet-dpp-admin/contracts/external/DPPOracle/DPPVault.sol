@@ -5,16 +5,16 @@
 
 */
 
-pragma solidity 0.6.9;
+pragma solidity 0.8.9;
 pragma experimental ABIEncoderV2;
 
-import {DPPStorage} from "./DPPStorage.sol";
-import {IERC20} from "../../intf/IERC20.sol";
-import {IDODOCallee} from "../intf/IDODOCallee.sol";
-import {SafeMath} from "../../lib/SafeMath.sol";
-import {DecimalMath} from "../../lib/DecimalMath.sol";
-import {SafeERC20} from "../../lib/SafeERC20.sol";
-import {PMMPricing} from "../lib/PMMPricing.sol";
+import { DPPStorage } from "./DPPStorage.sol";
+import { IERC20 } from "../../interfaces/IERC20.sol";
+import { IDODOCallee } from "../interfaces/IDODOCallee.sol";
+import { SafeMath } from "../../lib/SafeMath.sol";
+import { DecimalMath } from "../../lib/DecimalMath.sol";
+import { SafeERC20 } from "../../lib/SafeERC20.sol";
+import { PMMPricing } from "../lib/PMMPricing.sol";
 
 contract DPPVault is DPPStorage {
     using SafeMath for uint256;
@@ -31,11 +31,7 @@ contract DPPVault is DPPStorage {
         quoteReserve = _QUOTE_RESERVE_;
     }
 
-    function getUserFeeRate(address user)
-        external
-        view
-        returns (uint256 lpFeeRate, uint256 mtFeeRate)
-    {
+    function getUserFeeRate(address user) external view returns (uint256 lpFeeRate, uint256 mtFeeRate) {
         lpFeeRate = _LP_FEE_RATE_;
         mtFeeRate = _MT_FEE_RATE_MODEL_.getFeeRate(user);
     }
@@ -51,7 +47,7 @@ contract DPPVault is DPPStorage {
     }
 
     // ============ TWAP UPDATE ===========
-    
+
     function _twapUpdate() internal {
         uint32 blockTimestamp = uint32(block.timestamp % 2**32);
         uint32 timeElapsed = blockTimestamp - _BLOCK_TIMESTAMP_LAST_;
@@ -64,18 +60,18 @@ contract DPPVault is DPPStorage {
     // ============ Set Status ============
 
     function _setReserve(uint256 baseReserve, uint256 quoteReserve) internal {
-        require(baseReserve <= uint112(-1) && quoteReserve <= uint112(-1), "OVERFLOW");
+        require(baseReserve <= type(uint112).max && quoteReserve <= type(uint112).max, "OVERFLOW");
         _BASE_RESERVE_ = uint112(baseReserve);
         _QUOTE_RESERVE_ = uint112(quoteReserve);
 
-        if(_IS_OPEN_TWAP_) _twapUpdate();
+        if (_IS_OPEN_TWAP_) _twapUpdate();
     }
 
     function _sync() internal {
         uint256 baseBalance = _BASE_TOKEN_.balanceOf(address(this));
         uint256 quoteBalance = _QUOTE_TOKEN_.balanceOf(address(this));
-        
-        require(baseBalance <= uint112(-1) && quoteBalance <= uint112(-1), "OVERFLOW");
+
+        require(baseBalance <= type(uint112).max && quoteBalance <= type(uint112).max, "OVERFLOW");
 
         if (baseBalance != _BASE_RESERVE_) {
             _BASE_RESERVE_ = uint112(baseBalance);
@@ -84,29 +80,29 @@ contract DPPVault is DPPStorage {
             _QUOTE_RESERVE_ = uint112(quoteBalance);
         }
 
-        if(_IS_OPEN_TWAP_) _twapUpdate();
+        if (_IS_OPEN_TWAP_) _twapUpdate();
     }
 
     function _resetTargetAndReserve() internal {
         uint256 baseBalance = _BASE_TOKEN_.balanceOf(address(this));
         uint256 quoteBalance = _QUOTE_TOKEN_.balanceOf(address(this));
 
-        require(baseBalance <= uint112(-1) && quoteBalance <= uint112(-1), "OVERFLOW");
-        
+        require(baseBalance <= type(uint112).max && quoteBalance <= type(uint112).max, "OVERFLOW");
+
         _BASE_RESERVE_ = uint112(baseBalance);
         _QUOTE_RESERVE_ = uint112(quoteBalance);
         _BASE_TARGET_ = uint112(baseBalance);
         _QUOTE_TARGET_ = uint112(quoteBalance);
         _RState_ = uint32(PMMPricing.RState.ONE);
 
-        if(_IS_OPEN_TWAP_) _twapUpdate();
+        if (_IS_OPEN_TWAP_) _twapUpdate();
     }
 
     function ratioSync() external preventReentrant onlyOwner {
         uint256 baseBalance = _BASE_TOKEN_.balanceOf(address(this));
         uint256 quoteBalance = _QUOTE_TOKEN_.balanceOf(address(this));
 
-        require(baseBalance <= uint112(-1) && quoteBalance <= uint112(-1), "OVERFLOW");
+        require(baseBalance <= type(uint112).max && quoteBalance <= type(uint112).max, "OVERFLOW");
 
         if (baseBalance != _BASE_RESERVE_) {
             _BASE_TARGET_ = uint112(uint256(_BASE_TARGET_).mul(baseBalance).div(uint256(_BASE_RESERVE_)));
@@ -117,7 +113,7 @@ contract DPPVault is DPPStorage {
             _QUOTE_RESERVE_ = uint112(quoteBalance);
         }
 
-        if(_IS_OPEN_TWAP_) _twapUpdate();
+        if (_IS_OPEN_TWAP_) _twapUpdate();
     }
 
     function reset(
@@ -130,10 +126,7 @@ contract DPPVault is DPPStorage {
         uint256 minBaseReserve,
         uint256 minQuoteReserve
     ) public preventReentrant onlyOwner returns (bool) {
-        require(
-            _BASE_RESERVE_ >= minBaseReserve && _QUOTE_RESERVE_ >= minQuoteReserve,
-            "RESERVE_AMOUNT_IS_NOT_ENOUGH"
-        );
+        require(_BASE_RESERVE_ >= minBaseReserve && _QUOTE_RESERVE_ >= minQuoteReserve, "RESERVE_AMOUNT_IS_NOT_ENOUGH");
         require(newLpFeeRate <= 1e18, "LP_FEE_RATE_OUT_OF_RANGE");
         require(newK <= 1e18, "K_OUT_OF_RANGE");
         require(newI > 0 && newI <= 1e36, "I_OUT_OF_RANGE");

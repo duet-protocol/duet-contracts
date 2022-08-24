@@ -1,0 +1,620 @@
+{
+  "address": "0x089C6b223c453cf9d82A721F5DA0896fDB8F677a",
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "newAdmin",
+          "type": "address"
+        }
+      ],
+      "name": "AdminUpdated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint8",
+          "name": "version",
+          "type": "uint8"
+        }
+      ],
+      "name": "Initialized",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "baseToken",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "quoteToken",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "creator",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "dpp",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "dppController",
+          "type": "address"
+        }
+      ],
+      "name": "NewDPP",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "CLONE_FACTORY",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "WETH",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "admin",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "creator_",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "baseToken_",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "quoteToken_",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "lpFeeRate_",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "k_",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "i_",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "o_",
+          "type": "address"
+        },
+        {
+          "internalType": "bool",
+          "name": "isOpenTwap_",
+          "type": "bool"
+        },
+        {
+          "internalType": "bool",
+          "name": "isOracleEnabled_",
+          "type": "bool"
+        }
+      ],
+      "name": "createDPPController",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "dodoApproveProxy",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "dodoDefaultMaintainer",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "dodoDefautMtFeeRateModel",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "dppAdminTemplate",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "dppControllerTemplate",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "dppTemplate",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "admin_",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "cloneFactory_",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "dppTemplate_",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "dppAdminTemplate_",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "dppControllerTemplate_",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "defaultMaintainer_",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "defaultMtFeeRateModel_",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "dodoApproveProxy_",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "weth_",
+          "type": "address"
+        }
+      ],
+      "name": "initialize",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "registry",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newAdmin",
+          "type": "address"
+        }
+      ],
+      "name": "setAdmin",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newDPPAdminTemplate_",
+          "type": "address"
+        }
+      ],
+      "name": "updateAdminTemplate",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newController_",
+          "type": "address"
+        }
+      ],
+      "name": "updateControllerTemplate",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newFeeModel_",
+          "type": "address"
+        }
+      ],
+      "name": "updateDefaultFeeModel",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newMaintainer_",
+          "type": "address"
+        }
+      ],
+      "name": "updateDefaultMaintainer",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newDodoApprove_",
+          "type": "address"
+        }
+      ],
+      "name": "updateDodoApprove",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newDPPTemplate_",
+          "type": "address"
+        }
+      ],
+      "name": "updateDppTemplate",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "userRegistry",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "transactionHash": "0xd99314f292989302804b145a074f9fd1d7b051613109de481b595fe31b139ed5",
+  "receipt": {
+    "to": null,
+    "from": "0xe7a2b8C8feD53713F69227e6c3d2384E80CF88a6",
+    "contractAddress": "0x089C6b223c453cf9d82A721F5DA0896fDB8F677a",
+    "transactionIndex": 2,
+    "gasUsed": "896100",
+    "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "blockHash": "0x356d7aaada2a31716b4c814e28924cdfaccb3bee25ea9580ac221e04519773f6",
+    "transactionHash": "0xd99314f292989302804b145a074f9fd1d7b051613109de481b595fe31b139ed5",
+    "logs": [],
+    "blockNumber": 22240271,
+    "cumulativeGasUsed": "1166887",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [],
+  "numDeployments": 1,
+  "solcInputHash": "4c79fe16aaf1bed84cf3db391f24b3d1",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.9+commit.e5eed63a\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newAdmin\",\"type\":\"address\"}],\"name\":\"AdminUpdated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint8\",\"name\":\"version\",\"type\":\"uint8\"}],\"name\":\"Initialized\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"baseToken\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"quoteToken\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"dpp\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"dppController\",\"type\":\"address\"}],\"name\":\"NewDPP\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"CLONE_FACTORY\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"WETH\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"admin\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"creator_\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"baseToken_\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"quoteToken_\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"lpFeeRate_\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"k_\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"i_\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"o_\",\"type\":\"address\"},{\"internalType\":\"bool\",\"name\":\"isOpenTwap_\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"isOracleEnabled_\",\"type\":\"bool\"}],\"name\":\"createDPPController\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"dodoApproveProxy\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"dodoDefaultMaintainer\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"dodoDefautMtFeeRateModel\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"dppAdminTemplate\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"dppControllerTemplate\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"dppTemplate\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"admin_\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"cloneFactory_\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"dppTemplate_\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"dppAdminTemplate_\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"dppControllerTemplate_\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"defaultMaintainer_\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"defaultMtFeeRateModel_\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"dodoApproveProxy_\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"weth_\",\"type\":\"address\"}],\"name\":\"initialize\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"registry\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newAdmin\",\"type\":\"address\"}],\"name\":\"setAdmin\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newDPPAdminTemplate_\",\"type\":\"address\"}],\"name\":\"updateAdminTemplate\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newController_\",\"type\":\"address\"}],\"name\":\"updateControllerTemplate\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newFeeModel_\",\"type\":\"address\"}],\"name\":\"updateDefaultFeeModel\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newMaintainer_\",\"type\":\"address\"}],\"name\":\"updateDefaultMaintainer\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newDodoApprove_\",\"type\":\"address\"}],\"name\":\"updateDodoApprove\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newDPPTemplate_\",\"type\":\"address\"}],\"name\":\"updateDppTemplate\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"userRegistry\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/factory/DuetDppFactory.sol\":\"DuetDPPFactory\"},\"evmVersion\":\"london\",\"libraries\":{\":__CACHE_BREAKER__\":\"0x00000000d41867734bbee4c6863d9255b2b06ac1\"},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n// OpenZeppelin Contracts (last updated v4.6.0) (proxy/utils/Initializable.sol)\\n\\npragma solidity ^0.8.2;\\n\\nimport \\\"../../utils/AddressUpgradeable.sol\\\";\\n\\n/**\\n * @dev This is a base contract to aid in writing upgradeable contracts, or any kind of contract that will be deployed\\n * behind a proxy. Since proxied contracts do not make use of a constructor, it's common to move constructor logic to an\\n * external initializer function, usually called `initialize`. It then becomes necessary to protect this initializer\\n * function so it can only be called once. The {initializer} modifier provided by this contract will have this effect.\\n *\\n * The initialization functions use a version number. Once a version number is used, it is consumed and cannot be\\n * reused. This mechanism prevents re-execution of each \\\"step\\\" but allows the creation of new initialization steps in\\n * case an upgrade adds a module that needs to be initialized.\\n *\\n * For example:\\n *\\n * [.hljs-theme-light.nopadding]\\n * ```\\n * contract MyToken is ERC20Upgradeable {\\n *     function initialize() initializer public {\\n *         __ERC20_init(\\\"MyToken\\\", \\\"MTK\\\");\\n *     }\\n * }\\n * contract MyTokenV2 is MyToken, ERC20PermitUpgradeable {\\n *     function initializeV2() reinitializer(2) public {\\n *         __ERC20Permit_init(\\\"MyToken\\\");\\n *     }\\n * }\\n * ```\\n *\\n * TIP: To avoid leaving the proxy in an uninitialized state, the initializer function should be called as early as\\n * possible by providing the encoded function call as the `_data` argument to {ERC1967Proxy-constructor}.\\n *\\n * CAUTION: When used with inheritance, manual care must be taken to not invoke a parent initializer twice, or to ensure\\n * that all initializers are idempotent. This is not verified automatically as constructors are by Solidity.\\n *\\n * [CAUTION]\\n * ====\\n * Avoid leaving a contract uninitialized.\\n *\\n * An uninitialized contract can be taken over by an attacker. This applies to both a proxy and its implementation\\n * contract, which may impact the proxy. To prevent the implementation contract from being used, you should invoke\\n * the {_disableInitializers} function in the constructor to automatically lock it when it is deployed:\\n *\\n * [.hljs-theme-light.nopadding]\\n * ```\\n * /// @custom:oz-upgrades-unsafe-allow constructor\\n * constructor() {\\n *     _disableInitializers();\\n * }\\n * ```\\n * ====\\n */\\nabstract contract Initializable {\\n    /**\\n     * @dev Indicates that the contract has been initialized.\\n     * @custom:oz-retyped-from bool\\n     */\\n    uint8 private _initialized;\\n\\n    /**\\n     * @dev Indicates that the contract is in the process of being initialized.\\n     */\\n    bool private _initializing;\\n\\n    /**\\n     * @dev Triggered when the contract has been initialized or reinitialized.\\n     */\\n    event Initialized(uint8 version);\\n\\n    /**\\n     * @dev A modifier that defines a protected initializer function that can be invoked at most once. In its scope,\\n     * `onlyInitializing` functions can be used to initialize parent contracts. Equivalent to `reinitializer(1)`.\\n     */\\n    modifier initializer() {\\n        bool isTopLevelCall = _setInitializedVersion(1);\\n        if (isTopLevelCall) {\\n            _initializing = true;\\n        }\\n        _;\\n        if (isTopLevelCall) {\\n            _initializing = false;\\n            emit Initialized(1);\\n        }\\n    }\\n\\n    /**\\n     * @dev A modifier that defines a protected reinitializer function that can be invoked at most once, and only if the\\n     * contract hasn't been initialized to a greater version before. In its scope, `onlyInitializing` functions can be\\n     * used to initialize parent contracts.\\n     *\\n     * `initializer` is equivalent to `reinitializer(1)`, so a reinitializer may be used after the original\\n     * initialization step. This is essential to configure modules that are added through upgrades and that require\\n     * initialization.\\n     *\\n     * Note that versions can jump in increments greater than 1; this implies that if multiple reinitializers coexist in\\n     * a contract, executing them in the right order is up to the developer or operator.\\n     */\\n    modifier reinitializer(uint8 version) {\\n        bool isTopLevelCall = _setInitializedVersion(version);\\n        if (isTopLevelCall) {\\n            _initializing = true;\\n        }\\n        _;\\n        if (isTopLevelCall) {\\n            _initializing = false;\\n            emit Initialized(version);\\n        }\\n    }\\n\\n    /**\\n     * @dev Modifier to protect an initialization function so that it can only be invoked by functions with the\\n     * {initializer} and {reinitializer} modifiers, directly or indirectly.\\n     */\\n    modifier onlyInitializing() {\\n        require(_initializing, \\\"Initializable: contract is not initializing\\\");\\n        _;\\n    }\\n\\n    /**\\n     * @dev Locks the contract, preventing any future reinitialization. This cannot be part of an initializer call.\\n     * Calling this in the constructor of a contract will prevent that contract from being initialized or reinitialized\\n     * to any version. It is recommended to use this to lock implementation contracts that are designed to be called\\n     * through proxies.\\n     */\\n    function _disableInitializers() internal virtual {\\n        _setInitializedVersion(type(uint8).max);\\n    }\\n\\n    function _setInitializedVersion(uint8 version) private returns (bool) {\\n        // If the contract is initializing we ignore whether _initialized is set in order to support multiple\\n        // inheritance patterns, but we only do this in the context of a constructor, and for the lowest level\\n        // of initializers, because in other contexts the contract may have been reentered.\\n        if (_initializing) {\\n            require(\\n                version == 1 && !AddressUpgradeable.isContract(address(this)),\\n                \\\"Initializable: contract is already initialized\\\"\\n            );\\n            return false;\\n        } else {\\n            require(_initialized < version, \\\"Initializable: contract is already initialized\\\");\\n            _initialized = version;\\n            return true;\\n        }\\n    }\\n}\\n\",\"keccak256\":\"0x7454006cccb737612b00104d2f606d728e2818b778e7e55542f063c614ce46ba\",\"license\":\"MIT\"},\"@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n// OpenZeppelin Contracts (last updated v4.5.0) (utils/Address.sol)\\n\\npragma solidity ^0.8.1;\\n\\n/**\\n * @dev Collection of functions related to the address type\\n */\\nlibrary AddressUpgradeable {\\n    /**\\n     * @dev Returns true if `account` is a contract.\\n     *\\n     * [IMPORTANT]\\n     * ====\\n     * It is unsafe to assume that an address for which this function returns\\n     * false is an externally-owned account (EOA) and not a contract.\\n     *\\n     * Among others, `isContract` will return false for the following\\n     * types of addresses:\\n     *\\n     *  - an externally-owned account\\n     *  - a contract in construction\\n     *  - an address where a contract will be created\\n     *  - an address where a contract lived, but was destroyed\\n     * ====\\n     *\\n     * [IMPORTANT]\\n     * ====\\n     * You shouldn't rely on `isContract` to protect against flash loan attacks!\\n     *\\n     * Preventing calls from contracts is highly discouraged. It breaks composability, breaks support for smart wallets\\n     * like Gnosis Safe, and does not provide security since it can be circumvented by calling from a contract\\n     * constructor.\\n     * ====\\n     */\\n    function isContract(address account) internal view returns (bool) {\\n        // This method relies on extcodesize/address.code.length, which returns 0\\n        // for contracts in construction, since the code is only stored at the end\\n        // of the constructor execution.\\n\\n        return account.code.length > 0;\\n    }\\n\\n    /**\\n     * @dev Replacement for Solidity's `transfer`: sends `amount` wei to\\n     * `recipient`, forwarding all available gas and reverting on errors.\\n     *\\n     * https://eips.ethereum.org/EIPS/eip-1884[EIP1884] increases the gas cost\\n     * of certain opcodes, possibly making contracts go over the 2300 gas limit\\n     * imposed by `transfer`, making them unable to receive funds via\\n     * `transfer`. {sendValue} removes this limitation.\\n     *\\n     * https://diligence.consensys.net/posts/2019/09/stop-using-soliditys-transfer-now/[Learn more].\\n     *\\n     * IMPORTANT: because control is transferred to `recipient`, care must be\\n     * taken to not create reentrancy vulnerabilities. Consider using\\n     * {ReentrancyGuard} or the\\n     * https://solidity.readthedocs.io/en/v0.5.11/security-considerations.html#use-the-checks-effects-interactions-pattern[checks-effects-interactions pattern].\\n     */\\n    function sendValue(address payable recipient, uint256 amount) internal {\\n        require(address(this).balance >= amount, \\\"Address: insufficient balance\\\");\\n\\n        (bool success, ) = recipient.call{value: amount}(\\\"\\\");\\n        require(success, \\\"Address: unable to send value, recipient may have reverted\\\");\\n    }\\n\\n    /**\\n     * @dev Performs a Solidity function call using a low level `call`. A\\n     * plain `call` is an unsafe replacement for a function call: use this\\n     * function instead.\\n     *\\n     * If `target` reverts with a revert reason, it is bubbled up by this\\n     * function (like regular Solidity function calls).\\n     *\\n     * Returns the raw returned data. To convert to the expected return value,\\n     * use https://solidity.readthedocs.io/en/latest/units-and-global-variables.html?highlight=abi.decode#abi-encoding-and-decoding-functions[`abi.decode`].\\n     *\\n     * Requirements:\\n     *\\n     * - `target` must be a contract.\\n     * - calling `target` with `data` must not revert.\\n     *\\n     * _Available since v3.1._\\n     */\\n    function functionCall(address target, bytes memory data) internal returns (bytes memory) {\\n        return functionCall(target, data, \\\"Address: low-level call failed\\\");\\n    }\\n\\n    /**\\n     * @dev Same as {xref-Address-functionCall-address-bytes-}[`functionCall`], but with\\n     * `errorMessage` as a fallback revert reason when `target` reverts.\\n     *\\n     * _Available since v3.1._\\n     */\\n    function functionCall(\\n        address target,\\n        bytes memory data,\\n        string memory errorMessage\\n    ) internal returns (bytes memory) {\\n        return functionCallWithValue(target, data, 0, errorMessage);\\n    }\\n\\n    /**\\n     * @dev Same as {xref-Address-functionCall-address-bytes-}[`functionCall`],\\n     * but also transferring `value` wei to `target`.\\n     *\\n     * Requirements:\\n     *\\n     * - the calling contract must have an ETH balance of at least `value`.\\n     * - the called Solidity function must be `payable`.\\n     *\\n     * _Available since v3.1._\\n     */\\n    function functionCallWithValue(\\n        address target,\\n        bytes memory data,\\n        uint256 value\\n    ) internal returns (bytes memory) {\\n        return functionCallWithValue(target, data, value, \\\"Address: low-level call with value failed\\\");\\n    }\\n\\n    /**\\n     * @dev Same as {xref-Address-functionCallWithValue-address-bytes-uint256-}[`functionCallWithValue`], but\\n     * with `errorMessage` as a fallback revert reason when `target` reverts.\\n     *\\n     * _Available since v3.1._\\n     */\\n    function functionCallWithValue(\\n        address target,\\n        bytes memory data,\\n        uint256 value,\\n        string memory errorMessage\\n    ) internal returns (bytes memory) {\\n        require(address(this).balance >= value, \\\"Address: insufficient balance for call\\\");\\n        require(isContract(target), \\\"Address: call to non-contract\\\");\\n\\n        (bool success, bytes memory returndata) = target.call{value: value}(data);\\n        return verifyCallResult(success, returndata, errorMessage);\\n    }\\n\\n    /**\\n     * @dev Same as {xref-Address-functionCall-address-bytes-}[`functionCall`],\\n     * but performing a static call.\\n     *\\n     * _Available since v3.3._\\n     */\\n    function functionStaticCall(address target, bytes memory data) internal view returns (bytes memory) {\\n        return functionStaticCall(target, data, \\\"Address: low-level static call failed\\\");\\n    }\\n\\n    /**\\n     * @dev Same as {xref-Address-functionCall-address-bytes-string-}[`functionCall`],\\n     * but performing a static call.\\n     *\\n     * _Available since v3.3._\\n     */\\n    function functionStaticCall(\\n        address target,\\n        bytes memory data,\\n        string memory errorMessage\\n    ) internal view returns (bytes memory) {\\n        require(isContract(target), \\\"Address: static call to non-contract\\\");\\n\\n        (bool success, bytes memory returndata) = target.staticcall(data);\\n        return verifyCallResult(success, returndata, errorMessage);\\n    }\\n\\n    /**\\n     * @dev Tool to verifies that a low level call was successful, and revert if it wasn't, either by bubbling the\\n     * revert reason using the provided one.\\n     *\\n     * _Available since v4.3._\\n     */\\n    function verifyCallResult(\\n        bool success,\\n        bytes memory returndata,\\n        string memory errorMessage\\n    ) internal pure returns (bytes memory) {\\n        if (success) {\\n            return returndata;\\n        } else {\\n            // Look for revert reason and bubble it up if present\\n            if (returndata.length > 0) {\\n                // The easiest way to bubble the revert reason is using memory via assembly\\n\\n                assembly {\\n                    let returndata_size := mload(returndata)\\n                    revert(add(32, returndata), returndata_size)\\n                }\\n            } else {\\n                revert(errorMessage);\\n            }\\n        }\\n    }\\n}\\n\",\"keccak256\":\"0x55cf2bd9fc76704ddcdc19834cd288b7de00fc0f298a40ea16a954ae8991db2d\",\"license\":\"MIT\"},\"contracts/factory/DuetDppFactory.sol\":{\"content\":\"// SPDX-License-Identifier: GPL-3.0\\n\\npragma solidity 0.8.9;\\npragma experimental ABIEncoderV2;\\n\\nimport \\\"@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol\\\";\\nimport { ICloneFactory } from \\\"../lib/CloneFactory.sol\\\";\\nimport { IDPPOracle } from \\\"../interfaces/IDPPOracle.sol\\\";\\nimport { IDPPController } from \\\"../interfaces/IDPPController.sol\\\";\\nimport { IDPPOracleAdmin } from \\\"../interfaces/IDPPOracleAdmin.sol\\\";\\nimport \\\"../lib/Adminable.sol\\\";\\n\\ncontract DuetDPPFactory is Adminable, Initializable {\\n    // ============ default ============\\n\\n    address public CLONE_FACTORY;\\n    address public WETH;\\n    address public dodoDefautMtFeeRateModel;\\n    address public dodoApproveProxy;\\n    address public dodoDefaultMaintainer;\\n\\n    // ============ Templates ============\\n\\n    address public dppTemplate;\\n    address public dppAdminTemplate;\\n    address public dppControllerTemplate;\\n\\n    // ============registry and adminlist ==========\\n\\n    // base->quote->dppController\\n    mapping(address => mapping(address => address)) public registry;\\n    // registry dppController\\n    mapping(address => address[]) public userRegistry;\\n\\n    // ============ Events ============\\n\\n    event NewDPP(address baseToken, address quoteToken, address creator, address dpp, address dppController);\\n\\n    function initialize(\\n        address admin_,\\n        address cloneFactory_,\\n        address dppTemplate_,\\n        address dppAdminTemplate_,\\n        address dppControllerTemplate_,\\n        address defaultMaintainer_,\\n        address defaultMtFeeRateModel_,\\n        address dodoApproveProxy_,\\n        address weth_\\n    ) public initializer {\\n        _setAdmin(admin_);\\n        WETH = weth_;\\n\\n        CLONE_FACTORY = cloneFactory_;\\n        dppTemplate = dppTemplate_;\\n        dppAdminTemplate = dppAdminTemplate_;\\n        dppControllerTemplate = dppControllerTemplate_;\\n\\n        dodoDefaultMaintainer = defaultMaintainer_;\\n        dodoDefautMtFeeRateModel = defaultMtFeeRateModel_;\\n        dodoApproveProxy = dodoApproveProxy_;\\n    }\\n\\n    // ============ Admin Operation Functions ============\\n\\n    function updateDefaultMaintainer(address newMaintainer_) external onlyAdmin {\\n        dodoDefaultMaintainer = newMaintainer_;\\n    }\\n\\n    function updateDefaultFeeModel(address newFeeModel_) external onlyAdmin {\\n        dodoDefautMtFeeRateModel = newFeeModel_;\\n    }\\n\\n    function updateDodoApprove(address newDodoApprove_) external onlyAdmin {\\n        dodoApproveProxy = newDodoApprove_;\\n    }\\n\\n    function updateDppTemplate(address newDPPTemplate_) external onlyAdmin {\\n        dppTemplate = newDPPTemplate_;\\n    }\\n\\n    function updateAdminTemplate(address newDPPAdminTemplate_) external onlyAdmin {\\n        dppAdminTemplate = newDPPAdminTemplate_;\\n    }\\n\\n    function updateControllerTemplate(address newController_) external onlyAdmin {\\n        dppControllerTemplate = newController_;\\n    }\\n\\n    // ============ Functions ============\\n\\n    function _createDODOPrivatePool() internal returns (address newPrivatePool) {\\n        newPrivatePool = ICloneFactory(CLONE_FACTORY).clone(dppTemplate);\\n    }\\n\\n    function _createDPPAdminModel() internal returns (address newDppAdminModel) {\\n        newDppAdminModel = ICloneFactory(CLONE_FACTORY).clone(dppAdminTemplate);\\n    }\\n\\n    function createDPPController(\\n        address creator_, // dpp controller's admin and dppAdmin's operator\\n        address baseToken_,\\n        address quoteToken_,\\n        uint256 lpFeeRate_, // \\u5355\\u4f4d\\u662f10**18\\uff0c\\u8303\\u56f4\\u662f[0,10**18] \\uff0c\\u4ee3\\u8868\\u7684\\u662f\\u4ea4\\u6613\\u624b\\u7eed\\u8d39\\n        uint256 k_, // adjust curve's type\\n        uint256 i_, // \\u4ee3\\u8868\\u7684\\u662fbase \\u5bf9 quote\\u7684\\u4ef7\\u683c\\u6bd4\\u4f8b.decimals 18 - baseTokenDecimals+ quoteTokenDecimals. If use oracle, i set here wouldn't be used.\\n        address o_, // oracle address\\n        bool isOpenTwap_, // use twap price or not\\n        bool isOracleEnabled_ // use oracle or not\\n    ) external onlyAdmin {\\n        require(registry[baseToken_][quoteToken_] == address(0), \\\"HAVE CREATED\\\");\\n        address dppAddress;\\n        address dppController;\\n        {\\n            dppAddress = _createDODOPrivatePool();\\n            address dppAdminModel = _createDPPAdminModel();\\n            IDPPOracle(dppAddress).init(\\n                dppAdminModel,\\n                dodoDefaultMaintainer,\\n                baseToken_,\\n                quoteToken_,\\n                lpFeeRate_,\\n                dodoDefautMtFeeRateModel,\\n                k_,\\n                i_,\\n                o_,\\n                isOpenTwap_,\\n                isOracleEnabled_\\n            );\\n\\n            dppController = _createDPPController(creator_, dppAddress, dppAdminModel);\\n\\n            IDPPOracleAdmin(dppAdminModel).init(dppController, dppAddress, creator_, dodoApproveProxy);\\n        }\\n\\n        registry[baseToken_][quoteToken_] = dppController;\\n        userRegistry[creator_].push(dppController);\\n        emit NewDPP(baseToken_, quoteToken_, creator_, dppAddress, dppController);\\n    }\\n\\n    function _createDPPController(\\n        address admin_,\\n        address dppAddress_,\\n        address dppAdminAddress_\\n    ) internal returns (address dppController) {\\n        dppController = ICloneFactory(CLONE_FACTORY).clone(dppControllerTemplate);\\n        IDPPController(dppController).init(admin_, dppAddress_, dppAdminAddress_, WETH);\\n    }\\n}\\n\",\"keccak256\":\"0xa21d13f58460712e22da6860c11a1c53a30773b1a8a28df5c6eac11323625f9f\",\"license\":\"GPL-3.0\"},\"contracts/interfaces/IDPPController.sol\":{\"content\":\"pragma solidity 0.8.9;\\npragma experimental ABIEncoderV2;\\n\\ninterface IDPPController {\\n    function init(\\n        address admin,\\n        address dppAddress,\\n        address dppAdminAddress,\\n        address weth\\n    ) external;\\n}\\n\",\"keccak256\":\"0x84a1eea1e621a5d12bf2f726d8e76bf9d7634b977999def76dde21fdacb4336c\"},\"contracts/interfaces/IDPPOracle.sol\":{\"content\":\"pragma solidity 0.8.9;\\npragma experimental ABIEncoderV2;\\n\\ninterface IDPPOracle {\\n    function init(\\n        address owner,\\n        address maintainer,\\n        address baseTokenAddress,\\n        address quoteTokenAddress,\\n        uint256 lpFeeRate,\\n        address mtFeeRateModel,\\n        uint256 k,\\n        uint256 i,\\n        address o,\\n        bool isOpenTWAP,\\n        bool isOracleEnabled\\n    ) external;\\n\\n    function _MT_FEE_RATE_MODEL_() external returns (address);\\n}\\n\",\"keccak256\":\"0x5c5691291c5da81d499042d4b23ea4b32f94d7dfe9c4889bc596a1b1770e69e1\"},\"contracts/interfaces/IDPPOracleAdmin.sol\":{\"content\":\"pragma solidity 0.8.9;\\npragma experimental ABIEncoderV2;\\n\\ninterface IDPPOracleAdmin {\\n    function init(\\n        address owner,\\n        address dpp,\\n        address operator,\\n        address dodoApproveProxy\\n    ) external;\\n\\n    //=========== admin ==========\\n    function ratioSync() external;\\n\\n    function retrieve(\\n        address payable to,\\n        address token,\\n        uint256 amount\\n    ) external;\\n\\n    function reset(\\n        address assetTo,\\n        uint256 newLpFeeRate,\\n        uint256 newI,\\n        uint256 newK,\\n        uint256 baseOutAmount,\\n        uint256 quoteOutAmount,\\n        uint256 minBaseReserve,\\n        uint256 minQuoteReserve\\n    ) external returns (bool);\\n\\n    function tuneParameters(\\n        uint256 newLpFeeRate,\\n        uint256 newI,\\n        uint256 newK,\\n        uint256 minBaseReserve,\\n        uint256 minQuoteReserve\\n    ) external returns (bool);\\n\\n    function tunePrice(\\n        uint256 newI,\\n        uint256 minBaseReserve,\\n        uint256 minQuoteReserve\\n    ) external returns (bool);\\n\\n    function changeOracle(address newOracle) external;\\n\\n    function enableOracle() external;\\n\\n    function disableOracle(uint256 newI) external;\\n}\\n\",\"keccak256\":\"0xb5bcc4cf7cc6d444903a5f9ea90825c7a49d301323d0d4abd1c4186cfd0fa943\"},\"contracts/lib/Adminable.sol\":{\"content\":\"// SPDX-License-Identifier: GPL-3.0\\npragma solidity 0.8.9;\\n\\nabstract contract Adminable {\\n    event AdminUpdated(address indexed user, address indexed newAdmin);\\n\\n    address public admin;\\n\\n    modifier onlyAdmin() virtual {\\n        require(msg.sender == admin, \\\"UNAUTHORIZED\\\");\\n\\n        _;\\n    }\\n\\n    function setAdmin(address newAdmin) public virtual onlyAdmin {\\n        _setAdmin(newAdmin);\\n    }\\n\\n    function _setAdmin(address newAdmin) internal {\\n        require(newAdmin != address(0), \\\"Can not set admin to zero address\\\");\\n        admin = newAdmin;\\n\\n        emit AdminUpdated(msg.sender, newAdmin);\\n    }\\n}\\n\",\"keccak256\":\"0xe47c97c0e3edad2d1df3e664376a7bb46e1aaf51b4c4acc73c4a2cfdc747185f\",\"license\":\"GPL-3.0\"},\"contracts/lib/CloneFactory.sol\":{\"content\":\"/*\\n\\n    Copyright 2020 DODO ZOO.\\n    SPDX-License-Identifier: Apache-2.0\\n\\n*/\\n\\npragma solidity 0.8.9;\\npragma experimental ABIEncoderV2;\\n\\ninterface ICloneFactory {\\n    function clone(address prototype) external returns (address proxy);\\n}\\n\\n// introduction of proxy mode design: https://docs.openzeppelin.com/upgrades/2.8/\\n// minimum implementation of transparent proxy: https://eips.ethereum.org/EIPS/eip-1167\\n\\ncontract CloneFactory is ICloneFactory {\\n    function clone(address prototype) external override returns (address proxy) {\\n        bytes20 targetBytes = bytes20(prototype);\\n        assembly {\\n            let clone := mload(0x40)\\n            mstore(clone, 0x3d602d80600a3d3981f3363d3d373d3d3d363d73000000000000000000000000)\\n            mstore(add(clone, 0x14), targetBytes)\\n            mstore(add(clone, 0x28), 0x5af43d82803e903d91602b57fd5bf30000000000000000000000000000000000)\\n            proxy := create(0, clone, 0x37)\\n        }\\n        return proxy;\\n    }\\n}\\n\",\"keccak256\":\"0xfdc78317ec0e26ba3f439da26cad975ff0c939a7ce86ac3ad8af80485556f104\",\"license\":\"Apache-2.0\"}},\"version\":1}",
+  "bytecode": "0x608060405234801561001057600080fd5b50610f3f806100206000396000f3fe608060405234801561001057600080fd5b506004361061012b5760003560e01c80639e988ee3116100ad578063db715fea11610071578063db715fea1461028c578063ef23977c1461029f578063f5e95acb146102b2578063f7220971146102c5578063f851a440146102d857600080fd5b80639e988ee31461020c578063a5afd1b61461021f578063ad5c464814610253578063be7537f214610266578063caedbaf81461027957600080fd5b806343424431116100f457806343424431146101ad57806344b7f78e146101c05780636494752a146101d3578063704b6c02146101e65780637d2c82d7146101f957600080fd5b806242f701146101305780630214cb4c146101455780630bd4651a146101745780631426ca9b146101875780632bc609d51461019a575b600080fd5b61014361013e366004610c98565b6102eb565b005b610158610153366004610d33565b610628565b6040516001600160a01b03909116815260200160405180910390f35b600554610158906001600160a01b031681565b600654610158906001600160a01b031681565b6101436101a8366004610d5f565b610660565b600854610158906001600160a01b031681565b6101436101ce366004610d5f565b6106ac565b6101436101e1366004610d5f565b6106f8565b6101436101f4366004610d5f565b610744565b610143610207366004610d5f565b61077a565b61014361021a366004610d5f565b6107c6565b61015861022d366004610d83565b60096020908152600092835260408084209091529082529020546001600160a01b031681565b600254610158906001600160a01b031681565b600754610158906001600160a01b031681565b600354610158906001600160a01b031681565b61014361029a366004610d5f565b610812565b600154610158906001600160a01b031681565b6101436102c0366004610dbc565b61085e565b600454610158906001600160a01b031681565b600054610158906001600160a01b031681565b6000546001600160a01b0316331461031e5760405162461bcd60e51b815260040161031590610e78565b60405180910390fd5b6001600160a01b0388811660009081526009602090815260408083208b8516845290915290205416156103825760405162461bcd60e51b815260206004820152600c60248201526b121055914810d4915055115160a21b6044820152606401610315565b60008061038d61095d565b915060006103996109e9565b600554600354604051634f115ccb60e01b81526001600160a01b03808516600483015292831660248201528e831660448201528d83166064820152608481018d905290821660a482015260c481018b905260e481018a9052888216610104820152871515610124820152861515610144820152919250841690634f115ccb9061016401600060405180830381600087803b15801561043657600080fd5b505af115801561044a573d6000803e3d6000fd5b505050506104598c8483610a22565b600480546040516306552ff360e01b81526001600160a01b038085169382019390935286831660248201528f8316604482015290821660648201529193508216906306552ff390608401600060405180830381600087803b1580156104bd57600080fd5b505af11580156104d1573d6000803e3d6000fd5b505050505080600960008c6001600160a01b03166001600160a01b0316815260200190815260200160002060008b6001600160a01b03166001600160a01b0316815260200190815260200160002060006101000a8154816001600160a01b0302191690836001600160a01b03160217905550600a60008c6001600160a01b03166001600160a01b03168152602001908152602001600020819080600181540180825580915050600190039060005260206000200160009091909190916101000a8154816001600160a01b0302191690836001600160a01b031602179055507f5e55631db9f29584cb7b1abfa64a49ff89a39711c531b3c6bf05d389f62ac7938a8a8d85856040516106139594939291906001600160a01b0395861681529385166020850152918416604084015283166060830152909116608082015260a00190565b60405180910390a15050505050505050505050565b600a602052816000526040600020818154811061064457600080fd5b6000918252602090912001546001600160a01b03169150829050565b6000546001600160a01b0316331461068a5760405162461bcd60e51b815260040161031590610e78565b600480546001600160a01b0319166001600160a01b0392909216919091179055565b6000546001600160a01b031633146106d65760405162461bcd60e51b815260040161031590610e78565b600680546001600160a01b0319166001600160a01b0392909216919091179055565b6000546001600160a01b031633146107225760405162461bcd60e51b815260040161031590610e78565b600880546001600160a01b0319166001600160a01b0392909216919091179055565b6000546001600160a01b0316331461076e5760405162461bcd60e51b815260040161031590610e78565b61077781610b28565b50565b6000546001600160a01b031633146107a45760405162461bcd60e51b815260040161031590610e78565b600780546001600160a01b0319166001600160a01b0392909216919091179055565b6000546001600160a01b031633146107f05760405162461bcd60e51b815260040161031590610e78565b600580546001600160a01b0319166001600160a01b0392909216919091179055565b6000546001600160a01b0316331461083c5760405162461bcd60e51b815260040161031590610e78565b600380546001600160a01b0319166001600160a01b0392909216919091179055565b600061086a6001610bd3565b90508015610886576000805460ff60a81b1916600160a81b1790555b61088f8a610b28565b600280546001600160a01b03199081166001600160a01b03858116919091179092556001805482168c84161790556006805482168b84161790556007805482168a8416179055600880548216898416179055600580548216888416179055600380548216878416179055600480549091169185169190911790558015610951576000805460ff60a81b19169055604051600181527f7f26b83ff96e1f2b6a682f133852f6798a09c465da95921460cefb38474024989060200160405180910390a15b50505050505050505050565b6001546006546040516340925bc760e11b81526001600160a01b0391821660048201526000929190911690638124b78e906024015b602060405180830381600087803b1580156109ac57600080fd5b505af11580156109c0573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906109e49190610e9e565b905090565b6001546007546040516340925bc760e11b81526001600160a01b0391821660048201526000929190911690638124b78e90602401610992565b6001546008546040516340925bc760e11b81526001600160a01b0391821660048201526000929190911690638124b78e90602401602060405180830381600087803b158015610a7057600080fd5b505af1158015610a84573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190610aa89190610e9e565b6002546040516306552ff360e01b81526001600160a01b0387811660048301528681166024830152858116604483015291821660648201529192508216906306552ff390608401600060405180830381600087803b158015610b0957600080fd5b505af1158015610b1d573d6000803e3d6000fd5b505050509392505050565b6001600160a01b038116610b885760405162461bcd60e51b815260206004820152602160248201527f43616e206e6f74207365742061646d696e20746f207a65726f206164647265736044820152607360f81b6064820152608401610315565b600080546001600160a01b0319166001600160a01b0383169081178255604051909133917f101b8081ff3b56bbf45deb824d86a3b0fd38b7e3dd42421105cf8abe9106db0b9190a350565b60008054600160a81b900460ff1615610c1c578160ff166001148015610bf85750303b155b610c145760405162461bcd60e51b815260040161031590610ebb565b506000919050565b60005460ff808416600160a01b9092041610610c4a5760405162461bcd60e51b815260040161031590610ebb565b506000805460ff909216600160a01b0260ff60a01b19909216919091179055600190565b919050565b6001600160a01b038116811461077757600080fd5b80358015158114610c6e57600080fd5b60008060008060008060008060006101208a8c031215610cb757600080fd5b8935610cc281610c73565b985060208a0135610cd281610c73565b975060408a0135610ce281610c73565b965060608a0135955060808a0135945060a08a0135935060c08a0135610d0781610c73565b9250610d1560e08b01610c88565b9150610d246101008b01610c88565b90509295985092959850929598565b60008060408385031215610d4657600080fd5b8235610d5181610c73565b946020939093013593505050565b600060208284031215610d7157600080fd5b8135610d7c81610c73565b9392505050565b60008060408385031215610d9657600080fd5b8235610da181610c73565b91506020830135610db181610c73565b809150509250929050565b60008060008060008060008060006101208a8c031215610ddb57600080fd5b8935610de681610c73565b985060208a0135610df681610c73565b975060408a0135610e0681610c73565b965060608a0135610e1681610c73565b955060808a0135610e2681610c73565b945060a08a0135610e3681610c73565b935060c08a0135610e4681610c73565b925060e08a0135610e5681610c73565b91506101008a0135610e6781610c73565b809150509295985092959850929598565b6020808252600c908201526b15539055551213d49256915160a21b604082015260600190565b600060208284031215610eb057600080fd5b8151610d7c81610c73565b6020808252602e908201527f496e697469616c697a61626c653a20636f6e747261637420697320616c72656160408201526d191e481a5b9a5d1a585b1a5e995960921b60608201526080019056fea26469706673582212200cd8c13e5414c899e3a9cbe79d32ac5983180710ba0a00e8b5e7064f589ba4f264736f6c63430008090033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b506004361061012b5760003560e01c80639e988ee3116100ad578063db715fea11610071578063db715fea1461028c578063ef23977c1461029f578063f5e95acb146102b2578063f7220971146102c5578063f851a440146102d857600080fd5b80639e988ee31461020c578063a5afd1b61461021f578063ad5c464814610253578063be7537f214610266578063caedbaf81461027957600080fd5b806343424431116100f457806343424431146101ad57806344b7f78e146101c05780636494752a146101d3578063704b6c02146101e65780637d2c82d7146101f957600080fd5b806242f701146101305780630214cb4c146101455780630bd4651a146101745780631426ca9b146101875780632bc609d51461019a575b600080fd5b61014361013e366004610c98565b6102eb565b005b610158610153366004610d33565b610628565b6040516001600160a01b03909116815260200160405180910390f35b600554610158906001600160a01b031681565b600654610158906001600160a01b031681565b6101436101a8366004610d5f565b610660565b600854610158906001600160a01b031681565b6101436101ce366004610d5f565b6106ac565b6101436101e1366004610d5f565b6106f8565b6101436101f4366004610d5f565b610744565b610143610207366004610d5f565b61077a565b61014361021a366004610d5f565b6107c6565b61015861022d366004610d83565b60096020908152600092835260408084209091529082529020546001600160a01b031681565b600254610158906001600160a01b031681565b600754610158906001600160a01b031681565b600354610158906001600160a01b031681565b61014361029a366004610d5f565b610812565b600154610158906001600160a01b031681565b6101436102c0366004610dbc565b61085e565b600454610158906001600160a01b031681565b600054610158906001600160a01b031681565b6000546001600160a01b0316331461031e5760405162461bcd60e51b815260040161031590610e78565b60405180910390fd5b6001600160a01b0388811660009081526009602090815260408083208b8516845290915290205416156103825760405162461bcd60e51b815260206004820152600c60248201526b121055914810d4915055115160a21b6044820152606401610315565b60008061038d61095d565b915060006103996109e9565b600554600354604051634f115ccb60e01b81526001600160a01b03808516600483015292831660248201528e831660448201528d83166064820152608481018d905290821660a482015260c481018b905260e481018a9052888216610104820152871515610124820152861515610144820152919250841690634f115ccb9061016401600060405180830381600087803b15801561043657600080fd5b505af115801561044a573d6000803e3d6000fd5b505050506104598c8483610a22565b600480546040516306552ff360e01b81526001600160a01b038085169382019390935286831660248201528f8316604482015290821660648201529193508216906306552ff390608401600060405180830381600087803b1580156104bd57600080fd5b505af11580156104d1573d6000803e3d6000fd5b505050505080600960008c6001600160a01b03166001600160a01b0316815260200190815260200160002060008b6001600160a01b03166001600160a01b0316815260200190815260200160002060006101000a8154816001600160a01b0302191690836001600160a01b03160217905550600a60008c6001600160a01b03166001600160a01b03168152602001908152602001600020819080600181540180825580915050600190039060005260206000200160009091909190916101000a8154816001600160a01b0302191690836001600160a01b031602179055507f5e55631db9f29584cb7b1abfa64a49ff89a39711c531b3c6bf05d389f62ac7938a8a8d85856040516106139594939291906001600160a01b0395861681529385166020850152918416604084015283166060830152909116608082015260a00190565b60405180910390a15050505050505050505050565b600a602052816000526040600020818154811061064457600080fd5b6000918252602090912001546001600160a01b03169150829050565b6000546001600160a01b0316331461068a5760405162461bcd60e51b815260040161031590610e78565b600480546001600160a01b0319166001600160a01b0392909216919091179055565b6000546001600160a01b031633146106d65760405162461bcd60e51b815260040161031590610e78565b600680546001600160a01b0319166001600160a01b0392909216919091179055565b6000546001600160a01b031633146107225760405162461bcd60e51b815260040161031590610e78565b600880546001600160a01b0319166001600160a01b0392909216919091179055565b6000546001600160a01b0316331461076e5760405162461bcd60e51b815260040161031590610e78565b61077781610b28565b50565b6000546001600160a01b031633146107a45760405162461bcd60e51b815260040161031590610e78565b600780546001600160a01b0319166001600160a01b0392909216919091179055565b6000546001600160a01b031633146107f05760405162461bcd60e51b815260040161031590610e78565b600580546001600160a01b0319166001600160a01b0392909216919091179055565b6000546001600160a01b0316331461083c5760405162461bcd60e51b815260040161031590610e78565b600380546001600160a01b0319166001600160a01b0392909216919091179055565b600061086a6001610bd3565b90508015610886576000805460ff60a81b1916600160a81b1790555b61088f8a610b28565b600280546001600160a01b03199081166001600160a01b03858116919091179092556001805482168c84161790556006805482168b84161790556007805482168a8416179055600880548216898416179055600580548216888416179055600380548216878416179055600480549091169185169190911790558015610951576000805460ff60a81b19169055604051600181527f7f26b83ff96e1f2b6a682f133852f6798a09c465da95921460cefb38474024989060200160405180910390a15b50505050505050505050565b6001546006546040516340925bc760e11b81526001600160a01b0391821660048201526000929190911690638124b78e906024015b602060405180830381600087803b1580156109ac57600080fd5b505af11580156109c0573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906109e49190610e9e565b905090565b6001546007546040516340925bc760e11b81526001600160a01b0391821660048201526000929190911690638124b78e90602401610992565b6001546008546040516340925bc760e11b81526001600160a01b0391821660048201526000929190911690638124b78e90602401602060405180830381600087803b158015610a7057600080fd5b505af1158015610a84573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190610aa89190610e9e565b6002546040516306552ff360e01b81526001600160a01b0387811660048301528681166024830152858116604483015291821660648201529192508216906306552ff390608401600060405180830381600087803b158015610b0957600080fd5b505af1158015610b1d573d6000803e3d6000fd5b505050509392505050565b6001600160a01b038116610b885760405162461bcd60e51b815260206004820152602160248201527f43616e206e6f74207365742061646d696e20746f207a65726f206164647265736044820152607360f81b6064820152608401610315565b600080546001600160a01b0319166001600160a01b0383169081178255604051909133917f101b8081ff3b56bbf45deb824d86a3b0fd38b7e3dd42421105cf8abe9106db0b9190a350565b60008054600160a81b900460ff1615610c1c578160ff166001148015610bf85750303b155b610c145760405162461bcd60e51b815260040161031590610ebb565b506000919050565b60005460ff808416600160a01b9092041610610c4a5760405162461bcd60e51b815260040161031590610ebb565b506000805460ff909216600160a01b0260ff60a01b19909216919091179055600190565b919050565b6001600160a01b038116811461077757600080fd5b80358015158114610c6e57600080fd5b60008060008060008060008060006101208a8c031215610cb757600080fd5b8935610cc281610c73565b985060208a0135610cd281610c73565b975060408a0135610ce281610c73565b965060608a0135955060808a0135945060a08a0135935060c08a0135610d0781610c73565b9250610d1560e08b01610c88565b9150610d246101008b01610c88565b90509295985092959850929598565b60008060408385031215610d4657600080fd5b8235610d5181610c73565b946020939093013593505050565b600060208284031215610d7157600080fd5b8135610d7c81610c73565b9392505050565b60008060408385031215610d9657600080fd5b8235610da181610c73565b91506020830135610db181610c73565b809150509250929050565b60008060008060008060008060006101208a8c031215610ddb57600080fd5b8935610de681610c73565b985060208a0135610df681610c73565b975060408a0135610e0681610c73565b965060608a0135610e1681610c73565b955060808a0135610e2681610c73565b945060a08a0135610e3681610c73565b935060c08a0135610e4681610c73565b925060e08a0135610e5681610c73565b91506101008a0135610e6781610c73565b809150509295985092959850929598565b6020808252600c908201526b15539055551213d49256915160a21b604082015260600190565b600060208284031215610eb057600080fd5b8151610d7c81610c73565b6020808252602e908201527f496e697469616c697a61626c653a20636f6e747261637420697320616c72656160408201526d191e481a5b9a5d1a585b1a5e995960921b60608201526080019056fea26469706673582212200cd8c13e5414c899e3a9cbe79d32ac5983180710ba0a00e8b5e7064f589ba4f264736f6c63430008090033",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [
+      {
+        "astId": 6812,
+        "contract": "contracts/factory/DuetDppFactory.sol:DuetDPPFactory",
+        "label": "admin",
+        "offset": 0,
+        "slot": "0",
+        "type": "t_address"
+      },
+      {
+        "astId": 6,
+        "contract": "contracts/factory/DuetDppFactory.sol:DuetDPPFactory",
+        "label": "_initialized",
+        "offset": 20,
+        "slot": "0",
+        "type": "t_uint8"
+      },
+      {
+        "astId": 9,
+        "contract": "contracts/factory/DuetDppFactory.sol:DuetDPPFactory",
+        "label": "_initializing",
+        "offset": 21,
+        "slot": "0",
+        "type": "t_bool"
+      },
+      {
+        "astId": 5986,
+        "contract": "contracts/factory/DuetDppFactory.sol:DuetDPPFactory",
+        "label": "CLONE_FACTORY",
+        "offset": 0,
+        "slot": "1",
+        "type": "t_address"
+      },
+      {
+        "astId": 5988,
+        "contract": "contracts/factory/DuetDppFactory.sol:DuetDPPFactory",
+        "label": "WETH",
+        "offset": 0,
+        "slot": "2",
+        "type": "t_address"
+      },
+      {
+        "astId": 5990,
+        "contract": "contracts/factory/DuetDppFactory.sol:DuetDPPFactory",
+        "label": "dodoDefautMtFeeRateModel",
+        "offset": 0,
+        "slot": "3",
+        "type": "t_address"
+      },
+      {
+        "astId": 5992,
+        "contract": "contracts/factory/DuetDppFactory.sol:DuetDPPFactory",
+        "label": "dodoApproveProxy",
+        "offset": 0,
+        "slot": "4",
+        "type": "t_address"
+      },
+      {
+        "astId": 5994,
+        "contract": "contracts/factory/DuetDppFactory.sol:DuetDPPFactory",
+        "label": "dodoDefaultMaintainer",
+        "offset": 0,
+        "slot": "5",
+        "type": "t_address"
+      },
+      {
+        "astId": 5996,
+        "contract": "contracts/factory/DuetDppFactory.sol:DuetDPPFactory",
+        "label": "dppTemplate",
+        "offset": 0,
+        "slot": "6",
+        "type": "t_address"
+      },
+      {
+        "astId": 5998,
+        "contract": "contracts/factory/DuetDppFactory.sol:DuetDPPFactory",
+        "label": "dppAdminTemplate",
+        "offset": 0,
+        "slot": "7",
+        "type": "t_address"
+      },
+      {
+        "astId": 6000,
+        "contract": "contracts/factory/DuetDppFactory.sol:DuetDPPFactory",
+        "label": "dppControllerTemplate",
+        "offset": 0,
+        "slot": "8",
+        "type": "t_address"
+      },
+      {
+        "astId": 6006,
+        "contract": "contracts/factory/DuetDppFactory.sol:DuetDPPFactory",
+        "label": "registry",
+        "offset": 0,
+        "slot": "9",
+        "type": "t_mapping(t_address,t_mapping(t_address,t_address))"
+      },
+      {
+        "astId": 6011,
+        "contract": "contracts/factory/DuetDppFactory.sol:DuetDPPFactory",
+        "label": "userRegistry",
+        "offset": 0,
+        "slot": "10",
+        "type": "t_mapping(t_address,t_array(t_address)dyn_storage)"
+      }
+    ],
+    "types": {
+      "t_address": {
+        "encoding": "inplace",
+        "label": "address",
+        "numberOfBytes": "20"
+      },
+      "t_array(t_address)dyn_storage": {
+        "base": "t_address",
+        "encoding": "dynamic_array",
+        "label": "address[]",
+        "numberOfBytes": "32"
+      },
+      "t_bool": {
+        "encoding": "inplace",
+        "label": "bool",
+        "numberOfBytes": "1"
+      },
+      "t_mapping(t_address,t_address)": {
+        "encoding": "mapping",
+        "key": "t_address",
+        "label": "mapping(address => address)",
+        "numberOfBytes": "32",
+        "value": "t_address"
+      },
+      "t_mapping(t_address,t_array(t_address)dyn_storage)": {
+        "encoding": "mapping",
+        "key": "t_address",
+        "label": "mapping(address => address[])",
+        "numberOfBytes": "32",
+        "value": "t_array(t_address)dyn_storage"
+      },
+      "t_mapping(t_address,t_mapping(t_address,t_address))": {
+        "encoding": "mapping",
+        "key": "t_address",
+        "label": "mapping(address => mapping(address => address))",
+        "numberOfBytes": "32",
+        "value": "t_mapping(t_address,t_address)"
+      },
+      "t_uint8": {
+        "encoding": "inplace",
+        "label": "uint8",
+        "numberOfBytes": "1"
+      }
+    }
+  }
+}

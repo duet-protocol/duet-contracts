@@ -5,11 +5,11 @@
 
 */
 
-pragma solidity 0.6.9;
+pragma solidity 0.8.9;
 pragma experimental ABIEncoderV2;
 
-import {SafeMath} from "../../lib/SafeMath.sol";
-import {DecimalMath} from "../../lib/DecimalMath.sol";
+import { SafeMath } from "../../lib/SafeMath.sol";
+import { DecimalMath } from "../../lib/DecimalMath.sol";
 
 /**
  * @title DODOMath
@@ -88,8 +88,7 @@ library DODOMath {
         } else {
             sqrt = ki.div(V1).mul(delta).add(DecimalMath.ONE2).sqrt();
         }
-        uint256 premium =
-            DecimalMath.divFloor(sqrt.sub(DecimalMath.ONE), k * 2).add(DecimalMath.ONE);
+        uint256 premium = DecimalMath.divFloor(sqrt.sub(DecimalMath.ONE), k * 2).add(DecimalMath.ONE);
         // V0 is greater than or equal to V1 according to the solution
         return DecimalMath.mulFloor(V1, premium);
     }
@@ -102,7 +101,7 @@ library DODOMath {
         aQ2^2 + bQ2 + c = 0, where
         a=1-k
         -b=(1-k)Q1-kQ0^2/Q1+i*deltaB
-        c=-kQ0^2 
+        c=-kQ0^2
         and Q2=(-b+sqrt(b^2+4(1-k)kQ0^2))/2(1-k)
         note: another root is negative, abondan
 
@@ -175,11 +174,7 @@ library DODOMath {
         bAbs = bAbs.div(DecimalMath.ONE);
 
         // calculate sqrt
-        uint256 squareRoot =
-            DecimalMath.mulFloor(
-                DecimalMath.ONE.sub(k).mul(4),
-                DecimalMath.mulFloor(k, V0).mul(V0)
-            ); // 4(1-k)kQ0^2
+        uint256 squareRoot = DecimalMath.mulFloor(DecimalMath.ONE.sub(k).mul(4), DecimalMath.mulFloor(k, V0).mul(V0)); // 4(1-k)kQ0^2
         squareRoot = bAbs.mul(bAbs).add(squareRoot).sqrt(); // sqrt(b*b+4(1-k)kQ0*Q0)
 
         // final res

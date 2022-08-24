@@ -5,12 +5,12 @@
 
 */
 
-pragma solidity 0.6.9;
+pragma solidity 0.8.9;
 pragma experimental ABIEncoderV2;
 
-import {SafeMath} from "../../lib/SafeMath.sol";
-import {DecimalMath} from "../../lib/DecimalMath.sol";
-import {DODOMath} from "./DODOMath.sol";
+import { SafeMath } from "../../lib/SafeMath.sol";
+import { DecimalMath } from "../../lib/DecimalMath.sol";
+import { DODOMath } from "./DODOMath.sol";
 
 /**
  * @title Pricing
@@ -22,7 +22,11 @@ import {DODOMath} from "./DODOMath.sol";
 library PMMPricing {
     using SafeMath for uint256;
 
-    enum RState {ONE, ABOVE_ONE, BELOW_ONE}
+    enum RState {
+        ONE,
+        ABOVE_ONE,
+        BELOW_ONE
+    }
 
     struct PMMState {
         uint256 i;
@@ -122,14 +126,7 @@ library PMMPricing {
     {
         // in theory Q2 <= targetQuoteTokenAmount
         // however when amount is close to 0, precision problems may cause Q2 > targetQuoteTokenAmount
-        return
-            DODOMath._SolveQuadraticFunctionForTrade(
-                state.Q0,
-                state.Q0,
-                payBaseAmount,
-                state.i,
-                state.K
-            );
+        return DODOMath._SolveQuadraticFunctionForTrade(state.Q0, state.Q0, payBaseAmount, state.i, state.K);
     }
 
     function _ROneSellQuoteToken(PMMState memory state, uint256 payQuoteAmount)
@@ -175,14 +172,7 @@ library PMMPricing {
             uint256 // receiveQuoteToken
         )
     {
-        return
-            DODOMath._SolveQuadraticFunctionForTrade(
-                state.Q0,
-                state.Q,
-                payBaseAmount,
-                state.i,
-                state.K
-            );
+        return DODOMath._SolveQuadraticFunctionForTrade(state.Q0, state.Q, payBaseAmount, state.i, state.K);
     }
 
     // ============ R > 1 cases ============
@@ -194,14 +184,7 @@ library PMMPricing {
             uint256 // receiveQuoteToken
         )
     {
-        return
-            DODOMath._GeneralIntegrate(
-                state.B0,
-                state.B.add(payBaseAmount),
-                state.B,
-                state.i,
-                state.K
-            );
+        return DODOMath._GeneralIntegrate(state.B0, state.B.add(payBaseAmount), state.B, state.i, state.K);
     }
 
     function _RAboveSellQuoteToken(PMMState memory state, uint256 payQuoteAmount)
@@ -225,12 +208,7 @@ library PMMPricing {
 
     function adjustedTarget(PMMState memory state) internal pure {
         if (state.R == RState.BELOW_ONE) {
-            state.Q0 = DODOMath._SolveQuadraticFunctionForTarget(
-                state.Q,
-                state.B.sub(state.B0),
-                state.i,
-                state.K
-            );
+            state.Q0 = DODOMath._SolveQuadraticFunctionForTarget(state.Q, state.B.sub(state.B0), state.i, state.K);
         } else if (state.R == RState.ABOVE_ONE) {
             state.B0 = DODOMath._SolveQuadraticFunctionForTarget(
                 state.B,

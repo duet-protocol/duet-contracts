@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity 0.6.9;
+pragma solidity 0.8.9;
 
 abstract contract Adminable {
     event AdminUpdated(address indexed user, address indexed newAdmin);

@@ -5,7 +5,7 @@
 
 */
 
-pragma solidity 0.6.9;
+pragma solidity 0.8.9;
 pragma experimental ABIEncoderV2;
 
 interface IDPPOracle {
@@ -44,7 +44,6 @@ interface IDPPOracle {
         uint256 minBaseReserve,
         uint256 minQuoteReserve
     ) external returns (bool);
-
 
     function tuneParameters(
         uint256 newLpFeeRate,
