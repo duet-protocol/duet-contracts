@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity 0.6.9;
+pragma solidity 0.8.9;
 pragma experimental ABIEncoderV2;
 
-import {IERC20} from "./intf/IERC20.sol";
-import {SafeMath} from "./lib/SafeMath.sol";
-import {DecimalMath} from "./lib/DecimalMath.sol";
-import {SafeERC20} from "./lib/SafeERC20.sol";
-import {DuetDppStorage} from "./DuetDppStorage.sol";
+import { IERC20 } from "./interfaces/IERC20.sol";
+import { SafeMath } from "./lib/SafeMath.sol";
+import { DecimalMath } from "./lib/DecimalMath.sol";
+import { SafeERC20 } from "./lib/SafeERC20.sol";
+import { DuetDppStorage } from "./DuetDppStorage.sol";
 
 contract DuetDppLp is DuetDppStorage {
     using SafeMath for uint256;
@@ -21,7 +21,6 @@ contract DuetDppLp is DuetDppStorage {
     event Mint(address indexed user, uint256 value);
 
     event Burn(address indexed user, uint256 value);
-
 
     // ============ Shares (ERC20) ============
 
@@ -114,7 +113,7 @@ contract DuetDppLp is DuetDppStorage {
     }
 
     // ============================ Permit ======================================
-    
+
     function permit(
         address owner,
         address spender,
@@ -129,16 +128,11 @@ contract DuetDppLp is DuetDppStorage {
             abi.encodePacked(
                 "\x19\x01",
                 DOMAIN_SEPARATOR,
-                keccak256(
-                    abi.encode(PERMIT_TYPEHASH, owner, spender, value, nonces[owner]++, deadline)
-                )
+                keccak256(abi.encode(PERMIT_TYPEHASH, owner, spender, value, nonces[owner]++, deadline))
             )
         );
         address recoveredAddress = ecrecover(digest, v, r, s);
-        require(
-            recoveredAddress != address(0) && recoveredAddress == owner,
-            "DODO_DVM_LP: INVALID_SIGNATURE"
-        );
+        require(recoveredAddress != address(0) && recoveredAddress == owner, "DODO_DVM_LP: INVALID_SIGNATURE");
         _approve(owner, spender, value);
     }
 }

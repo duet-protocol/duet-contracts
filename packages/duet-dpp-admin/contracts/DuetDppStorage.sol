@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity 0.6.9;
+pragma solidity 0.8.9;
 
-import {IERC20} from "./intf/IERC20.sol";
+import { IERC20 } from "./interfaces/IERC20.sol";
 
 contract DuetDppStorage {
     // ============ pool info ===============
@@ -29,5 +29,4 @@ contract DuetDppStorage {
     // keccak256("Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)");
     bytes32 public constant PERMIT_TYPEHASH = 0x6e71edae12b1b97f4d1f60370fef10105fa2faae0126114a169c64845d6126c9;
     mapping(address => uint256) public nonces;
-
 }

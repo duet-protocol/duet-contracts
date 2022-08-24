@@ -6,12 +6,11 @@
 
 */
 
-pragma solidity 0.6.9;
+pragma solidity 0.8.9;
 pragma experimental ABIEncoderV2;
 
-import {IERC20} from "../intf/IERC20.sol";
-import {SafeMath} from "./SafeMath.sol";
-
+import { IERC20 } from "../interfaces/IERC20.sol";
+import { SafeMath } from "./SafeMath.sol";
 
 /**
  * @title SafeERC20
@@ -39,10 +38,7 @@ library SafeERC20 {
         address to,
         uint256 value
     ) internal {
-        _callOptionalReturn(
-            token,
-            abi.encodeWithSelector(token.transferFrom.selector, from, to, value)
-        );
+        _callOptionalReturn(token, abi.encodeWithSelector(token.transferFrom.selector, from, to, value));
     }
 
     function safeApprove(

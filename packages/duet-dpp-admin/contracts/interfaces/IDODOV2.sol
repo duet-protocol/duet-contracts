@@ -5,11 +5,10 @@
 
 */
 
-pragma solidity 0.6.9;
+pragma solidity 0.8.9;
 pragma experimental ABIEncoderV2;
 
 interface IDODOV2 {
-
     //========== Common ==================
 
     function sellBase(address to) external returns (uint256 receiveQuoteAmount);
@@ -21,10 +20,11 @@ interface IDODOV2 {
     function _BASE_TOKEN_() external view returns (address);
 
     function _QUOTE_TOKEN_() external view returns (address);
-     
 
-
-    function getPMMStateForCall() external view returns (
+    function getPMMStateForCall()
+        external
+        view
+        returns (
             uint256 i,
             uint256 K,
             uint256 B,
@@ -32,15 +32,17 @@ interface IDODOV2 {
             uint256 B0,
             uint256 Q0,
             uint256 R
-    );
+        );
 
     function getUserFeeRate(address user) external view returns (uint256 lpFeeRate, uint256 mtFeeRate);
 
-    
-    function getDODOPoolBidirection(address token0, address token1) external view returns (address[] memory, address[] memory);
+    function getDODOPoolBidirection(address token0, address token1)
+        external
+        view
+        returns (address[] memory, address[] memory);
 
     //========== DODOVendingMachine ========
-    
+
     function createDODOVendingMachine(
         address baseToken,
         address quoteToken,
@@ -49,9 +51,14 @@ interface IDODOV2 {
         uint256 k,
         bool isOpenTWAP
     ) external returns (address newVendingMachine);
-    
-    function buyShares(address to) external returns (uint256,uint256,uint256);
 
+    function buyShares(address to)
+        external
+        returns (
+            uint256,
+            uint256,
+            uint256
+        );
 
     //========== DODOPrivatePool ===========
 
@@ -77,17 +84,16 @@ interface IDODOV2 {
         uint256 quoteOutAmount,
         uint256 minBaseReserve,
         uint256 minQuoteReserve
-    ) external returns (bool); 
-
+    ) external returns (bool);
 
     function _OWNER_() external returns (address);
 
     function _LP_FEE_RATE_() external returns (uint64);
 
     function _K_() external returns (uint64);
-    
+
     function _I_() external returns (uint128);
-    
+
     //========== CrowdPooling ===========
 
     function createCrowdPooling() external returns (address payable newCrowdPooling);
@@ -99,7 +105,7 @@ interface IDODOV2 {
         uint256[] memory timeLine,
         uint256[] memory valueList,
         bool[] memory switches,
-        int globalQuota
+        int256 globalQuota
     ) external;
 
     function bid(address to) external;

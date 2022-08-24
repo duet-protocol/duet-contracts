@@ -4,3 +4,4 @@ cache/
 **/gasReporterOutput.json
 typechain/
 pnpm-lock.yaml
+solcInputs

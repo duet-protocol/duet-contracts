@@ -1,0 +1,518 @@
+{
+  "address": "0x6D3977f3377db759e430AAd55047a8FAfD39773f",
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "previousOwner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnershipTransferPrepared",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "previousOwner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnershipTransferred",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "_DODO_APPROVE_PROXY_",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "_DPP_",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "_FREEZE_TIMESTAMP_",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "_NEW_OWNER_",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "_OPERATOR_",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "_OWNER_",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newOracle",
+          "type": "address"
+        }
+      ],
+      "name": "changeOracle",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "claimOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "newI",
+          "type": "uint256"
+        }
+      ],
+      "name": "disableOracle",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "enableOracle",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "dpp",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "dodoApproveProxy",
+          "type": "address"
+        }
+      ],
+      "name": "init",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "initOwner",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "newLpFeeRate",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "newI",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "newK",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "baseOutAmount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "quoteOutAmount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "minBaseReserve",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "minQuoteReserve",
+          "type": "uint256"
+        }
+      ],
+      "name": "reset",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address payable",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "retrieve",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "setFreezeTimestamp",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newOperator",
+          "type": "address"
+        }
+      ],
+      "name": "setOperator",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "sync",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "newLpFeeRate",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "newI",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "newK",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "minBaseReserve",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "minQuoteReserve",
+          "type": "uint256"
+        }
+      ],
+      "name": "tuneParameters",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "newI",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "minBaseReserve",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "minQuoteReserve",
+          "type": "uint256"
+        }
+      ],
+      "name": "tunePrice",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "version",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    }
+  ],
+  "transactionHash": "0x9ef4bfb54d70fc6d0e52500a62c9368f5940cf46f90f3c428858b9a80a4db92a",
+  "receipt": {
+    "to": null,
+    "from": "0xe7a2b8C8feD53713F69227e6c3d2384E80CF88a6",
+    "contractAddress": "0x6D3977f3377db759e430AAd55047a8FAfD39773f",
+    "transactionIndex": 15,
+    "gasUsed": "898074",
+    "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "blockHash": "0xa87d1eadf0992b58fac40e6db1e940cda62f28427ad247e1a56c0dc4736b11b2",
+    "transactionHash": "0x9ef4bfb54d70fc6d0e52500a62c9368f5940cf46f90f3c428858b9a80a4db92a",
+    "logs": [],
+    "blockNumber": 22240266,
+    "cumulativeGasUsed": "3549193",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [],
+  "numDeployments": 1,
+  "solcInputHash": "4c79fe16aaf1bed84cf3db391f24b3d1",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.9+commit.e5eed63a\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferPrepared\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"_DODO_APPROVE_PROXY_\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"_DPP_\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"_FREEZE_TIMESTAMP_\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"_NEW_OWNER_\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"_OPERATOR_\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"_OWNER_\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOracle\",\"type\":\"address\"}],\"name\":\"changeOracle\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"claimOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"newI\",\"type\":\"uint256\"}],\"name\":\"disableOracle\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"enableOracle\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"dpp\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"dodoApproveProxy\",\"type\":\"address\"}],\"name\":\"init\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"initOwner\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"newLpFeeRate\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"newI\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"newK\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"baseOutAmount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"quoteOutAmount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"minBaseReserve\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"minQuoteReserve\",\"type\":\"uint256\"}],\"name\":\"reset\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address payable\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"retrieve\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"name\":\"setFreezeTimestamp\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOperator\",\"type\":\"address\"}],\"name\":\"setOperator\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"sync\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"newLpFeeRate\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"newI\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"newK\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"minBaseReserve\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"minQuoteReserve\",\"type\":\"uint256\"}],\"name\":\"tuneParameters\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"newI\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"minBaseReserve\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"minQuoteReserve\",\"type\":\"uint256\"}],\"name\":\"tunePrice\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"version\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"pure\",\"type\":\"function\"}],\"devdoc\":{\"author\":\"DODO Breeder\",\"kind\":\"dev\",\"methods\":{},\"title\":\"DPPOracleAdmin\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"notice\":\"Admin of Oracle DODOPrivatePool\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/external/DPPOracle/DPPOracleAdmin.sol\":\"DPPOracleAdmin\"},\"evmVersion\":\"london\",\"libraries\":{\":__CACHE_BREAKER__\":\"0x00000000d41867734bbee4c6863d9255b2b06ac1\"},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"contracts/external/DPPOracle/DPPOracleAdmin.sol\":{\"content\":\"/*\\n\\n    Copyright 2021 DODO ZOO.\\n    SPDX-License-Identifier: Apache-2.0\\n\\n*/\\n\\npragma solidity 0.8.9;\\npragma experimental ABIEncoderV2;\\n\\nimport { IDPPOracle } from \\\"../interfaces/IDPPOracle.sol\\\";\\nimport { IDODOApproveProxy } from \\\"../interfaces/IDODOApproveProxy.sol\\\";\\nimport { InitializableOwnable } from \\\"../../lib/InitializableOwnable.sol\\\";\\n\\n/**\\n * @title DPPOracleAdmin\\n * @author DODO Breeder\\n *\\n * @notice Admin of Oracle DODOPrivatePool\\n */\\ncontract DPPOracleAdmin is InitializableOwnable {\\n    address public _DPP_;\\n    address public _OPERATOR_;\\n    address public _DODO_APPROVE_PROXY_;\\n    uint256 public _FREEZE_TIMESTAMP_;\\n\\n    modifier notFreezed() {\\n        require(block.timestamp >= _FREEZE_TIMESTAMP_, \\\"ADMIN_FREEZED\\\");\\n        _;\\n    }\\n\\n    function init(\\n        address owner,\\n        address dpp,\\n        address operator,\\n        address dodoApproveProxy\\n    ) external {\\n        initOwner(owner);\\n        _DPP_ = dpp;\\n        _OPERATOR_ = operator;\\n        _DODO_APPROVE_PROXY_ = dodoApproveProxy;\\n    }\\n\\n    function sync() external notFreezed onlyOwner {\\n        IDPPOracle(_DPP_).ratioSync();\\n    }\\n\\n    function setFreezeTimestamp(uint256 timestamp) external notFreezed onlyOwner {\\n        _FREEZE_TIMESTAMP_ = timestamp;\\n    }\\n\\n    function setOperator(address newOperator) external notFreezed onlyOwner {\\n        _OPERATOR_ = newOperator;\\n    }\\n\\n    function retrieve(\\n        address payable to,\\n        address token,\\n        uint256 amount\\n    ) external notFreezed onlyOwner {\\n        IDPPOracle(_DPP_).retrieve(to, token, amount);\\n    }\\n\\n    function changeOracle(address newOracle) external onlyOwner notFreezed {\\n        IDPPOracle(_DPP_).changeOracle(newOracle);\\n    }\\n\\n    function enableOracle() external onlyOwner notFreezed {\\n        IDPPOracle(_DPP_).enableOracle();\\n    }\\n\\n    function disableOracle(uint256 newI) external onlyOwner notFreezed {\\n        IDPPOracle(_DPP_).disableOracle(newI);\\n    }\\n\\n    function tuneParameters(\\n        uint256 newLpFeeRate,\\n        uint256 newI,\\n        uint256 newK,\\n        uint256 minBaseReserve,\\n        uint256 minQuoteReserve\\n    ) external onlyOwner notFreezed returns (bool) {\\n        return IDPPOracle(_DPP_).tuneParameters(newLpFeeRate, newI, newK, minBaseReserve, minQuoteReserve);\\n    }\\n\\n    function tunePrice(\\n        uint256 newI,\\n        uint256 minBaseReserve,\\n        uint256 minQuoteReserve\\n    ) external onlyOwner notFreezed returns (bool) {\\n        return IDPPOracle(_DPP_).tunePrice(newI, minBaseReserve, minQuoteReserve);\\n    }\\n\\n    function reset(\\n        address operator,\\n        uint256 newLpFeeRate,\\n        uint256 newI,\\n        uint256 newK,\\n        uint256 baseOutAmount,\\n        uint256 quoteOutAmount,\\n        uint256 minBaseReserve,\\n        uint256 minQuoteReserve\\n    ) external notFreezed returns (bool) {\\n        require(\\n            msg.sender == _OWNER_ ||\\n                (IDODOApproveProxy(_DODO_APPROVE_PROXY_).isAllowedProxy(msg.sender) && operator == _OPERATOR_),\\n            \\\"RESET FORBIDDEN!\\\"\\n        );\\n        // only allow owner directly call or operator call via DODODppProxy\\n        return\\n            IDPPOracle(_DPP_).reset(\\n                msg.sender, //only support asset transfer to msg.sender (_OWNER_ or allowed proxy)\\n                newLpFeeRate,\\n                newI,\\n                newK,\\n                baseOutAmount,\\n                quoteOutAmount,\\n                minBaseReserve,\\n                minQuoteReserve\\n            );\\n    }\\n\\n    // ============ Admin Version Control ============\\n\\n    function version() external pure returns (string memory) {\\n        return \\\"DPPOracle Admin 1.1.1\\\";\\n    }\\n}\\n\",\"keccak256\":\"0x392dc1f4f7043b061272a2fd81bd8b80877640b8cb1333811d8ef9c70b132ef8\",\"license\":\"Apache-2.0\"},\"contracts/external/interfaces/IDODOApproveProxy.sol\":{\"content\":\"pragma solidity 0.8.9;\\npragma experimental ABIEncoderV2;\\n\\ninterface IDODOApproveProxy {\\n    function isAllowedProxy(address _proxy) external view returns (bool);\\n\\n    function claimTokens(\\n        address token,\\n        address who,\\n        address dest,\\n        uint256 amount\\n    ) external;\\n}\\n\",\"keccak256\":\"0x966ee739f3f870da586112da540b17e6e91de4a40f1dc299231cf63f0c046547\"},\"contracts/external/interfaces/IDPPOracle.sol\":{\"content\":\"/*\\n\\n    Copyright 2021 DODO ZOO.\\n    SPDX-License-Identifier: Apache-2.0\\n\\n*/\\n\\npragma solidity 0.8.9;\\npragma experimental ABIEncoderV2;\\n\\ninterface IDPPOracle {\\n    function init(\\n        address owner,\\n        address maintainer,\\n        address baseTokenAddress,\\n        address quoteTokenAddress,\\n        uint256 lpFeeRate,\\n        address mtFeeRateModel,\\n        uint256 k,\\n        uint256 i,\\n        address o,\\n        bool isOpenTWAP,\\n        bool isOracleEnabled\\n    ) external;\\n\\n    function _MT_FEE_RATE_MODEL_() external returns (address);\\n\\n    //=========== admin ==========\\n    function ratioSync() external;\\n\\n    function retrieve(\\n        address payable to,\\n        address token,\\n        uint256 amount\\n    ) external;\\n\\n    function reset(\\n        address assetTo,\\n        uint256 newLpFeeRate,\\n        uint256 newI,\\n        uint256 newK,\\n        uint256 baseOutAmount,\\n        uint256 quoteOutAmount,\\n        uint256 minBaseReserve,\\n        uint256 minQuoteReserve\\n    ) external returns (bool);\\n\\n    function tuneParameters(\\n        uint256 newLpFeeRate,\\n        uint256 newI,\\n        uint256 newK,\\n        uint256 minBaseReserve,\\n        uint256 minQuoteReserve\\n    ) external returns (bool);\\n\\n    function tunePrice(\\n        uint256 newI,\\n        uint256 minBaseReserve,\\n        uint256 minQuoteReserve\\n    ) external returns (bool);\\n\\n    function changeOracle(address newOracle) external;\\n\\n    function enableOracle() external;\\n\\n    function disableOracle(uint256 newI) external;\\n}\\n\",\"keccak256\":\"0xd14ab96cac59172e2f20dbcbc01dfa3142c30c19ce5d58763a4dfa61f6507d5a\",\"license\":\"Apache-2.0\"},\"contracts/lib/InitializableOwnable.sol\":{\"content\":\"/*\\n\\n    Copyright 2020 DODO ZOO.\\n    SPDX-License-Identifier: Apache-2.0\\n\\n*/\\n\\npragma solidity 0.8.9;\\npragma experimental ABIEncoderV2;\\n\\n/**\\n * @title Ownable\\n * @author DODO Breeder\\n *\\n * @notice Ownership related functions\\n */\\ncontract InitializableOwnable {\\n    address public _OWNER_;\\n    address public _NEW_OWNER_;\\n    bool internal _INITIALIZED_;\\n\\n    // ============ Events ============\\n\\n    event OwnershipTransferPrepared(address indexed previousOwner, address indexed newOwner);\\n\\n    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);\\n\\n    // ============ Modifiers ============\\n\\n    modifier notInitialized() {\\n        require(!_INITIALIZED_, \\\"DODO_INITIALIZED\\\");\\n        _;\\n    }\\n\\n    modifier onlyOwner() {\\n        require(msg.sender == _OWNER_, \\\"NOT_OWNER\\\");\\n        _;\\n    }\\n\\n    // ============ Functions ============\\n\\n    function initOwner(address newOwner) public notInitialized {\\n        _INITIALIZED_ = true;\\n        _OWNER_ = newOwner;\\n    }\\n\\n    function transferOwnership(address newOwner) public onlyOwner {\\n        emit OwnershipTransferPrepared(_OWNER_, newOwner);\\n        _NEW_OWNER_ = newOwner;\\n    }\\n\\n    function claimOwnership() public {\\n        require(msg.sender == _NEW_OWNER_, \\\"INVALID_CLAIM\\\");\\n        emit OwnershipTransferred(_OWNER_, _NEW_OWNER_);\\n        _OWNER_ = _NEW_OWNER_;\\n        _NEW_OWNER_ = address(0);\\n    }\\n}\\n\",\"keccak256\":\"0xf3e1c78223fa644700af356b02fd1221d0af72f1f0baf3092bbba0805125f8be\",\"license\":\"Apache-2.0\"}},\"version\":1}",
+  "bytecode": "0x608060405234801561001057600080fd5b50610f48806100206000396000f3fe608060405234801561001057600080fd5b50600436106101375760003560e01c80634e71e0c8116100b8578063b3ab15fb1161007c578063b3ab15fb1461029a578063caef11ad146102ad578063eb99be12146102c0578063f2fde38b146102d3578063f54c7a6c146102e6578063fff6cae9146102f957600080fd5b80634e71e0c81461022257806354fd4d501461022a5780637d1b5d9c146102615780638456db15146102745780638ff3928c1461028757600080fd5b806328c4e24c116100ff57806328c4e24c146101ce578063292c914a146101e15780632bb42fb8146101e95780633b20884a146101fc57806347c421b51461020f57600080fd5b806306552ff31461013c5780630d0092971461015157806310d764601461016457806316048bc41461018c578063201f5084146101b7575b600080fd5b61014f61014a366004610cb2565b610301565b005b61014f61015f366004610d0e565b61034a565b610177610172366004610d32565b6103d2565b60405190151581526020015b60405180910390f35b60005461019f906001600160a01b031681565b6040516001600160a01b039091168152602001610183565b6101c060055481565b604051908152602001610183565b61014f6101dc366004610d5e565b6104b2565b61014f610571565b61014f6101f7366004610d9f565b610627565b61017761020a366004610db8565b610678565b61014f61021d366004610d0e565b610769565b61014f610818565b60408051808201825260158152744450504f7261636c652041646d696e20312e312e3160581b602082015290516101839190610df3565b61014f61026f366004610d9f565b6108c6565b60015461019f906001600160a01b031681565b610177610295366004610e48565b610943565b61014f6102a8366004610d0e565b610b0b565b60025461019f906001600160a01b031681565b60045461019f906001600160a01b031681565b61014f6102e1366004610d0e565b610b79565b60035461019f906001600160a01b031681565b61014f610bfe565b61030a8461034a565b600280546001600160a01b039485166001600160a01b03199182161790915560038054938516938216939093179092556004805491909316911617905550565b600154600160a01b900460ff161561039c5760405162461bcd60e51b815260206004820152601060248201526f1113d113d7d25392551250531256915160821b60448201526064015b60405180910390fd5b6001805460ff60a01b1916600160a01b179055600080546001600160a01b039092166001600160a01b0319909216919091179055565b600080546001600160a01b031633146103fd5760405162461bcd60e51b815260040161039390610ea6565b60055442101561041f5760405162461bcd60e51b815260040161039390610ec9565b6002546040516286bb2360e51b81526004810186905260248101859052604481018490526001600160a01b03909116906310d7646090606401602060405180830381600087803b15801561047257600080fd5b505af1158015610486573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906104aa9190610ef0565b949350505050565b6005544210156104d45760405162461bcd60e51b815260040161039390610ec9565b6000546001600160a01b031633146104fe5760405162461bcd60e51b815260040161039390610ea6565b600254604051630a31389360e21b81526001600160a01b038581166004830152848116602483015260448201849052909116906328c4e24c90606401600060405180830381600087803b15801561055457600080fd5b505af1158015610568573d6000803e3d6000fd5b50505050505050565b6000546001600160a01b0316331461059b5760405162461bcd60e51b815260040161039390610ea6565b6005544210156105bd5760405162461bcd60e51b815260040161039390610ec9565b600260009054906101000a90046001600160a01b03166001600160a01b031663292c914a6040518163ffffffff1660e01b8152600401600060405180830381600087803b15801561060d57600080fd5b505af1158015610621573d6000803e3d6000fd5b50505050565b6005544210156106495760405162461bcd60e51b815260040161039390610ec9565b6000546001600160a01b031633146106735760405162461bcd60e51b815260040161039390610ea6565b600555565b600080546001600160a01b031633146106a35760405162461bcd60e51b815260040161039390610ea6565b6005544210156106c55760405162461bcd60e51b815260040161039390610ec9565b600254604051631d90442560e11b815260048101889052602481018790526044810186905260648101859052608481018490526001600160a01b0390911690633b20884a9060a401602060405180830381600087803b15801561072757600080fd5b505af115801561073b573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019061075f9190610ef0565b9695505050505050565b6000546001600160a01b031633146107935760405162461bcd60e51b815260040161039390610ea6565b6005544210156107b55760405162461bcd60e51b815260040161039390610ec9565b6002546040516347c421b560e01b81526001600160a01b038381166004830152909116906347c421b5906024015b600060405180830381600087803b1580156107fd57600080fd5b505af1158015610811573d6000803e3d6000fd5b5050505050565b6001546001600160a01b031633146108625760405162461bcd60e51b815260206004820152600d60248201526c494e56414c49445f434c41494d60981b6044820152606401610393565b600154600080546040516001600160a01b0393841693909116917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e091a360018054600080546001600160a01b03199081166001600160a01b03841617909155169055565b6000546001600160a01b031633146108f05760405162461bcd60e51b815260040161039390610ea6565b6005544210156109125760405162461bcd60e51b815260040161039390610ec9565b600254604051631f46d76760e21b8152600481018390526001600160a01b0390911690637d1b5d9c906024016107e3565b60006005544210156109675760405162461bcd60e51b815260040161039390610ec9565b6000546001600160a01b0316331480610a105750600480546040516348a4f99360e01b815233928101929092526001600160a01b0316906348a4f9939060240160206040518083038186803b1580156109bf57600080fd5b505afa1580156109d3573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906109f79190610ef0565b8015610a1057506003546001600160a01b038a81169116145b610a4f5760405162461bcd60e51b815260206004820152601060248201526f524553455420464f5242494444454e2160801b6044820152606401610393565b6002546040516323fce4a360e21b8152336004820152602481018a905260448101899052606481018890526084810187905260a4810186905260c4810185905260e481018490526001600160a01b0390911690638ff3928c9061010401602060405180830381600087803b158015610ac657600080fd5b505af1158015610ada573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190610afe9190610ef0565b9998505050505050505050565b600554421015610b2d5760405162461bcd60e51b815260040161039390610ec9565b6000546001600160a01b03163314610b575760405162461bcd60e51b815260040161039390610ea6565b600380546001600160a01b0319166001600160a01b0392909216919091179055565b6000546001600160a01b03163314610ba35760405162461bcd60e51b815260040161039390610ea6565b600080546040516001600160a01b03808516939216917fdcf55418cee3220104fef63f979ff3c4097ad240c0c43dcb33ce837748983e6291a3600180546001600160a01b0319166001600160a01b0392909216919091179055565b600554421015610c205760405162461bcd60e51b815260040161039390610ec9565b6000546001600160a01b03163314610c4a5760405162461bcd60e51b815260040161039390610ea6565b600260009054906101000a90046001600160a01b03166001600160a01b031663c57a5d036040518163ffffffff1660e01b8152600401600060405180830381600087803b15801561060d57600080fd5b6001600160a01b0381168114610caf57600080fd5b50565b60008060008060808587031215610cc857600080fd5b8435610cd381610c9a565b93506020850135610ce381610c9a565b92506040850135610cf381610c9a565b91506060850135610d0381610c9a565b939692955090935050565b600060208284031215610d2057600080fd5b8135610d2b81610c9a565b9392505050565b600080600060608486031215610d4757600080fd5b505081359360208301359350604090920135919050565b600080600060608486031215610d7357600080fd5b8335610d7e81610c9a565b92506020840135610d8e81610c9a565b929592945050506040919091013590565b600060208284031215610db157600080fd5b5035919050565b600080600080600060a08688031215610dd057600080fd5b505083359560208501359550604085013594606081013594506080013592509050565b600060208083528351808285015260005b81811015610e2057858101830151858201604001528201610e04565b81811115610e32576000604083870101525b50601f01601f1916929092016040019392505050565b600080600080600080600080610100898b031215610e6557600080fd5b8835610e7081610c9a565b9a60208a01359a5060408a013599606081013599506080810135985060a0810135975060c0810135965060e00135945092505050565b6020808252600990820152682727aa2fa7aba722a960b91b604082015260600190565b6020808252600d908201526c105113525397d1949151569151609a1b604082015260600190565b600060208284031215610f0257600080fd5b81518015158114610d2b57600080fdfea26469706673582212205479215e9b2300aab55bea6d27511804d2bd83de6fe1468264d60bbbb5477a4c64736f6c63430008090033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b50600436106101375760003560e01c80634e71e0c8116100b8578063b3ab15fb1161007c578063b3ab15fb1461029a578063caef11ad146102ad578063eb99be12146102c0578063f2fde38b146102d3578063f54c7a6c146102e6578063fff6cae9146102f957600080fd5b80634e71e0c81461022257806354fd4d501461022a5780637d1b5d9c146102615780638456db15146102745780638ff3928c1461028757600080fd5b806328c4e24c116100ff57806328c4e24c146101ce578063292c914a146101e15780632bb42fb8146101e95780633b20884a146101fc57806347c421b51461020f57600080fd5b806306552ff31461013c5780630d0092971461015157806310d764601461016457806316048bc41461018c578063201f5084146101b7575b600080fd5b61014f61014a366004610cb2565b610301565b005b61014f61015f366004610d0e565b61034a565b610177610172366004610d32565b6103d2565b60405190151581526020015b60405180910390f35b60005461019f906001600160a01b031681565b6040516001600160a01b039091168152602001610183565b6101c060055481565b604051908152602001610183565b61014f6101dc366004610d5e565b6104b2565b61014f610571565b61014f6101f7366004610d9f565b610627565b61017761020a366004610db8565b610678565b61014f61021d366004610d0e565b610769565b61014f610818565b60408051808201825260158152744450504f7261636c652041646d696e20312e312e3160581b602082015290516101839190610df3565b61014f61026f366004610d9f565b6108c6565b60015461019f906001600160a01b031681565b610177610295366004610e48565b610943565b61014f6102a8366004610d0e565b610b0b565b60025461019f906001600160a01b031681565b60045461019f906001600160a01b031681565b61014f6102e1366004610d0e565b610b79565b60035461019f906001600160a01b031681565b61014f610bfe565b61030a8461034a565b600280546001600160a01b039485166001600160a01b03199182161790915560038054938516938216939093179092556004805491909316911617905550565b600154600160a01b900460ff161561039c5760405162461bcd60e51b815260206004820152601060248201526f1113d113d7d25392551250531256915160821b60448201526064015b60405180910390fd5b6001805460ff60a01b1916600160a01b179055600080546001600160a01b039092166001600160a01b0319909216919091179055565b600080546001600160a01b031633146103fd5760405162461bcd60e51b815260040161039390610ea6565b60055442101561041f5760405162461bcd60e51b815260040161039390610ec9565b6002546040516286bb2360e51b81526004810186905260248101859052604481018490526001600160a01b03909116906310d7646090606401602060405180830381600087803b15801561047257600080fd5b505af1158015610486573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906104aa9190610ef0565b949350505050565b6005544210156104d45760405162461bcd60e51b815260040161039390610ec9565b6000546001600160a01b031633146104fe5760405162461bcd60e51b815260040161039390610ea6565b600254604051630a31389360e21b81526001600160a01b038581166004830152848116602483015260448201849052909116906328c4e24c90606401600060405180830381600087803b15801561055457600080fd5b505af1158015610568573d6000803e3d6000fd5b50505050505050565b6000546001600160a01b0316331461059b5760405162461bcd60e51b815260040161039390610ea6565b6005544210156105bd5760405162461bcd60e51b815260040161039390610ec9565b600260009054906101000a90046001600160a01b03166001600160a01b031663292c914a6040518163ffffffff1660e01b8152600401600060405180830381600087803b15801561060d57600080fd5b505af1158015610621573d6000803e3d6000fd5b50505050565b6005544210156106495760405162461bcd60e51b815260040161039390610ec9565b6000546001600160a01b031633146106735760405162461bcd60e51b815260040161039390610ea6565b600555565b600080546001600160a01b031633146106a35760405162461bcd60e51b815260040161039390610ea6565b6005544210156106c55760405162461bcd60e51b815260040161039390610ec9565b600254604051631d90442560e11b815260048101889052602481018790526044810186905260648101859052608481018490526001600160a01b0390911690633b20884a9060a401602060405180830381600087803b15801561072757600080fd5b505af115801561073b573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019061075f9190610ef0565b9695505050505050565b6000546001600160a01b031633146107935760405162461bcd60e51b815260040161039390610ea6565b6005544210156107b55760405162461bcd60e51b815260040161039390610ec9565b6002546040516347c421b560e01b81526001600160a01b038381166004830152909116906347c421b5906024015b600060405180830381600087803b1580156107fd57600080fd5b505af1158015610811573d6000803e3d6000fd5b5050505050565b6001546001600160a01b031633146108625760405162461bcd60e51b815260206004820152600d60248201526c494e56414c49445f434c41494d60981b6044820152606401610393565b600154600080546040516001600160a01b0393841693909116917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e091a360018054600080546001600160a01b03199081166001600160a01b03841617909155169055565b6000546001600160a01b031633146108f05760405162461bcd60e51b815260040161039390610ea6565b6005544210156109125760405162461bcd60e51b815260040161039390610ec9565b600254604051631f46d76760e21b8152600481018390526001600160a01b0390911690637d1b5d9c906024016107e3565b60006005544210156109675760405162461bcd60e51b815260040161039390610ec9565b6000546001600160a01b0316331480610a105750600480546040516348a4f99360e01b815233928101929092526001600160a01b0316906348a4f9939060240160206040518083038186803b1580156109bf57600080fd5b505afa1580156109d3573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906109f79190610ef0565b8015610a1057506003546001600160a01b038a81169116145b610a4f5760405162461bcd60e51b815260206004820152601060248201526f524553455420464f5242494444454e2160801b6044820152606401610393565b6002546040516323fce4a360e21b8152336004820152602481018a905260448101899052606481018890526084810187905260a4810186905260c4810185905260e481018490526001600160a01b0390911690638ff3928c9061010401602060405180830381600087803b158015610ac657600080fd5b505af1158015610ada573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190610afe9190610ef0565b9998505050505050505050565b600554421015610b2d5760405162461bcd60e51b815260040161039390610ec9565b6000546001600160a01b03163314610b575760405162461bcd60e51b815260040161039390610ea6565b600380546001600160a01b0319166001600160a01b0392909216919091179055565b6000546001600160a01b03163314610ba35760405162461bcd60e51b815260040161039390610ea6565b600080546040516001600160a01b03808516939216917fdcf55418cee3220104fef63f979ff3c4097ad240c0c43dcb33ce837748983e6291a3600180546001600160a01b0319166001600160a01b0392909216919091179055565b600554421015610c205760405162461bcd60e51b815260040161039390610ec9565b6000546001600160a01b03163314610c4a5760405162461bcd60e51b815260040161039390610ea6565b600260009054906101000a90046001600160a01b03166001600160a01b031663c57a5d036040518163ffffffff1660e01b8152600401600060405180830381600087803b15801561060d57600080fd5b6001600160a01b0381168114610caf57600080fd5b50565b60008060008060808587031215610cc857600080fd5b8435610cd381610c9a565b93506020850135610ce381610c9a565b92506040850135610cf381610c9a565b91506060850135610d0381610c9a565b939692955090935050565b600060208284031215610d2057600080fd5b8135610d2b81610c9a565b9392505050565b600080600060608486031215610d4757600080fd5b505081359360208301359350604090920135919050565b600080600060608486031215610d7357600080fd5b8335610d7e81610c9a565b92506020840135610d8e81610c9a565b929592945050506040919091013590565b600060208284031215610db157600080fd5b5035919050565b600080600080600060a08688031215610dd057600080fd5b505083359560208501359550604085013594606081013594506080013592509050565b600060208083528351808285015260005b81811015610e2057858101830151858201604001528201610e04565b81811115610e32576000604083870101525b50601f01601f1916929092016040019392505050565b600080600080600080600080610100898b031215610e6557600080fd5b8835610e7081610c9a565b9a60208a01359a5060408a013599606081013599506080810135985060a0810135975060c0810135965060e00135945092505050565b6020808252600990820152682727aa2fa7aba722a960b91b604082015260600190565b6020808252600d908201526c105113525397d1949151569151609a1b604082015260600190565b600060208284031215610f0257600080fd5b81518015158114610d2b57600080fdfea26469706673582212205479215e9b2300aab55bea6d27511804d2bd83de6fe1468264d60bbbb5477a4c64736f6c63430008090033",
+  "devdoc": {
+    "author": "DODO Breeder",
+    "kind": "dev",
+    "methods": {},
+    "title": "DPPOracleAdmin",
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "notice": "Admin of Oracle DODOPrivatePool",
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [
+      {
+        "astId": 7108,
+        "contract": "contracts/external/DPPOracle/DPPOracleAdmin.sol:DPPOracleAdmin",
+        "label": "_OWNER_",
+        "offset": 0,
+        "slot": "0",
+        "type": "t_address"
+      },
+      {
+        "astId": 7110,
+        "contract": "contracts/external/DPPOracle/DPPOracleAdmin.sol:DPPOracleAdmin",
+        "label": "_NEW_OWNER_",
+        "offset": 0,
+        "slot": "1",
+        "type": "t_address"
+      },
+      {
+        "astId": 7112,
+        "contract": "contracts/external/DPPOracle/DPPOracleAdmin.sol:DPPOracleAdmin",
+        "label": "_INITIALIZED_",
+        "offset": 20,
+        "slot": "1",
+        "type": "t_bool"
+      },
+      {
+        "astId": 2464,
+        "contract": "contracts/external/DPPOracle/DPPOracleAdmin.sol:DPPOracleAdmin",
+        "label": "_DPP_",
+        "offset": 0,
+        "slot": "2",
+        "type": "t_address"
+      },
+      {
+        "astId": 2466,
+        "contract": "contracts/external/DPPOracle/DPPOracleAdmin.sol:DPPOracleAdmin",
+        "label": "_OPERATOR_",
+        "offset": 0,
+        "slot": "3",
+        "type": "t_address"
+      },
+      {
+        "astId": 2468,
+        "contract": "contracts/external/DPPOracle/DPPOracleAdmin.sol:DPPOracleAdmin",
+        "label": "_DODO_APPROVE_PROXY_",
+        "offset": 0,
+        "slot": "4",
+        "type": "t_address"
+      },
+      {
+        "astId": 2470,
+        "contract": "contracts/external/DPPOracle/DPPOracleAdmin.sol:DPPOracleAdmin",
+        "label": "_FREEZE_TIMESTAMP_",
+        "offset": 0,
+        "slot": "5",
+        "type": "t_uint256"
+      }
+    ],
+    "types": {
+      "t_address": {
+        "encoding": "inplace",
+        "label": "address",
+        "numberOfBytes": "20"
+      },
+      "t_bool": {
+        "encoding": "inplace",
+        "label": "bool",
+        "numberOfBytes": "1"
+      },
+      "t_uint256": {
+        "encoding": "inplace",
+        "label": "uint256",
+        "numberOfBytes": "32"
+      }
+    }
+  }
+}

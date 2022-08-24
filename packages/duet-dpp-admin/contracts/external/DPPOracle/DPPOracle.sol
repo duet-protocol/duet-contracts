@@ -5,12 +5,12 @@
 
 */
 
-pragma solidity 0.6.9;
+pragma solidity 0.8.9;
 pragma experimental ABIEncoderV2;
 
-import {IFeeRateModel} from "../lib/FeeRateModel.sol";
-import {IERC20} from "../../intf/IERC20.sol";
-import {DPPTrader} from "./DPPTrader.sol";
+import { IFeeRateModel } from "../lib/FeeRateModel.sol";
+import { IERC20 } from "../../interfaces/IERC20.sol";
+import { DPPTrader } from "./DPPTrader.sol";
 
 /**
  * @title DODO PrivatePool
@@ -19,7 +19,6 @@ import {DPPTrader} from "./DPPTrader.sol";
  * @notice DODOPrivatePool with oracle price
  */
 contract DPPOracle is DPPTrader {
-
     event EnableOracle();
     event DisableOracle(uint256 newI);
     event ChangeOracle(address indexed oracle);
@@ -45,11 +44,11 @@ contract DPPOracle is DPPTrader {
 
         _MAINTAINER_ = maintainer;
         _MT_FEE_RATE_MODEL_ = IFeeRateModel(mtFeeRateModel);
-        
+
         require(lpFeeRate <= 1e18, "LP_FEE_RATE_OUT_OF_RANGE");
         require(k <= 1e18, "K_OUT_OF_RANGE");
         require(i > 0 && i <= 1e36, "I_OUT_OF_RANGE");
-        require(o !=  address(0), "INVALID_ORACLE");
+        require(o != address(0), "INVALID_ORACLE");
 
         _LP_FEE_RATE_ = uint64(lpFeeRate);
         _K_ = uint64(k);
@@ -58,13 +57,13 @@ contract DPPOracle is DPPTrader {
 
         _IS_OPEN_TWAP_ = isOpenTWAP;
         _IS_ORACLE_ENABLED = isOracleEnabled;
-        if(isOpenTWAP) _BLOCK_TIMESTAMP_LAST_ = uint32(block.timestamp % 2**32);
-        
+        if (isOpenTWAP) _BLOCK_TIMESTAMP_LAST_ = uint32(block.timestamp % 2**32);
+
         _resetTargetAndReserve();
     }
 
     function changeOracle(address newOracle) public preventReentrant onlyOwner {
-        require(newOracle !=  address(0), "INVALID_ORACLE");
+        require(newOracle != address(0), "INVALID_ORACLE");
         _O_ = newOracle;
         emit ChangeOracle(newOracle);
     }
@@ -88,10 +87,7 @@ contract DPPOracle is DPPTrader {
         uint256 minBaseReserve,
         uint256 minQuoteReserve
     ) public preventReentrant onlyOwner returns (bool) {
-        require(
-            _BASE_RESERVE_ >= minBaseReserve && _QUOTE_RESERVE_ >= minQuoteReserve,
-            "RESERVE_AMOUNT_IS_NOT_ENOUGH"
-        );
+        require(_BASE_RESERVE_ >= minBaseReserve && _QUOTE_RESERVE_ >= minQuoteReserve, "RESERVE_AMOUNT_IS_NOT_ENOUGH");
         require(newLpFeeRate <= 1e18, "LP_FEE_RATE_OUT_OF_RANGE");
         require(newK <= 1e18, "K_OUT_OF_RANGE");
         require(newI > 0 && newI <= 1e36, "I_OUT_OF_RANGE");
@@ -109,15 +105,11 @@ contract DPPOracle is DPPTrader {
         uint256 minBaseReserve,
         uint256 minQuoteReserve
     ) public preventReentrant onlyOwner returns (bool) {
-        require(
-            _BASE_RESERVE_ >= minBaseReserve && _QUOTE_RESERVE_ >= minQuoteReserve,
-            "RESERVE_AMOUNT_IS_NOT_ENOUGH"
-        );
+        require(_BASE_RESERVE_ >= minBaseReserve && _QUOTE_RESERVE_ >= minQuoteReserve, "RESERVE_AMOUNT_IS_NOT_ENOUGH");
         require(newI > 0 && newI <= 1e36, "I_OUT_OF_RANGE");
         _I_ = uint128(newI);
         return true;
     }
-
 
     // ============ Version Control ============
 

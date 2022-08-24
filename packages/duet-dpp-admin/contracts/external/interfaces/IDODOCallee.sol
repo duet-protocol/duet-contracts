@@ -5,7 +5,7 @@
 
 */
 
-pragma solidity 0.6.9;
+pragma solidity 0.8.9;
 pragma experimental ABIEncoderV2;
 
 interface IDODOCallee {
@@ -44,7 +44,7 @@ interface IDODOCallee {
         bytes calldata data
     ) external;
 
-	function CPClaimBidCall(
+    function CPClaimBidCall(
         address sender,
         uint256 baseAmount,
         uint256 quoteAmount,

@@ -1,8 +1,8 @@
-pragma solidity 0.6.9;
+pragma solidity 0.8.9;
 
-import {SafeMath} from "./SafeMath.sol";
-import {IERC20} from "../intf/IERC20.sol";
-import {SafeERC20} from "./SafeERC20.sol";
+import { SafeMath } from "./SafeMath.sol";
+import { IERC20 } from "../interfaces/IERC20.sol";
+import { SafeERC20 } from "./SafeERC20.sol";
 
 library UniversalERC20 {
     using SafeMath for uint256;
@@ -34,7 +34,7 @@ library UniversalERC20 {
             if (allowance > 0) {
                 token.safeApprove(to, 0);
             }
-            token.safeApprove(to, uint256(-1));
+            token.safeApprove(to, type(uint256).max);
         }
     }
 

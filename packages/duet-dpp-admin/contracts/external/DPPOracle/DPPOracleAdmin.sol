@@ -5,12 +5,12 @@
 
 */
 
-pragma solidity 0.6.9;
+pragma solidity 0.8.9;
 pragma experimental ABIEncoderV2;
 
-import {IDPPOracle} from "../intf/IDPPOracle.sol";
-import {IDODOApproveProxy} from "../intf/IDODOApproveProxy.sol";
-import {InitializableOwnable} from "../../lib/InitializableOwnable.sol";
+import { IDPPOracle } from "../interfaces/IDPPOracle.sol";
+import { IDODOApproveProxy } from "../interfaces/IDODOApproveProxy.sol";
+import { InitializableOwnable } from "../../lib/InitializableOwnable.sol";
 
 /**
  * @title DPPOracleAdmin
@@ -23,7 +23,6 @@ contract DPPOracleAdmin is InitializableOwnable {
     address public _OPERATOR_;
     address public _DODO_APPROVE_PROXY_;
     uint256 public _FREEZE_TIMESTAMP_;
-
 
     modifier notFreezed() {
         require(block.timestamp >= _FREEZE_TIMESTAMP_, "ADMIN_FREEZED");
@@ -67,11 +66,11 @@ contract DPPOracleAdmin is InitializableOwnable {
     }
 
     function enableOracle() external onlyOwner notFreezed {
-        IDPPOracle(_DPP_).enableOracle(); 
+        IDPPOracle(_DPP_).enableOracle();
     }
 
     function disableOracle(uint256 newI) external onlyOwner notFreezed {
-        IDPPOracle(_DPP_).disableOracle(newI); 
+        IDPPOracle(_DPP_).disableOracle(newI);
     }
 
     function tuneParameters(
@@ -81,14 +80,7 @@ contract DPPOracleAdmin is InitializableOwnable {
         uint256 minBaseReserve,
         uint256 minQuoteReserve
     ) external onlyOwner notFreezed returns (bool) {
-        return
-            IDPPOracle(_DPP_).tuneParameters(
-                newLpFeeRate,
-                newI,
-                newK,
-                minBaseReserve,
-                minQuoteReserve
-            );
+        return IDPPOracle(_DPP_).tuneParameters(newLpFeeRate, newI, newK, minBaseReserve, minQuoteReserve);
     }
 
     function tunePrice(
@@ -96,14 +88,8 @@ contract DPPOracleAdmin is InitializableOwnable {
         uint256 minBaseReserve,
         uint256 minQuoteReserve
     ) external onlyOwner notFreezed returns (bool) {
-        return
-            IDPPOracle(_DPP_).tunePrice(
-                newI,
-                minBaseReserve,
-                minQuoteReserve
-            );
+        return IDPPOracle(_DPP_).tunePrice(newI, minBaseReserve, minQuoteReserve);
     }
-
 
     function reset(
         address operator,
@@ -117,10 +103,10 @@ contract DPPOracleAdmin is InitializableOwnable {
     ) external notFreezed returns (bool) {
         require(
             msg.sender == _OWNER_ ||
-                (IDODOApproveProxy(_DODO_APPROVE_PROXY_).isAllowedProxy(msg.sender) &&
-                    operator == _OPERATOR_),
-            "RESET FORBIDDEN！"
-        ); // only allow owner directly call or operator call via DODODppProxy
+                (IDODOApproveProxy(_DODO_APPROVE_PROXY_).isAllowedProxy(msg.sender) && operator == _OPERATOR_),
+            "RESET FORBIDDEN!"
+        );
+        // only allow owner directly call or operator call via DODODppProxy
         return
             IDPPOracle(_DPP_).reset(
                 msg.sender, //only support asset transfer to msg.sender (_OWNER_ or allowed proxy)
