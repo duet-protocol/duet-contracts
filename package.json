@@ -8,7 +8,10 @@
     "compile": "pnpm -F \"./packages/*\" compile",
     "sdk": "pnpm run compile && ts-node scripts/sdk.ts",
     "interfaces": "ts-node scripts/interfaces.ts",
-    "test": "yarn run test"
+    "test": "yarn run test",
+    "prettier": "prettier --cache --write --no-error-on-unmatched-pattern **/*.js **/*.ts **/*.json **/*.yml **/*.yaml && pnpm run -r prettier",
+    "pre-commit": "pnpm run prettier",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -69,6 +72,7 @@
     "hardhat-gas-reporter": "^1.0.4",
     "hardhat-preprocessor": "^0.1.4",
     "hardhat-watcher": "^2.3.0",
+    "husky": "^8.0.1",
     "moment": "^2.29.3",
     "prettier": "^2.3.2",
     "prettier-plugin-solidity": "^1.0.0-beta.13",

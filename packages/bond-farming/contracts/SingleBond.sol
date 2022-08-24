@@ -28,7 +28,7 @@ contract SingleBond is Ownable, CloneFactory {
     event NewEpoch(address indexed epoch);
     event SetEpochImp(address epochimp);
 
-    function getEpoches() external view returns(address[] memory){
+    function getEpoches() external view returns (address[] memory) {
         return epoches;
     }
 
@@ -37,7 +37,7 @@ contract SingleBond is Ownable, CloneFactory {
         emit SetEpochImp(_epochImp);
     }
 
-    function getEpoch(uint256 id) external view returns(address){
+    function getEpoch(uint256 id) external view returns (address) {
         return epoches[id];
     }
 
@@ -45,17 +45,24 @@ contract SingleBond is Ownable, CloneFactory {
         rewardtoken = _rewardtoken;
     }
 
-    function initBond(uint256 _start, uint256 _duration, uint256 _phasenum,uint256 _principal,uint256 _interestone,address _debtor) external onlyOwner {
+    function initBond(
+        uint256 _start,
+        uint256 _duration,
+        uint256 _phasenum,
+        uint256 _principal,
+        uint256 _interestone,
+        address _debtor
+    ) external onlyOwner {
         require(start == 0 && end == 0, "aleady inited");
         debtor = _debtor;
         start = _start;
         duration = _duration;
         phasenum = _phasenum;
 
-        for (uint256 i = 0; i < phasenum; i++){
-            uint256 epend = start + (i+1) * duration;
+        for (uint256 i = 0; i < phasenum; i++) {
+            uint256 epend = start + (i + 1) * duration;
             uint256 amount = _interestone;
-            if(i == phasenum - 1) {
+            if (i == phasenum - 1) {
                 amount = _principal + _interestone;
             }
             string memory name = "Bonded Duet";
@@ -73,45 +80,49 @@ contract SingleBond is Ownable, CloneFactory {
     }
 
     //renewal bond will start at next phase
-    function renewal (uint256 _phasenum,uint256 _principal,uint256 _interestone) external onlyOwner {
+    function renewal(
+        uint256 _phasenum,
+        uint256 _principal,
+        uint256 _interestone
+    ) external onlyOwner {
         uint256 needcreate = 0;
         uint256 newstart = end;
-        uint256 renewphase = (block.timestamp - start)/duration + 1;
-        if(block.timestamp > end){ 
+        uint256 renewphase = (block.timestamp - start) / duration + 1;
+        if (block.timestamp > end) {
             needcreate = _phasenum;
             newstart = block.timestamp;
             start = block.timestamp;
             phasenum = 0;
         } else {
-            if(block.timestamp + duration*_phasenum <= end) {
+            if (block.timestamp + duration * _phasenum <= end) {
                 needcreate = 0;
             } else {
-                needcreate = _phasenum - (end - block.timestamp)/duration;
+                needcreate = _phasenum - (end - block.timestamp) / duration;
             }
         }
 
         uint256 needrenew = _phasenum - needcreate;
         IERC20 token = IERC20(rewardtoken);
-        for(uint256 i = 0; i < needrenew; i++){
-            address renewEP = epoches[renewphase+i];
+        for (uint256 i = 0; i < needrenew; i++) {
+            address renewEP = epoches[renewphase + i];
             uint256 amount = _interestone;
-            if(i == _phasenum-1){
+            if (i == _phasenum - 1) {
                 amount = _interestone + _principal;
             }
             Epoch(renewEP).mint(debtor, amount);
             token.safeTransferFrom(msg.sender, renewEP, amount);
         }
         uint256 idnum = epoches.length;
-        for(uint256 j = 0; j < needcreate; j++){
+        for (uint256 j = 0; j < needcreate; j++) {
             uint256 amount = _interestone;
-            if(needrenew + j == _phasenum - 1){
+            if (needrenew + j == _phasenum - 1) {
                 amount = _principal + _interestone;
             }
             string memory name = "Bonded Duet";
-            string memory symbol = string(abi.encodePacked(string("bDuet#"), (j+idnum).toString()));
+            string memory symbol = string(abi.encodePacked(string("bDuet#"), (j + idnum).toString()));
 
             address ep = createClone(epochImp);
-            Epoch(ep).initialize(rewardtoken, newstart + (j+1)*duration, debtor, amount, name, symbol);
+            Epoch(ep).initialize(rewardtoken, newstart + (j + 1) * duration, debtor, amount, name, symbol);
             epoches.push(ep);
             emit NewEpoch(address(ep));
             token.safeTransferFrom(msg.sender, ep, amount);
@@ -121,22 +132,26 @@ contract SingleBond is Ownable, CloneFactory {
         phasenum = phasenum + needcreate;
     }
 
-    function renewSingleEpoch(uint256 id, uint256 amount, address to) external onlyOwner{
+    function renewSingleEpoch(
+        uint256 id,
+        uint256 amount,
+        address to
+    ) external onlyOwner {
         require(epoches[id] != address(0), "unavailable epoch");
         Epoch ep = Epoch(epoches[id]);
-        require(block.timestamp < ep.end(), "Epoch end"); 
+        require(block.timestamp < ep.end(), "Epoch end");
         IERC20(rewardtoken).safeTransferFrom(msg.sender, epoches[id], amount);
         ep.mint(to, amount);
     }
 
-    // redeem all 
+    // redeem all
     function redeemAll(address to) external {
         address user = msg.sender;
-        for( uint256 i = 0; i < epoches.length; i++ ){
+        for (uint256 i = 0; i < epoches.length; i++) {
             Epoch ep = Epoch(epoches[i]);
-            if( block.timestamp > ep.end() ){
+            if (block.timestamp > ep.end()) {
                 uint256 user_balance = ep.balanceOf(user);
-                if( user_balance > 0 ){
+                if (user_balance > 0) {
                     ep.redeem(user, to, user_balance);
                 }
             } else {
@@ -145,24 +160,32 @@ contract SingleBond is Ownable, CloneFactory {
         }
     }
 
-    function redeem(address[] memory epochs, uint[] memory amounts, address to) external {
+    function redeem(
+        address[] memory epochs,
+        uint256[] memory amounts,
+        address to
+    ) external {
         require(epochs.length == amounts.length, "mismatch length");
         address user = msg.sender;
-        
-        for( uint256 i = 0; i < epochs.length; i++ ){
+
+        for (uint256 i = 0; i < epochs.length; i++) {
             Epoch ep = Epoch(epochs[i]);
-            require( block.timestamp > ep.end(), "epoch not end");
+            require(block.timestamp > ep.end(), "epoch not end");
             ep.redeem(user, to, amounts[i]);
         }
     }
 
-    function redeemOrTransfer(address[] memory epochs, uint[] memory amounts, address to) external {
+    function redeemOrTransfer(
+        address[] memory epochs,
+        uint256[] memory amounts,
+        address to
+    ) external {
         require(epochs.length == amounts.length, "mismatch length");
         address user = msg.sender;
-        
-        for( uint256 i = 0; i < epochs.length; i++){
+
+        for (uint256 i = 0; i < epochs.length; i++) {
             Epoch ep = Epoch(epochs[i]);
-            if( block.timestamp > ep.end()) {
+            if (block.timestamp > ep.end()) {
                 ep.redeem(user, to, amounts[i]);
             } else {
                 ep.multiTransfer(user, to, amounts[i]);
@@ -170,13 +193,16 @@ contract SingleBond is Ownable, CloneFactory {
         }
     }
 
-    function multiTransfer(address[] memory epochs, uint[] memory amounts, address to) external {
+    function multiTransfer(
+        address[] memory epochs,
+        uint256[] memory amounts,
+        address to
+    ) external {
         require(epochs.length == amounts.length, "mismatch length");
         address user = msg.sender;
-        for( uint256 i = 0; i < epochs.length; i++){
+        for (uint256 i = 0; i < epochs.length; i++) {
             Epoch ep = Epoch(epochs[i]);
             ep.multiTransfer(user, to, amounts[i]);
         }
     }
-
 }

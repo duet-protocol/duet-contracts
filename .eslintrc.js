@@ -17,6 +17,7 @@ module.exports = {
     'node/no-extraneous-require': ['off'],
     'node/no-missing-import': ['warn'],
     'no-unused-vars': ['warn'],
-    'node/no-unpublished-require': ['off'],
+    'node/no-unpublished-require': ['warn'],
+    'node/no-unpublished-import': ['warn'],
   },
-};
+}

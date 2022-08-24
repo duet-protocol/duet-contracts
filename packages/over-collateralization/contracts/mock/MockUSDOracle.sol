@@ -5,17 +5,14 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "../interfaces/IUSDOracle.sol";
 
 contract MockUSDOracle is Ownable, IUSDOracle {
+    mapping(address => uint256) prices;
 
-  mapping(address => uint) prices; 
+    function setPrice(address _token, uint256 _price) external {
+        prices[_token] = _price;
+    }
 
-  function setPrice(address _token, uint _price) external {
-    prices[_token] = _price;
-  }
-
-
-  // get latest price
-  function getPrice(address token) external override view returns (uint256) {
-    return prices[token];
-  }
-
+    // get latest price
+    function getPrice(address token) external view override returns (uint256) {
+        return prices[token];
+    }
 }

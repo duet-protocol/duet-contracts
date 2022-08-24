@@ -1,9 +1,9 @@
 /* eslint-disable node/no-unpublished-import,node/no-missing-import */
-import { DeployFunction } from 'hardhat-deploy/types';
-import { advancedDeploy, deployBond, useNetworkName } from './.defines';
-import { HardhatRuntimeEnvironment } from 'hardhat/types/runtime';
-import moment from 'moment';
-import { useLogger } from '../scripts/utils';
+import { DeployFunction } from 'hardhat-deploy/types'
+import { advancedDeploy, deployBond, useNetworkName } from './.defines'
+import { HardhatRuntimeEnvironment } from 'hardhat/types/runtime'
+import moment from 'moment'
+import { useLogger } from '../scripts/utils'
 
 export enum DeployNames {
   /* eslint-disable camelcase */
@@ -14,16 +14,16 @@ export enum DeployNames {
   /* eslint-enable camelcase */
 }
 
-const logger = useLogger(__filename);
+const logger = useLogger(__filename)
 
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
-  const networkName = useNetworkName();
+  const networkName = useNetworkName()
   if (networkName === 'bsc') {
-    logger.info('deploying bsc network, ignored testWeekly_Bond');
-    return;
+    logger.info('deploying bsc network, ignored testWeekly_Bond')
+    return
   }
 
-  const now = moment().tz('UTC');
+  const now = moment().tz('UTC')
   await deployBond({
     name: 'test weekly ebCAKE 0603',
     symbol: 'ebCAKE-W-0603',
@@ -45,6 +45,6 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
       BondFarmingPool: DeployNames.testWeekly_BondFarmingPool,
       BondLPFarmingPool: DeployNames.testWeekly_BondLPFarmingPool,
     },
-  });
-};
-export default func;
+  })
+}
+export default func

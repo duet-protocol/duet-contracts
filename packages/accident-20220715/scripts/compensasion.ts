@@ -4,4 +4,4 @@ export const tokens = {
   'dXAU-BUSD': '0x95ca57ff396864c25520bc97deaae978daaf73f3',
   'dTMC-BUSD': '0xf048897b35963aaed1a241512d26540c7ec42a60',
   'DUET-CAKE': '0xbdf0aa1d1985caa357a6ac6661d838da8691c569',
-};
+}

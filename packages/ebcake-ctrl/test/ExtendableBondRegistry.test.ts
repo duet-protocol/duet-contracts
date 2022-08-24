@@ -1,30 +1,29 @@
-import { expect, use } from 'chai';
-import chaiAsPromised from 'chai-as-promised';
-import { ethers } from 'hardhat';
-import { ExtendableBondRegistry } from '../typechain';
-import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
+import { expect, use } from 'chai'
+import chaiAsPromised from 'chai-as-promised'
+import { ethers } from 'hardhat'
+import { ExtendableBondRegistry } from '../typechain'
+import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers'
 import { randomUUID } from 'crypto'
 
 use(chaiAsPromised)
 
 describe('ExtendableBondRegistry', function () {
-  let minter: SignerWithAddress;
-  let registry: ExtendableBondRegistry;
+  let minter: SignerWithAddress
+  let registry: ExtendableBondRegistry
   let groupA = `A:${randomUUID()}`
   let groupB = `B:${randomUUID()}`
   let uA1: SignerWithAddress, uA2: SignerWithAddress, uB1: SignerWithAddress
 
   before(async () => {
-    [minter, uA1, uA2, uB1] = await ethers.getSigners();
-    const ExtendableBondRegistryContract = await ethers.getContractFactory('ExtendableBondRegistry');
-    registry = await ExtendableBondRegistryContract.connect(minter).deploy();
+    ;[minter, uA1, uA2, uB1] = await ethers.getSigners()
+    const ExtendableBondRegistryContract = await ethers.getContractFactory('ExtendableBondRegistry')
+    registry = await ExtendableBondRegistryContract.connect(minter).deploy()
     await registry.initialize(minter.address)
-  });
-
+  })
 
   it('has no groups at first', async () => {
     expect(await registry.groupNames()).to.deep.eq([])
-  });
+  })
 
   it('should able to create groups, and they should be enumerable', async () => {
     await registry.createGroup(groupA)
@@ -76,6 +75,4 @@ describe('ExtendableBondRegistry', function () {
     await registry.destroyGroup(groupA)
     expect(await registry.groupNames()).to.deep.eq([])
   })
-
-
-});
+})

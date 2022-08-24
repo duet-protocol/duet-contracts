@@ -6,4 +6,4 @@ export default {
       hardhat: '0x01d77e7CC19cc562adB17AD6Cb1F08f7a66fe301',
     },
   },
-};
+}

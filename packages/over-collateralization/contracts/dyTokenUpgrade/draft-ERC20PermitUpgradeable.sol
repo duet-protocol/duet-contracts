@@ -20,7 +20,12 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
  *
  * _Available since v3.4._
  */
-abstract contract ERC20PermitUpgradeable is Initializable, ERC20Upgradeable, IERC20PermitUpgradeable, EIP712Upgradeable {
+abstract contract ERC20PermitUpgradeable is
+    Initializable,
+    ERC20Upgradeable,
+    IERC20PermitUpgradeable,
+    EIP712Upgradeable
+{
     using CountersUpgradeable for CountersUpgradeable.Counter;
 
     mapping(address => CountersUpgradeable.Counter) private _nonces;
@@ -40,7 +45,10 @@ abstract contract ERC20PermitUpgradeable is Initializable, ERC20Upgradeable, IER
     }
 
     function __ERC20Permit_init_unchained(string memory name) internal initializer {
-        _PERMIT_TYPEHASH = keccak256("Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)");}
+        _PERMIT_TYPEHASH = keccak256(
+            "Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)"
+        );
+    }
 
     /**
      * @dev See {IERC20Permit-permit}.
@@ -91,5 +99,6 @@ abstract contract ERC20PermitUpgradeable is Initializable, ERC20Upgradeable, IER
         current = nonce.current();
         nonce.increment();
     }
+
     uint256[49] private __gap;
 }

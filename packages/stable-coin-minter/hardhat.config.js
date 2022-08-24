@@ -1,14 +1,14 @@
-require('@nomiclabs/hardhat-waffle');
-require('@nomiclabs/hardhat-etherscan');
-require('@openzeppelin/hardhat-upgrades');
-require('@typechain/hardhat');
+require('@nomiclabs/hardhat-waffle')
+require('@nomiclabs/hardhat-etherscan')
+require('@openzeppelin/hardhat-upgrades')
+require('@typechain/hardhat')
 
-const dotenv = require('dotenv');
-dotenv.config({ path: './.env_product' });
+const dotenv = require('dotenv')
+dotenv.config({ path: './.env_product' })
 
-const mnemonic = process.env.MNEMONIC;
-const infurakey = process.env.INFURA_API_KEY;
-const scankey = process.env.BSCSCAN_API_KEY;
+const mnemonic = process.env.MNEMONIC
+const infurakey = process.env.INFURA_API_KEY
+const scankey = process.env.BSCSCAN_API_KEY
 
 // You need to export an object to set up your config
 // Go to https://hardhat.org/config/ to learn more
@@ -82,4 +82,4 @@ module.exports = {
     // Obtain one at https://etherscan.io/
     apiKey: scankey,
   },
-};
+}

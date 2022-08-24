@@ -1,5 +1,6 @@
-node_modules
-artifacts
-cache
-coverage*
-gasReporterOutput.json
+artifacts/
+cache/
+**/coverage*
+**/gasReporterOutput.json
+typechain/
+pnpm-lock.yaml

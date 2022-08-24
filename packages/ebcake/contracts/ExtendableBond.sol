@@ -222,7 +222,6 @@ contract ExtendableBond is IExtendableBond, ReentrancyGuardUpgradeable, Pausable
         } else {
             underlyingToken.safeTransfer(user, amount_);
         }
-
     }
 
     function _withdrawFromRemote(uint256 amount_) internal virtual {}
@@ -368,7 +367,7 @@ contract ExtendableBond is IExtendableBond, ReentrancyGuardUpgradeable, Pausable
 
     function removeFeeSpec(uint256 feeSpecIndex_) external onlyAdmin {
         uint256 length = feeSpecs.length;
-        require(feeSpecIndex_ >=0 && feeSpecIndex_ < length, "Invalid Index");
+        require(feeSpecIndex_ >= 0 && feeSpecIndex_ < length, "Invalid Index");
         feeSpecs[feeSpecIndex_] = feeSpecs[length - 1];
         feeSpecs.pop();
     }

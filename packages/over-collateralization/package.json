@@ -8,7 +8,8 @@
     "compile:watch": "npx hardhat watch compile",
     "abi": "hardhat export-abi",
     "deploy:bsc": "npx hardhat deploy --network bsc &&  ts-node -T ./scripts/clean-solc-inputs.ts",
-    "deploy:bsctest": "npx hardhat deploy --network bsctest &&  ts-node -T ./scripts/clean-solc-inputs.ts"
+    "deploy:bsctest": "npx hardhat deploy --network bsctest &&  ts-node -T ./scripts/clean-solc-inputs.ts",
+    "prettier": "prettier --write --cache  --config ../../.prettierrc --ignore-path ../../.prettierignore --no-error-on-unmatched-pattern 'contracts/**/*.sol' **/*.js **/*.ts **/*.json **/*.yml **/*.yaml"
   },
   "repository": {
     "type": "git",

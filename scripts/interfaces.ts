@@ -9,18 +9,16 @@ const glob = promisify(rawGlob)
 
 config()
 
-
 const projectRoot = resolve(__dirname, '..')
 const interfacesRoot = `${projectRoot}/shared/interfaces`
 const artifactsDir = 'artifacts'
 const contractsDir = 'contracts'
 
 const manifest: Record<string, { excludes: string[] }> = {
-  "ebcake": { "excludes": ["interfaces/**", "mocks/**"] },
-  "ebcake-ctrl": { "excludes": ["interfaces/**", "mocks/**"] },
+  ebcake: { excludes: ['interfaces/**', 'mocks/**'] },
+  'ebcake-ctrl': { excludes: ['interfaces/**', 'mocks/**'] },
 }
 const banner = `// SPDX-License-Identifier: GPL-3.0\npragma solidity 0.8.9;`
-
 
 const [
   packageName, // keyof manifest ...
@@ -32,23 +30,24 @@ if (!options) {
 }
 
 void (async () => {
-
   const packageHome = `${projectRoot}/packages/${packageName}`
   const interfacesHome = `${interfacesRoot}/${packageName}`
-  const collected = new Map<string, { contractName: string, abi: any[] }>()
+  const collected = new Map<string, { contractName: string; abi: any[] }>()
 
   for (const filename of await glob(`${packageHome}/${artifactsDir}/${contractsDir}/**`, { nodir: true })) {
     if (!filename.endsWith('.json') || filename.endsWith('.dbg.json')) continue
     const { contractName, abi } = JSON.parse(`${await readFile(filename)}`)
     collected.set(filename, { contractName, abi })
   }
-  await Promise.all(options.excludes.map(async dir => {
-    for (const filename of await glob(`${packageHome}/${artifactsDir}/${contractsDir}/${dir}`, { nodir: true })) {
-      collected.delete(filename)
-    }
-  }))
+  await Promise.all(
+    options.excludes.map(async (dir) => {
+      for (const filename of await glob(`${packageHome}/${artifactsDir}/${contractsDir}/${dir}`, { nodir: true })) {
+        collected.delete(filename)
+      }
+    }),
+  )
 
-  await rm(interfacesHome, { recursive: true, force: true });
+  await rm(interfacesHome, { recursive: true, force: true })
   for (const [filename, { contractName, abi }] of collected) {
     const path = resolve(filename, '../..').substring(`${packageHome}/${artifactsDir}/${contractsDir}`.length + 1)
     const dirname = resolve(interfacesHome, path || '.')
@@ -57,9 +56,4 @@ void (async () => {
     await writeFile(`${dirname}/I${contractName}.sol`, banner + '\n\n' + abi2solidity(abi, `I${contractName}`))
     console.info(`Wrote interface: ${path ? `${path}/` : ''}I${contractName}.sol`)
   }
-
-
 })()
-
-
-

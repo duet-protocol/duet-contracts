@@ -10,19 +10,15 @@ import "@private/shared/interfaces/ebcake/IMultiRewardsMasterChef.sol";
 import "@private/shared/interfaces/ebcake/IBondFarmingPool.sol";
 import "@private/shared/interfaces/ebcake/IBondLPFarmingPool.sol";
 
-
 abstract contract ExtendableBondReader {
-
-    uint constant BLOCKS_PER_YEAR = (60 / 3) * 60 * 24 * 365;
+    uint256 constant BLOCKS_PER_YEAR = (60 / 3) * 60 * 24 * 365;
 
     struct ExtendableBondPackagePublicInfo {
         string name;
         string symbol;
         uint8 decimals;
-
         uint256 underlyingUsdPrice;
         uint256 bondUnderlyingPrice;
-
         bool convertable;
         uint256 convertableFrom;
         uint256 convertableEnd;
@@ -30,7 +26,6 @@ abstract contract ExtendableBondReader {
         uint256 redeemableFrom;
         uint256 redeemableEnd;
         uint256 maturity;
-
         uint256 underlyingAPY;
         uint256 singleStake_totalStaked;
         uint256 singleStake_bDuetAPR;
@@ -58,8 +53,11 @@ abstract contract ExtendableBondReader {
 
     // -------------
 
-
-    function extendableBondPackagePublicInfo(IExtendableBond eb_) view external returns (ExtendableBondPackagePublicInfo memory) {
+    function extendableBondPackagePublicInfo(IExtendableBond eb_)
+        external
+        view
+        returns (ExtendableBondPackagePublicInfo memory)
+    {
         IBondFarmingPool bondFarmingPool = IBondFarmingPool(eb_.bondFarmingPool());
         IBondLPFarmingPool bondLPFarmingPool = IBondLPFarmingPool(eb_.bondLPFarmingPool());
         (
@@ -77,10 +75,8 @@ abstract contract ExtendableBondReader {
             name: token.name(),
             symbol: token.symbol(),
             decimals: token.decimals(),
-
             underlyingUsdPrice: _unsafely_getUnderlyingPriceAsUsd(eb_),
             bondUnderlyingPrice: _getBondPriceAsUnderlying(eb_),
-
             convertable: convertable,
             convertableFrom: convertableFrom,
             convertableEnd: convertableEnd,
@@ -88,7 +84,6 @@ abstract contract ExtendableBondReader {
             redeemableFrom: redeemableFrom,
             redeemableEnd: redeemableEnd,
             maturity: maturity,
-
             underlyingAPY: _getUnderlyingAPY(eb_),
             singleStake_totalStaked: bondFarmingPool.underlyingAmount(false),
             singleStake_bDuetAPR: _getSingleStake_bDuetAPR(eb_),
@@ -99,13 +94,17 @@ abstract contract ExtendableBondReader {
         return packageInfo;
     }
 
-    function extendableBondSingleStakePackageUserInfo(IExtendableBond eb_) view external returns (ExtendableBondSingleStakePackageUserInfo memory) {
+    function extendableBondSingleStakePackageUserInfo(IExtendableBond eb_)
+        external
+        view
+        returns (ExtendableBondSingleStakePackageUserInfo memory)
+    {
         address user = msg.sender;
         require(user != address(0), "Invalid sender address");
 
         IBondFarmingPool bondFarmingPool = IBondFarmingPool(eb_.bondFarmingPool());
 
-        ( uint256 bondFarmingUsershares, ) = bondFarmingPool.usersInfo(user);
+        (uint256 bondFarmingUsershares, ) = bondFarmingPool.usersInfo(user);
 
         uint256 singleStake_bDuetPendingRewards = _getPendingRewardsAmount(eb_, bondFarmingPool.masterChefPid(), user);
         uint256 claimedRewardsAmount = _getUserClaimedRewardsAmount(eb_, bondFarmingPool.masterChefPid(), user);
@@ -119,15 +118,17 @@ abstract contract ExtendableBondReader {
         return packageInfo;
     }
 
-    function extendableBondLpStakePackageUserInfo(IExtendableBond eb_) view external returns (ExtendableBondLpStakePackageUserInfo memory) {
+    function extendableBondLpStakePackageUserInfo(IExtendableBond eb_)
+        external
+        view
+        returns (ExtendableBondLpStakePackageUserInfo memory)
+    {
         address user = msg.sender;
         require(user != address(0), "Invalid sender address");
 
         IBondLPFarmingPool bondLPFarmingPool = IBondLPFarmingPool(eb_.bondLPFarmingPool());
-        ( uint256 lpStake_lpStaked, , , uint256 lpClaimedRewards )
-            = bondLPFarmingPool.usersInfo(user);
-        ( uint256 lpStake_underlyingStaked, uint256 lpStake_bondStaked )
-            = _getLpStakeDetail(eb_, lpStake_lpStaked);
+        (uint256 lpStake_lpStaked, , , uint256 lpClaimedRewards) = bondLPFarmingPool.usersInfo(user);
+        (uint256 lpStake_underlyingStaked, uint256 lpStake_bondStaked) = _getLpStakeDetail(eb_, lpStake_lpStaked);
 
         uint256 lpStake_bDuetPendingRewards = _getPendingRewardsAmount(eb_, _getEbFarmingPoolId(eb_), user);
         uint256 lpStake_ebPendingRewards = bondLPFarmingPool.getUserPendingRewards(user);
@@ -148,35 +149,35 @@ abstract contract ExtendableBondReader {
 
     // -------------
 
-    function _unsafely_getDuetPriceAsUsd(IExtendableBond eb_) view internal virtual returns (uint256) {}
+    function _unsafely_getDuetPriceAsUsd(IExtendableBond eb_) internal view virtual returns (uint256) {}
 
-    function _unsafely_getUnderlyingPriceAsUsd(IExtendableBond eb_) view internal virtual returns (uint256) {}
+    function _unsafely_getUnderlyingPriceAsUsd(IExtendableBond eb_) internal view virtual returns (uint256) {}
 
-    function _getBondPriceAsUnderlying(IExtendableBond eb_) view internal virtual returns (uint256) {}
+    function _getBondPriceAsUnderlying(IExtendableBond eb_) internal view virtual returns (uint256) {}
 
-    function _getLpStackedReserves(IExtendableBond eb_) view internal virtual returns (uint256, uint256) {}
+    function _getLpStackedReserves(IExtendableBond eb_) internal view virtual returns (uint256, uint256) {}
 
-    function _getLpStackedTotalSupply(IExtendableBond eb_) view internal virtual returns (uint256) {}
+    function _getLpStackedTotalSupply(IExtendableBond eb_) internal view virtual returns (uint256) {}
 
-    function _getEbFarmingPoolId(IExtendableBond eb_) view internal virtual returns (uint256) {}
+    function _getEbFarmingPoolId(IExtendableBond eb_) internal view virtual returns (uint256) {}
 
-    function _getUnderlyingAPY(IExtendableBond eb_) view internal virtual returns (uint256) {}
+    function _getUnderlyingAPY(IExtendableBond eb_) internal view virtual returns (uint256) {}
 
     // function _getLpStake_extraAPR(IExtendableBond eb_) view internal virtual returns (uint256) {}
 
     // -------------
 
-    function _getSingleStake_bDuetAPR(IExtendableBond eb_) view internal returns (uint256) {
+    function _getSingleStake_bDuetAPR(IExtendableBond eb_) internal view returns (uint256) {
         IBondFarmingPool bondFarmingPool = IBondFarmingPool(eb_.bondFarmingPool());
         return _getBDuetAPR(eb_, bondFarmingPool.masterChefPid());
     }
 
-    function _getLpStake_bDuetAPR(IExtendableBond eb_) view internal returns (uint256) {
+    function _getLpStake_bDuetAPR(IExtendableBond eb_) internal view returns (uint256) {
         return _getBDuetAPR(eb_, _getEbFarmingPoolId(eb_));
     }
 
     // @TODO: extract as utils
-    function _getBDuetAPR(IExtendableBond eb_, uint256 pid_) view internal returns (uint256 apr) {
+    function _getBDuetAPR(IExtendableBond eb_, uint256 pid_) internal view returns (uint256 apr) {
         uint256 bondTokenBalance = IBondToken(eb_.bondToken()).totalSupply();
         if (bondTokenBalance == 0) return apr;
 
@@ -190,18 +191,20 @@ abstract contract ExtendableBondReader {
         uint256 underlyingPriceAsUsd = _unsafely_getUnderlyingPriceAsUsd(eb_);
         if (underlyingPriceAsUsd == 0) return apr;
 
-        ( , uint256 allocPoint, , , ) = mMasterChef.poolInfo(pid_);
+        (, uint256 allocPoint, , , ) = mMasterChef.poolInfo(pid_);
         for (uint256 rewardId; rewardId < mMasterChef.getRewardSpecsLength(); rewardId++) {
-            ( , uint256 rewardPerBlock, , , ) = mMasterChef.rewardSpecs(rewardId);
-            apr += rewardPerBlock * 1e4 * allocPoint
-                    / totalAllocPoint
-                    * BLOCKS_PER_YEAR
-                    * unsafe_duetPriceAsUsd
-                    / (bondTokenBalance * underlyingPriceAsUsd);
+            (, uint256 rewardPerBlock, , , ) = mMasterChef.rewardSpecs(rewardId);
+            apr +=
+                (((rewardPerBlock * 1e4 * allocPoint) / totalAllocPoint) * BLOCKS_PER_YEAR * unsafe_duetPriceAsUsd) /
+                (bondTokenBalance * underlyingPriceAsUsd);
         }
     }
 
-    function _getUserClaimedRewardsAmount(IExtendableBond eb_, uint pid_, address user_) view internal returns (uint256 amount) {
+    function _getUserClaimedRewardsAmount(
+        IExtendableBond eb_,
+        uint256 pid_,
+        address user_
+    ) internal view returns (uint256 amount) {
         IBondFarmingPool bondFarmingPool = IBondFarmingPool(eb_.bondFarmingPool());
         IMultiRewardsMasterChef mMasterChef = IMultiRewardsMasterChef(bondFarmingPool.masterChef());
 
@@ -210,7 +213,11 @@ abstract contract ExtendableBondReader {
         }
     }
 
-    function _getPendingRewardsAmount(IExtendableBond eb_, uint pid_, address user_) view internal returns (uint256 amount) {
+    function _getPendingRewardsAmount(
+        IExtendableBond eb_,
+        uint256 pid_,
+        address user_
+    ) internal view returns (uint256 amount) {
         IBondFarmingPool bondFarmingPool = IBondFarmingPool(eb_.bondFarmingPool());
         IMultiRewardsMasterChef mMasterChef = IMultiRewardsMasterChef(bondFarmingPool.masterChef());
 
@@ -220,15 +227,15 @@ abstract contract ExtendableBondReader {
         }
     }
 
-     function _getLpStakeDetail(IExtendableBond eb_, uint256 lpStaked) view internal returns (
-        uint256 lpStake_underlyingStaked, uint256 lpStake_bondStaked
-    ) {
+    function _getLpStakeDetail(IExtendableBond eb_, uint256 lpStaked)
+        internal
+        view
+        returns (uint256 lpStake_underlyingStaked, uint256 lpStake_bondStaked)
+    {
         uint256 lpStackTotalSupply = _getLpStackedTotalSupply(eb_);
 
-        ( uint256 lpStake_underlyingReserve, uint256 lpStake_bondReserve ) = _getLpStackedReserves(eb_);
-        lpStake_underlyingStaked = lpStake_underlyingReserve * lpStaked / lpStackTotalSupply;
-        lpStake_bondStaked = lpStake_bondReserve * lpStaked / lpStackTotalSupply;
+        (uint256 lpStake_underlyingReserve, uint256 lpStake_bondReserve) = _getLpStackedReserves(eb_);
+        lpStake_underlyingStaked = (lpStake_underlyingReserve * lpStaked) / lpStackTotalSupply;
+        lpStake_bondStaked = (lpStake_bondReserve * lpStaked) / lpStackTotalSupply;
     }
-
 }
-

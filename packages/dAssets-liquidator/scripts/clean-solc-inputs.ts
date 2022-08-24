@@ -1,33 +1,33 @@
-import * as path from 'path';
-import * as fs from 'fs';
-import { useLogger } from './utils';
-import { uniq } from 'lodash';
+import * as path from 'path'
+import * as fs from 'fs'
+import { useLogger } from './utils'
+import { uniq } from 'lodash'
 
-const logger = useLogger(__filename);
-logger.info('Cleaning unused solc input files...');
-const deploymentsPath = path.resolve(__dirname, '../', 'deployments');
+const logger = useLogger(__filename)
+logger.info('Cleaning unused solc input files...')
+const deploymentsPath = path.resolve(__dirname, '../', 'deployments')
 for (const network of fs.readdirSync(deploymentsPath)) {
-  let solcInputsInUsed: string[] = [];
-  const dir = path.resolve(deploymentsPath, network);
-  logger.info(`Processing dir: ${dir}`);
+  let solcInputsInUsed: string[] = []
+  const dir = path.resolve(deploymentsPath, network)
+  logger.info(`Processing dir: ${dir}`)
   for (const fileName of fs.readdirSync(dir)) {
     if (!fileName.endsWith('.json')) {
-      logger.info('[', network, ']', 'Ignored file/dir:', fileName);
-      continue;
+      logger.info('[', network, ']', 'Ignored file/dir:', fileName)
+      continue
     }
-    const deployment = require(path.resolve(dir, fileName));
-    solcInputsInUsed.push(deployment.solcInputHash);
+    const deployment = require(path.resolve(dir, fileName))
+    solcInputsInUsed.push(deployment.solcInputHash)
     // path.resolve(__dirname, '../', 'deployments', network)
   }
-  solcInputsInUsed = uniq(solcInputsInUsed);
-  logger.info(network, 'solcInputsInUsed', solcInputsInUsed.join(','));
+  solcInputsInUsed = uniq(solcInputsInUsed)
+  logger.info(network, 'solcInputsInUsed', solcInputsInUsed.join(','))
 
   for (const solcFile of fs.readdirSync(path.resolve(dir, 'solcInputs'))) {
-    const hash = solcFile.substring(0, solcFile.length - '.json'.length);
+    const hash = solcFile.substring(0, solcFile.length - '.json'.length)
     if (!solcInputsInUsed.includes(hash)) {
-      const solcFullPath = path.resolve(dir, 'solcInputs', solcFile);
-      logger.warn('[', network, ']', 'Removing', solcFile);
-      fs.rmSync(solcFullPath);
+      const solcFullPath = path.resolve(dir, 'solcInputs', solcFile)
+      logger.warn('[', network, ']', 'Removing', solcFile)
+      fs.rmSync(solcFullPath)
     }
   }
 }

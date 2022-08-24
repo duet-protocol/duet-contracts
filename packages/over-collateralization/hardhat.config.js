@@ -1,20 +1,20 @@
-require('@nomiclabs/hardhat-waffle');
-require('@nomiclabs/hardhat-etherscan');
-require('@openzeppelin/hardhat-upgrades');
-require('hardhat-abi-exporter');
-require('@typechain/hardhat');
-require('hardhat-deploy');
+require('@nomiclabs/hardhat-waffle')
+require('@nomiclabs/hardhat-etherscan')
+require('@openzeppelin/hardhat-upgrades')
+require('hardhat-abi-exporter')
+require('@typechain/hardhat')
+require('hardhat-deploy')
 
-require('dotenv').config();
-const tenderly = require('@tenderly/hardhat-tenderly');
-tenderly.setup();
+require('dotenv').config()
+const tenderly = require('@tenderly/hardhat-tenderly')
+tenderly.setup()
 // const { setGlobalDispatcher, ProxyAgent } = require('undici')
 // const proxyAgent = new ProxyAgent('http://127.0.0.1:7890')
 // setGlobalDispatcher(proxyAgent)
 
-const mnemonic = process.env.MNEMONIC;
-const infurakey = process.env.INFURA_API_KEY;
-const scankey = process.env.ETHERSCAN_API_KEY;
+const mnemonic = process.env.MNEMONIC
+const infurakey = process.env.INFURA_API_KEY
+const scankey = process.env.ETHERSCAN_API_KEY
 
 // You need to export an object to set up your config
 // Go to https://hardhat.org/config/ to learn more
@@ -125,4 +125,4 @@ module.exports = {
     // Obtain one at https://etherscan.io/
     apiKey: scankey,
   },
-};
+}

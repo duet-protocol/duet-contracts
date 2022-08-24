@@ -16,9 +16,9 @@ export default {
       hardhat: '0x78df8ca5bb516efe4dade3726b0c052ba8bdcf57',
     },
     PancakeLpTokenPair__DUET_anyUSD: {
-      bsc: '0x33c8fb945d71746f448579559ea04479a23dff17',      // dUSD
-      bsctest: '0xb50776a4e01a1b2704d35cee69cfbd6d37910f12',  // BUSD
-      hardhat: '0xb50776a4e01a1b2704d35cee69cfbd6d37910f12',  // BUSD
+      bsc: '0x33c8fb945d71746f448579559ea04479a23dff17', // dUSD
+      bsctest: '0xb50776a4e01a1b2704d35cee69cfbd6d37910f12', // BUSD
+      hardhat: '0xb50776a4e01a1b2704d35cee69cfbd6d37910f12', // BUSD
     },
     CakeMasterChefV2: {
       bsc: '0xa5f8C5Dbd5F286960b9d90548680aE5ebFf07652',
@@ -36,4 +36,4 @@ export default {
       hardhat: '0x10ed43c718714eb63d5aa57b78b54704e256024e',
     },
   },
-};
+}

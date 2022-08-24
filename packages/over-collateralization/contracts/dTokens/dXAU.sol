@@ -8,48 +8,48 @@ import "@openzeppelin/contracts/utils/Address.sol";
 
 import "../interfaces/TokenRecipient.sol";
 
-
 contract dXAU is ERC20, ERC20Permit, Ownable {
+    using Address for address;
 
-  using Address for address;
+    mapping(address => bool) public miners;
 
-  mapping(address => bool) public miners;
+    event MinerChanged(address indexed miner, bool enabled);
 
-  event MinerChanged(address indexed miner, bool enabled);
-
-  constructor() ERC20("Duet XAU", "dXAU") ERC20Permit("Duet XAU") {
-    _mint(msg.sender, 0);
-  }
-
-  function addMiner(address _miner) public onlyOwner {
-    miners[_miner] = true;
-    emit MinerChanged(_miner, true);
-  }
-
-  function removeMiner(address _miner) public onlyOwner {
-    miners[_miner] = false;
-    emit MinerChanged(_miner, false);
-  }
-
-
-  function mint(address to, uint256 amount) public {
-    require(miners[msg.sender], "invalid miner");
-    _mint(to, amount);
-  }
-
-  function burn(uint256 amount) public {
-    _burn(msg.sender, amount);
-  }
-
-  function send(address recipient, uint256 amount, bytes calldata exData) external returns (bool) {
-    _transfer(msg.sender, recipient, amount);
-
-    if (recipient.isContract()) {
-      bool rv = TokenRecipient(recipient).tokensReceived(msg.sender, amount, exData);
-      require(rv, "No tokensReceived");
+    constructor() ERC20("Duet XAU", "dXAU") ERC20Permit("Duet XAU") {
+        _mint(msg.sender, 0);
     }
 
-    return true;
-  }
+    function addMiner(address _miner) public onlyOwner {
+        miners[_miner] = true;
+        emit MinerChanged(_miner, true);
+    }
 
+    function removeMiner(address _miner) public onlyOwner {
+        miners[_miner] = false;
+        emit MinerChanged(_miner, false);
+    }
+
+    function mint(address to, uint256 amount) public {
+        require(miners[msg.sender], "invalid miner");
+        _mint(to, amount);
+    }
+
+    function burn(uint256 amount) public {
+        _burn(msg.sender, amount);
+    }
+
+    function send(
+        address recipient,
+        uint256 amount,
+        bytes calldata exData
+    ) external returns (bool) {
+        _transfer(msg.sender, recipient, amount);
+
+        if (recipient.isContract()) {
+            bool rv = TokenRecipient(recipient).tokensReceived(msg.sender, amount, exData);
+            require(rv, "No tokensReceived");
+        }
+
+        return true;
+    }
 }

@@ -1,15 +1,15 @@
-require('@nomiclabs/hardhat-waffle');
-require('@nomiclabs/hardhat-etherscan');
-require('@openzeppelin/hardhat-upgrades');
-require('hardhat-abi-exporter');
-require('@typechain/hardhat');
+require('@nomiclabs/hardhat-waffle')
+require('@nomiclabs/hardhat-etherscan')
+require('@openzeppelin/hardhat-upgrades')
+require('hardhat-abi-exporter')
+require('@typechain/hardhat')
 
-const dotenv = require('dotenv');
-dotenv.config({ path: './.env_product' });
+const dotenv = require('dotenv')
+dotenv.config({ path: './.env_product' })
 
-const mnemonic = process.env.MNEMONIC;
-const infurakey = process.env.INFURA_API_KEY;
-const scankey = process.env.ETHERSCAN_API_KEY;
+const mnemonic = process.env.MNEMONIC
+const infurakey = process.env.INFURA_API_KEY
+const scankey = process.env.ETHERSCAN_API_KEY
 
 // // This is a sample Hardhat task. To learn how to create your own go to
 // // https://hardhat.org/guides/create-task.html
@@ -103,4 +103,4 @@ module.exports = {
     // Obtain one at https://etherscan.io/
     apiKey: scankey,
   },
-};
+}
