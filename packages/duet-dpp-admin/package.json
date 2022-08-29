@@ -1,6 +1,6 @@
 {
-  "name": "dodo-private-pool-admin",
-  "description": "Projects can bid with $Cake to win a 7-day farm",
+  "name": "duet-dpp-admin",
+  "description": "Duet Dodo private pool admin",
   "main": "index.js",
   "version": "1.0.0",
   "license": "GPL-3.0",
