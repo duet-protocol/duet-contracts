@@ -6,7 +6,6 @@ import "./interfaces/IDUSD.sol";
 import "./interfaces/IDYToken.sol";
 import "./interfaces/IDusdMinter.sol";
 import "./interfaces/ILiquidateCallee.sol";
-import "./interfaces/IPancakeFactory.sol";
 import "./interfaces/IRouter02.sol";
 
 import "./interfaces/IPair.sol";
@@ -15,12 +14,11 @@ import "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
 
-contract Liquidate is ILiquidateCallee, OwnableUpgradeable {
+contract LiquidateDpp is ILiquidateCallee, OwnableUpgradeable {
     using SafeERC20Upgradeable for IERC20Upgradeable;
 
     address public controller;
     address public dusd;
-    IPancakeFactory public factory;
     IRouter02 router;
 
     address public bUSD;
@@ -49,7 +47,6 @@ contract Liquidate is ILiquidateCallee, OwnableUpgradeable {
         dusd = _dusd;
 
         router = IRouter02(_router);
-        factory = IPancakeFactory(IRouter02(_router).factory());
         bUSD = _bUSD;
         minter = _minter;
 
@@ -110,6 +107,10 @@ contract Liquidate is ILiquidateCallee, OwnableUpgradeable {
         balanceReceiver = owner();
     }
 
+    function setNewRouter(address _newRouter) external onlyOwner {
+        router = IRouter02(_newRouter);
+    }
+
     function approveToken(address[] memory tokens, address[] memory targets) external onlyOwner {
         require(tokens.length == targets.length, "mismatch length");
         for (uint256 i = 0; i < tokens.length; i++) {
@@ -119,6 +120,12 @@ contract Liquidate is ILiquidateCallee, OwnableUpgradeable {
 
     modifier onlyLiquidator() {
         require(liquidator[tx.origin], "Invalid caller");
+        _;
+    }
+
+    modifier onlyVault() {
+        (, , , , , bool enableLiquidate) = IController(controller).vaultStates(msg.sender);
+        require(enableLiquidate, "Vault Only");
         _;
     }
 
@@ -253,7 +260,7 @@ contract Liquidate is ILiquidateCallee, OwnableUpgradeable {
         address underlying,
         uint256 amount,
         bytes calldata data
-    ) external override onlyLiquidator {
+    ) external override onlyVault {
         IDYToken(underlying).withdraw(address(this), amount, false);
         address under = IDYToken(underlying).underlying();
 
@@ -285,12 +292,12 @@ contract Liquidate is ILiquidateCallee, OwnableUpgradeable {
         address underlying,
         uint256 amount,
         bytes calldata data
-    ) external override onlyLiquidator {
+    ) external override onlyVault {
         // msg.sender is vault
         approveTokenIfNeeded(underlying, msg.sender, amount);
 
         if (underlying != dusd) {
-            swapForExactOut(amount, dusd, underlying);
+            swapForExactOut(amount, dusd, underlying); 
         }
     }
 

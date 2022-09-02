@@ -81,4 +81,16 @@ interface IController {
     function validVaults(address _vault) external view returns (ValidVault);
 
     function validVaultsOfUser(address _vault, address _user) external view returns (ValidVault);
+
+    function vaultStates(address _vault)
+        external
+        view
+        returns (
+            bool enabled,
+            bool enableDeposit,
+            bool enableWithdraw,
+            bool enableBorrow,
+            bool enableRepay,
+            bool enableLiquidate
+        );
 }
