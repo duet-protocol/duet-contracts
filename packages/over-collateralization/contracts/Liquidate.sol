@@ -14,7 +14,7 @@ import "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
 
-contract LiquidateDpp is ILiquidateCallee, OwnableUpgradeable {
+contract Liquidate is ILiquidateCallee, OwnableUpgradeable {
     using SafeERC20Upgradeable for IERC20Upgradeable;
 
     address public controller;
@@ -132,17 +132,17 @@ contract LiquidateDpp is ILiquidateCallee, OwnableUpgradeable {
     function liquidate(address _borrower, bytes calldata data) external onlyLiquidator {
         IController(controller).liquidate(_borrower, data);
 
-        // transfer extra left dusd balance
+        // transfer extra left busd balance
         // eg:
         // 500>200, transfer out 300, left 200
         // 300>200,  transfer out 150,left 150
-        uint256 leftBalance = IERC20Upgradeable(dusd).balanceOf(address(this));
+        uint256 leftBalance = IERC20Upgradeable(bUSD).balanceOf(address(this));
 
         if (leftBalance > leftLimit) {
             if (leftBalance / 2 < leftLimit) {
-                IERC20Upgradeable(dusd).safeTransfer(balanceReceiver, leftBalance / 2);
+                IERC20Upgradeable(bUSD).safeTransfer(balanceReceiver, leftBalance / 2);
             } else {
-                IERC20Upgradeable(dusd).safeTransfer(balanceReceiver, leftBalance - leftLimit);
+                IERC20Upgradeable(bUSD).safeTransfer(balanceReceiver, leftBalance - leftLimit);
             }
         }
     }
@@ -242,16 +242,14 @@ contract LiquidateDpp is ILiquidateCallee, OwnableUpgradeable {
 
     function convert(address token) public onlyLiquidator returns (uint256 output) {
         uint256 balance = IERC20Upgradeable(token).balanceOf(address(this));
-        if (token == dusd) {
+        if (token == bUSD) {
             output = balance;
-        } else if (token == bUSD) {
-            output = IDusdMinter(minter).mineDusd(balance, 0, address(this));
         } else if (forBridge[token] != address(0)) {
             address target = forBridge[token];
             swap(token, target);
             output = convert(target);
         } else {
-            output = swap(token, dusd);
+            output = swap(token, bUSD);
         }
     }
 
@@ -296,8 +294,8 @@ contract LiquidateDpp is ILiquidateCallee, OwnableUpgradeable {
         // msg.sender is vault
         approveTokenIfNeeded(underlying, msg.sender, amount);
 
-        if (underlying != dusd) {
-            swapForExactOut(amount, dusd, underlying); 
+        if (underlying != bUSD) {
+            swapForExactOut(amount, bUSD, underlying); 
         }
     }
 
