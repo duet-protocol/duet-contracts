@@ -67,6 +67,7 @@ contract DppRouter is Adminable {
         address _to,
         uint256 _deadline
     ) external judgeExpired(_deadline) returns (uint256[] memory amounts) {
+        amounts = new uint[](_path.length);
         address V2pair = _getPairAddr(_path[0], _path[1]);
         // insure base token must be stable coins
         require(availableBaseToken[IDODOV2(V2pair)._BASE_TOKEN_()], "dppRouter: illegel base token query buy base");
@@ -78,7 +79,9 @@ contract DppRouter is Adminable {
         IERC20Upgradeable(_path[0]).safeTransferFrom(msg.sender, address(this), quoteInAmount);
         IERC20Upgradeable(_path[0]).safeTransfer(V2pair, quoteInAmount);
         IDODOV2(V2pair).sellQuote(_to);
-        amounts[0] = querySellQuoteToken(quoteInAmount, V2pair);
+
+        amounts[0] = quoteInAmount;
+        amounts[_path.length - 1] = querySellQuoteToken(quoteInAmount, V2pair);
     }
 
     function swapExactTokensForTokens(
@@ -88,11 +91,14 @@ contract DppRouter is Adminable {
         address _to,
         uint256 _deadline
     ) external judgeExpired(_deadline) returns (uint256[] memory amounts) {
+        amounts = new uint[](_path.length);
+        amounts[0] = _amountIn;
         address V2pair = _getPairAddr(_path[0], _path[1]);
 
         if (_path[0] == IDODOV2(V2pair)._BASE_TOKEN_()) {
             // sell base
             uint256 QuoteOutAmount = querySellBaseToken(_amountIn, V2pair);
+            amounts[_path.length - 1] = QuoteOutAmount;
             require(QuoteOutAmount >= _amountOutMin, "dppRouter: receive amount not enough");
 
             IERC20Upgradeable(_path[0]).safeTransferFrom(msg.sender, address(this), _amountIn);
@@ -100,6 +106,7 @@ contract DppRouter is Adminable {
             IDODOV2(V2pair).sellBase(_to);
         } else if (_path[0] == IDODOV2(V2pair)._QUOTE_TOKEN_()) {
             uint256 BaseOutAmount = querySellQuoteToken(_amountIn, V2pair);
+            amounts[_path.length - 1] = BaseOutAmount;
             require(BaseOutAmount >= _amountOutMin, "dppRouter: receive amount not enough");
 
             IERC20Upgradeable(_path[0]).safeTransferFrom(msg.sender, address(this), _amountIn);
