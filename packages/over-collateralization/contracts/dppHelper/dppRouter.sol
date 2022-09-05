@@ -1,13 +1,16 @@
+/*
+    SPDX-License-Identifier: Apache-2.0
+*/
 pragma solidity 0.8.9;
 pragma experimental ABIEncoderV2;
 
 import { IERC20Upgradeable } from "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
 import "./lib/Adminable.sol";
-import "./external/Trader.sol";
+import "./external/Pricing.sol";
 import "./interfaces/IDODOV2.sol";
 
-contract DppRouter is QueryTrader, Adminable {
+contract DppRouter is Adminable {
     using SafeERC20Upgradeable for IERC20Upgradeable;
 
     mapping(address => mapping(address => address)) public availablePools;
@@ -70,11 +73,12 @@ contract DppRouter is QueryTrader, Adminable {
 
         uint256 quoteInAmount = queryBuyBaseToken(_amountOut, V2pair);
         require(quoteInAmount <= _amountInMax, "dppRouter: amount in exceed");
+        require(IDODOV2(V2pair)._BASE_RESERVE_() > _amountOut, "dppRouter: amount out exceed");
 
         IERC20Upgradeable(_path[0]).safeTransferFrom(msg.sender, address(this), quoteInAmount);
         IERC20Upgradeable(_path[0]).safeTransfer(V2pair, quoteInAmount);
         IDODOV2(V2pair).sellQuote(_to);
-        amounts[0] = quoteInAmount;
+        amounts[0] = querySellQuoteToken(quoteInAmount, V2pair);
     }
 
     function swapExactTokensForTokens(
@@ -114,32 +118,30 @@ contract DppRouter is QueryTrader, Adminable {
         (receiveBase, , , ) = IDODOV2(_pair).querySellQuote(address(this), _amount);
     }
 
-    function queryBuyBaseToken(uint256 _amount, address _pair) public returns (uint256 payQuote) {
-        _updatePairDetails(_pair);
-        (payQuote, , , , , ) = _queryBuyBaseToken(_amount);
+    function queryBuyBaseToken(uint256 _amount, address _pair) public view returns (uint256 payQuote) {
+        Pricing.PMMState memory state = _updatePairDetails(_pair);
+        (payQuote, , , , , ) = Pricing._queryBuyBaseToken(state, _amount);
         return payQuote;
     }
 
     // =========== internal ===============
 
-    function _updatePairDetails(address _V2pair) internal {
-        //uint256 _R_;
+    function _updatePairDetails(address _V2pair) internal view returns(Pricing.PMMState memory state) {
+        uint256 _R_;
         {
         (
-            _I_,
-            _K_,
-            _BASE_BALANCE_,
-            _QUOTE_BALANCE_,
-            _TARGET_BASE_TOKEN_AMOUNT_,
-            _TARGET_QUOTE_TOKEN_AMOUNT_,
+            state.i,
+            state.K,
+            state.B,
+            state.Q,
+            state.B0,
+            state.Q0,
             _R_
         ) = IDODOV2(_V2pair).getPMMStateForCall();
-        _R_STATUS_ = RStatus(uint32(_R_));
+        state.R = Pricing.RStatus(uint32(_R_));
         }
 
-        (_LP_FEE_RATE_, _MT_FEE_RATE_) = IDODOV2(_V2pair).getUserFeeRate(address(this));
-        _BASE_TOKEN_ = IDODOV2(_V2pair)._BASE_TOKEN_();
-        _QUOTE_TOKEN_ = IDODOV2(_V2pair)._QUOTE_TOKEN_();
+        (state.lpFee, state.mtFee) = IDODOV2(_V2pair).getUserFeeRate(address(this));
     }
 
     function _getPairAddr(address _sellToken, address _buyToken) internal returns (address V2Pair) {

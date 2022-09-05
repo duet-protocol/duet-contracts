@@ -43,6 +43,8 @@ interface IDODOV2 {
 
     function _QUOTE_TOKEN_() external view returns (address);
 
+    function _BASE_RESERVE_() external view returns (uint256);
+    
     function getPMMStateForCall()
         external
         view
