@@ -7,7 +7,7 @@ pragma experimental ABIEncoderV2;
 import { IERC20Upgradeable } from "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
 import "./lib/Adminable.sol";
-import "./external/Pricing.sol";
+import "./lib/Pricing.sol";
 import "./interfaces/IDODOV2.sol";
 
 contract DppRouter is Adminable {

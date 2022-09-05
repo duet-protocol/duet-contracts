@@ -8,9 +8,9 @@
 pragma solidity 0.8.9;
 pragma experimental ABIEncoderV2;
 
-import { SafeMath } from "../lib/SafeMath.sol";
-import { DecimalMath } from "../lib/DecimalMath.sol";
-import { DODOMath } from "../lib/DODOMath.sol";
+import { SafeMath } from "./SafeMath.sol";
+import { DecimalMath } from "./DecimalMath.sol";
+import { DODOMath } from "./DODOMath.sol";
 
 /**
  * @title Pricing
