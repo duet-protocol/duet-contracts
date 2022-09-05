@@ -3,8 +3,8 @@ pragma solidity 0.8.9;
 pragma experimental ABIEncoderV2;
 
 import { DecimalMath } from "./lib/DecimalMath.sol";
-import { ReentrancyGuard } from "./lib/ReentrancyGuard.sol";
-import { SafeMath } from "./lib/SafeMath.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import { SafeMath } from "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import { IDODOV2 } from "./interfaces/IDODOV2.sol";
 import { DuetDppLp } from "./DuetDppLp.sol";
 

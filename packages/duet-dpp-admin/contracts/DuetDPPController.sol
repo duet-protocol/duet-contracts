@@ -1,16 +1,18 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity 0.8.9;
 
+import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import { IERC20Metadata } from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import { SafeMath } from "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import { UniversalERC20 } from "./lib/UniversalERC20.sol";
-import { SafeERC20 } from "./lib/SafeERC20.sol";
 import { DecimalMath } from "./lib/DecimalMath.sol";
-import { ReentrancyGuard } from "./lib/ReentrancyGuard.sol";
-import { SafeMath } from "./lib/SafeMath.sol";
+
+import { Adminable } from "./lib/Adminable.sol";
 import { IDODOV2 } from "./interfaces/IDODOV2.sol";
 import { IDPPOracleAdmin } from "./interfaces/IDPPOracleAdmin.sol";
-import { IERC20 } from "./interfaces/IERC20.sol";
 import { IWETH } from "./interfaces/IWETH.sol";
-import { Adminable } from "./lib/Adminable.sol";
+
 import { DuetDppLpFunding } from "./DuetDppLpFunding.sol";
 
 contract DuetDppController is Adminable, DuetDppLpFunding {
@@ -64,7 +66,7 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
 
         name = string(abi.encodePacked(suffix, connect, addressToShortString(address(this))));
         symbol = "Duet_LP";
-        decimals = _BASE_TOKEN_.decimals();
+        decimals = IERC20Metadata(IDODOV2(_DPP_ADDRESS_)._BASE_TOKEN_()).decimals();
 
         // ============================== Permit ====================================
         uint256 chainId;
@@ -142,7 +144,7 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
     )
         external
         payable
-        preventReentrant
+        nonReentrant
         judgeExpired(deadLine)
         returns (
             uint256 shares,
@@ -169,8 +171,8 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
                 _LP_FEE_RATE_,
                 _I_,
                 _K_,
-                0,
-                0,
+                0, //baseOutAmount, add liquidity so outAmount is 0
+                0, //quoteOutAmount, add liquidity so outAmount is 0
                 minBaseReserve, // minBaseReserve
                 minQuoteReserve // minQuoteReserve
             ),
@@ -194,7 +196,7 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
         uint256 deadLine
     )
         external
-        preventReentrant
+        nonReentrant
         judgeExpired(deadLine)
         returns (
             uint256 shares,
