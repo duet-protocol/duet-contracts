@@ -107,7 +107,10 @@ contract DuetDPPFactory is Adminable, Initializable {
         bool isOpenTwap_, // use twap price or not
         bool isOracleEnabled_ // use oracle or not
     ) external onlyAdmin {
-        require(registry[baseToken_][quoteToken_] == address(0), "HAVE CREATED");
+        require(
+            registry[baseToken_][quoteToken_] == address(0) && registry[quoteToken_][baseToken_] == address(0),
+            "HAVE CREATED"
+        );
         address dppAddress;
         address dppController;
         {
