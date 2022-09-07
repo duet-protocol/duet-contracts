@@ -8,6 +8,8 @@
 pragma solidity 0.8.9;
 pragma experimental ABIEncoderV2;
 
+import "../external/lib/PMMPricing.sol";
+
 interface IDODOV2 {
     //========== Common ==================
 
@@ -16,6 +18,26 @@ interface IDODOV2 {
     function sellQuote(address to) external returns (uint256 receiveBaseAmount);
 
     function getVaultReserve() external view returns (uint256 baseReserve, uint256 quoteReserve);
+
+    function querySellQuote(address trader, uint256 payQuoteAmount)
+        external
+        view
+        returns (
+            uint256 receiveBaseAmount,
+            uint256 mtFee,
+            PMMPricing.RState newRState,
+            uint256 newQuoteTarget
+        );
+
+    function querySellBase(address trader, uint256 payBaseAmount)
+        external
+        view
+        returns (
+            uint256 receiveQuoteAmount,
+            uint256 mtFee,
+            PMMPricing.RState newRState,
+            uint256 newBaseTarget
+        );
 
     function _BASE_TOKEN_() external view returns (address);
 

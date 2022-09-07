@@ -255,6 +255,33 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
         }
     }
 
+    function recommendInAmount(
+        uint256 baseInAmount,
+        uint256 quoteInAmount,
+        uint8 flag // 0 is for baseInAmount, 1 is for quoteInAmount
+    ) external view returns (uint256 baseAdjustedInAmount, uint256 quoteAdjustedInAmount) {
+        (uint256 baseReserve, uint256 quoteReserve) = IDODOV2(_DPP_ADDRESS_).getVaultReserve();
+        if (quoteReserve == 0 && baseReserve == 0) {
+            baseAdjustedInAmount = baseInAmount;
+            quoteAdjustedInAmount = quoteInAmount;
+        }
+        if (quoteReserve == 0 && baseReserve > 0) {
+            baseAdjustedInAmount = baseInAmount;
+            quoteAdjustedInAmount = 0;
+        }
+        if (quoteReserve > 0 && baseReserve > 0) {
+            uint256 baseIncreaseRatio = DecimalMath.divFloor(baseInAmount, baseReserve);
+            uint256 quoteIncreaseRatio = DecimalMath.divFloor(quoteInAmount, quoteReserve);
+            if (flag == 0) {
+                baseAdjustedInAmount = baseInAmount;
+                quoteAdjustedInAmount = DecimalMath.mulFloor(quoteReserve, baseIncreaseRatio);
+            } else {
+                quoteAdjustedInAmount = quoteInAmount;
+                baseAdjustedInAmount = DecimalMath.mulFloor(baseReserve, quoteIncreaseRatio);
+            }
+        }
+    }
+
     // ================= internal ====================
 
     function _updateDppInfo() internal {
