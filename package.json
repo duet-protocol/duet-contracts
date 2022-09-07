@@ -13,6 +13,11 @@
     "pre-commit": "pnpm run prettier",
     "prepare": "husky install"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pnpm run pre-commit"
+    }
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/duet-protocol/duet-contracts.git"
