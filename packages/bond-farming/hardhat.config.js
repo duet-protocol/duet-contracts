@@ -5,7 +5,7 @@ require('hardhat-abi-exporter')
 require('@typechain/hardhat')
 
 const dotenv = require('dotenv')
-dotenv.config({ path: './.env_product' })
+dotenv.config()
 
 const mnemonic = process.env.MNEMONIC
 const infurakey = process.env.INFURA_API_KEY
@@ -63,17 +63,13 @@ module.exports = {
       url: 'https://data-seed-prebsc-2-s2.binance.org:8545/',
       chainId: 97,
       gasPrice: 20000000000,
-      accounts: {
-        mnemonic: mnemonic,
-      },
+      accounts: [process.env.KEY_BSC_TEST],
     },
 
     bsc: {
       url: 'https://bsc-dataseed.binance.org/',
       chainId: 56,
-      accounts: {
-        mnemonic: mnemonic,
-      },
+      accounts: [process.env.KEY_BSC_MAINNET],
     },
 
     main: {

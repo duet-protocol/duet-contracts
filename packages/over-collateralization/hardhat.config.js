@@ -63,9 +63,7 @@ module.exports = {
       url: 'https://data-seed-prebsc-2-s2.binance.org:8545/',
       chainId: 97,
       gasPrice: 20000000000,
-      accounts: {
-        mnemonic: mnemonic,
-      },
+      accounts: [process.env.KEY_BSC_TEST],
     },
 
     bsc: {
