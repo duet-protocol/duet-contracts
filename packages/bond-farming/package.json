@@ -7,7 +7,8 @@
     "compile": "npx hardhat compile",
     "compile:watch": "npx hardhat watch compile",
     "abi": "hardhat export-abi",
-    "prettier": "prettier --write --cache  --config ../../.prettierrc --ignore-path ../../.prettierignore --no-error-on-unmatched-pattern 'contracts/**/*.sol' **/*.js **/*.ts **/*.json **/*.yml **/*.yaml"
+    "prettier": "prettier --write --cache  --config ../../.prettierrc --ignore-path ../../.prettierignore --no-error-on-unmatched-pattern 'contracts/**/*.sol' **/*.js **/*.ts **/*.json **/*.yml **/*.yaml",
+    "pre-commit": "pnpm run prettier"
   },
   "repository": {
     "type": "git",

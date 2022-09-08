@@ -26,7 +26,8 @@
     "test:coverage": "npx hardhat coverage",
     "test:size-contracts": "npx hardhat size-contracts",
     "docgen": "rm -rf ./docs && npx hardhat docgen",
-    "prettier": "prettier --write --cache  --config ../../.prettierrc --ignore-path ../../.prettierignore --no-error-on-unmatched-pattern 'contracts/**/*.sol' **/*.js **/*.ts **/*.json **/*.yml **/*.yaml"
+    "prettier": "prettier --write --cache  --config ../../.prettierrc --ignore-path ../../.prettierignore --no-error-on-unmatched-pattern 'contracts/**/*.sol' **/*.js **/*.ts **/*.json **/*.yml **/*.yaml",
+    "pre-commit": "pnpm run prettier"
   },
   "devDependencies": {
     "@private/shared": "workspace:*",
