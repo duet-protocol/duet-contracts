@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 contract BondToken is ERC20, Ownable {
     address public minter;
+    uint256 public constant MINIMUM_SUPPLY = 10**3;
 
     modifier onlyMinter() {
         require(minter == msg.sender, "Minter only");
@@ -27,6 +28,10 @@ contract BondToken is ERC20, Ownable {
 
     function mint(address to_, uint256 amount_) external onlyMinter {
         require(amount_ > 0, "Nothing to mint");
+        if (totalSupply() == 0) {
+            // permanently lock the first MINIMUM_SUPPLY tokens
+            _mint(address(0), MINIMUM_SUPPLY);
+        }
         _mint(to_, amount_);
     }
 

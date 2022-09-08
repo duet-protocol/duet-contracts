@@ -14,6 +14,7 @@ import "./interfaces/IDYToken.sol";
 import "./interfaces/IController.sol";
 
 abstract contract DYTokenBase is IDYToken, ERC20, ERC20Permit, Ownable {
+    uint256 public constant MINIMUM_SUPPLY = 10**3;
     using Address for address;
 
     address public immutable override underlying;

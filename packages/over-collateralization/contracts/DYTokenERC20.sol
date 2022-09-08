@@ -34,12 +34,15 @@ contract DYTokenERC20 is DYTokenBase {
 
         uint256 before = underlyingToken.balanceOf(address(this));
         underlyingToken.safeTransferFrom(msg.sender, address(this), _amount);
-        uint256 realAmount = underlyingToken.balanceOf(address(this)) - before; // Additional check for deflationary tokens
+        uint256 realAmount = underlyingToken.balanceOf(address(this)) - before;
+        // Additional check for deflationary tokens
         require(realAmount >= _amount, "illegal amount");
 
         uint256 shares = 0;
         if (totalSupply() == 0) {
             require(_amount >= 10000, "too small");
+            // permanently lock the first MINIMUM_SUPPLY tokens
+            _mint(address(0), MINIMUM_SUPPLY);
             shares = _amount;
         } else {
             shares = (_amount * totalSupply()) / total;
