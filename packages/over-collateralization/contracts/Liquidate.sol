@@ -6,7 +6,6 @@ import "./interfaces/IDUSD.sol";
 import "./interfaces/IDYToken.sol";
 import "./interfaces/IDusdMinter.sol";
 import "./interfaces/ILiquidateCallee.sol";
-import "./interfaces/IPancakeFactory.sol";
 import "./interfaces/IRouter02.sol";
 
 import "./interfaces/IPair.sol";
@@ -20,7 +19,6 @@ contract Liquidate is ILiquidateCallee, OwnableUpgradeable {
 
     address public controller;
     address public dusd;
-    IPancakeFactory public factory;
     IRouter02 router;
 
     address public bUSD;
@@ -49,7 +47,6 @@ contract Liquidate is ILiquidateCallee, OwnableUpgradeable {
         dusd = _dusd;
 
         router = IRouter02(_router);
-        factory = IPancakeFactory(IRouter02(_router).factory());
         bUSD = _bUSD;
         minter = _minter;
 
@@ -110,6 +107,10 @@ contract Liquidate is ILiquidateCallee, OwnableUpgradeable {
         balanceReceiver = owner();
     }
 
+    function setNewRouter(address _newRouter) external onlyOwner {
+        router = IRouter02(_newRouter);
+    }
+
     function approveToken(address[] memory tokens, address[] memory targets) external onlyOwner {
         require(tokens.length == targets.length, "mismatch length");
         for (uint256 i = 0; i < tokens.length; i++) {
@@ -122,20 +123,26 @@ contract Liquidate is ILiquidateCallee, OwnableUpgradeable {
         _;
     }
 
+    modifier onlyVault() {
+        (, , , , , bool enableLiquidate) = IController(controller).vaultStates(msg.sender);
+        require(enableLiquidate, "Vault Only");
+        _;
+    }
+
     function liquidate(address _borrower, bytes calldata data) external onlyLiquidator {
         IController(controller).liquidate(_borrower, data);
 
-        // transfer extra left dusd balance
+        // transfer extra left busd balance
         // eg:
         // 500>200, transfer out 300, left 200
         // 300>200,  transfer out 150,left 150
-        uint256 leftBalance = IERC20Upgradeable(dusd).balanceOf(address(this));
+        uint256 leftBalance = IERC20Upgradeable(bUSD).balanceOf(address(this));
 
         if (leftBalance > leftLimit) {
             if (leftBalance / 2 < leftLimit) {
-                IERC20Upgradeable(dusd).safeTransfer(balanceReceiver, leftBalance / 2);
+                IERC20Upgradeable(bUSD).safeTransfer(balanceReceiver, leftBalance / 2);
             } else {
-                IERC20Upgradeable(dusd).safeTransfer(balanceReceiver, leftBalance - leftLimit);
+                IERC20Upgradeable(bUSD).safeTransfer(balanceReceiver, leftBalance - leftLimit);
             }
         }
     }
@@ -235,16 +242,14 @@ contract Liquidate is ILiquidateCallee, OwnableUpgradeable {
 
     function convert(address token) public onlyLiquidator returns (uint256 output) {
         uint256 balance = IERC20Upgradeable(token).balanceOf(address(this));
-        if (token == dusd) {
+        if (token == bUSD) {
             output = balance;
-        } else if (token == bUSD) {
-            output = IDusdMinter(minter).mineDusd(balance, 0, address(this));
         } else if (forBridge[token] != address(0)) {
             address target = forBridge[token];
             swap(token, target);
             output = convert(target);
         } else {
-            output = swap(token, dusd);
+            output = swap(token, bUSD);
         }
     }
 
@@ -253,7 +258,7 @@ contract Liquidate is ILiquidateCallee, OwnableUpgradeable {
         address underlying,
         uint256 amount,
         bytes calldata data
-    ) external override onlyLiquidator {
+    ) external override onlyVault {
         IDYToken(underlying).withdraw(address(this), amount, false);
         address under = IDYToken(underlying).underlying();
 
@@ -285,12 +290,12 @@ contract Liquidate is ILiquidateCallee, OwnableUpgradeable {
         address underlying,
         uint256 amount,
         bytes calldata data
-    ) external override onlyLiquidator {
+    ) external override onlyVault {
         // msg.sender is vault
         approveTokenIfNeeded(underlying, msg.sender, amount);
 
-        if (underlying != dusd) {
-            swapForExactOut(amount, dusd, underlying);
+        if (underlying != bUSD) {
+            swapForExactOut(amount, bUSD, underlying); 
         }
     }
 
