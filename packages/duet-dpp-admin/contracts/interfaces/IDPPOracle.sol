@@ -17,4 +17,6 @@ interface IDPPOracle {
     ) external;
 
     function _MT_FEE_RATE_MODEL_() external returns (address);
+
+    function _O_() external returns (address);
 }

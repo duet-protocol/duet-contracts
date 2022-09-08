@@ -11,7 +11,9 @@ import { DecimalMath } from "./lib/DecimalMath.sol";
 import { Adminable } from "./lib/Adminable.sol";
 import { IDODOV2 } from "./interfaces/IDODOV2.sol";
 import { IDPPOracleAdmin } from "./interfaces/IDPPOracleAdmin.sol";
+import { IDPPOracle } from "./interfaces/IDPPOracle.sol";
 import { IWETH } from "./interfaces/IWETH.sol";
+import { IOracle } from "./external/interfaces/IOracle.sol";
 
 import { DuetDppLpFunding } from "./DuetDppLpFunding.sol";
 
@@ -30,7 +32,7 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
     uint256 minQuoteReserve = 0;
 
     modifier judgeExpired(uint256 deadLine) {
-        require(deadLine >= block.timestamp, "DODOV2Proxy02: EXPIRED");
+        require(deadLine >= block.timestamp, "Duet Dpp Controller: EXPIRED");
         _;
     }
 
@@ -116,14 +118,18 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
     }
 
     function changeOracle(address newOracle) external onlyAdmin {
+        require(IOracle(newOracle).prices(address(_BASE_TOKEN_)) > 0, "Duet Dpp Controller: invaild oracle price");
         IDPPOracleAdmin(_DPP_ADMIN_ADDRESS_).changeOracle(newOracle);
     }
 
     function enableOracle() external onlyAdmin {
+        address _O_ = IDPPOracle(_DPP_ADDRESS_)._O_();
+        require(IOracle(_O_).prices(address(_BASE_TOKEN_)) > 0, "Duet Dpp Controller: invaild oracle price");
         IDPPOracleAdmin(_DPP_ADMIN_ADDRESS_).enableOracle();
     }
 
     function disableOracle(uint256 newI) external onlyAdmin {
+        require(newI > 0, "Duet Dpp Controller: invaild new I");
         IDPPOracleAdmin(_DPP_ADMIN_ADDRESS_).disableOracle(newI);
     }
 
@@ -176,7 +182,7 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
                 minBaseReserve, // minBaseReserve
                 minQuoteReserve // minQuoteReserve
             ),
-            "Reset Failed"
+            "Duet Dpp Controller: Reset Failed"
         );
 
         // refund dust eth
@@ -218,7 +224,7 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
                 minBaseReserve, //minBaseReserve,
                 minQuoteReserve //minQuoteReserve
             ),
-            "Reset Failed"
+            "Duet Dpp Controller: Reset Failed"
         );
 
         _withdraw(payable(msg.sender), IDODOV2(_DPP_ADDRESS_)._BASE_TOKEN_(), baseOutAmount, flag == 3);
@@ -233,7 +239,7 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
     {
         (uint256 baseReserve, uint256 quoteReserve) = IDODOV2(_DPP_ADDRESS_).getVaultReserve();
         if (quoteReserve == 0 && baseReserve == 0) {
-            require(msg.sender == admin, "Must initialized by admin");
+            require(msg.sender == admin, "Duet Dpp Controller: Must initialized by admin");
             // Must initialized by admin
             baseAdjustedInAmount = baseInAmount;
             quoteAdjustedInAmount = quoteInAmount;
@@ -255,13 +261,15 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
         }
     }
 
-    function recommendInAmount(
+    function _calRecommendAmounts(
         uint256 baseInAmount,
         uint256 quoteInAmount,
-        uint8 flag // 0 is for baseInAmount, 1 is for quoteInAmount
-    ) external view returns (uint256 baseAdjustedInAmount, uint256 quoteAdjustedInAmount) {
+        uint8 flag // flag=0 is baseIn fixed, flag=1 is quoteIn fixed
+    ) internal view returns (uint256 baseAdjustedInAmount, uint256 quoteAdjustedInAmount) {
         (uint256 baseReserve, uint256 quoteReserve) = IDODOV2(_DPP_ADDRESS_).getVaultReserve();
         if (quoteReserve == 0 && baseReserve == 0) {
+            require(msg.sender == admin, "Duet Dpp Controller: Must initialized by admin");
+            // Must initialized by admin
             baseAdjustedInAmount = baseInAmount;
             quoteAdjustedInAmount = quoteInAmount;
         }
@@ -280,6 +288,34 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
                 baseAdjustedInAmount = DecimalMath.mulFloor(baseReserve, quoteIncreaseRatio);
             }
         }
+    }
+
+    function recommendQuoteInAmount(uint256 baseInAmount_)
+        external
+        view
+        returns (uint256 baseAdjustedInAmount, uint256 quoteAdjustedInAmount)
+    {
+        return _calRecommendAmounts(baseInAmount_, 0, 0);
+    }
+
+    function recommendBaseInAmount(uint256 quoteInAmount_)
+        external
+        view
+        returns (uint256 baseAdjustedInAmount, uint256 quoteAdjustedInAmount)
+    {
+        return _calRecommendAmounts(0, quoteInAmount_, 1);
+    }
+
+    function recommendBaseAndQuote(uint256 shareAmount_)
+        external
+        view
+        returns (uint256 baseAmount, uint256 quoteAmount)
+    {
+        (uint256 baseBalance, uint256 quoteBalance) = IDODOV2(_DPP_ADDRESS_).getVaultReserve();
+        uint256 totalShares = totalSupply;
+
+        baseAmount = baseBalance.mul(shareAmount_).div(totalShares);
+        quoteAmount = quoteBalance.mul(shareAmount_).div(totalShares);
     }
 
     // ================= internal ====================
