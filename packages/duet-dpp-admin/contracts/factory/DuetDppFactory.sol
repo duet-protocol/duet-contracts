@@ -101,7 +101,7 @@ contract DuetDPPFactory is Adminable, Initializable {
         address baseToken_,
         address quoteToken_,
         uint256 lpFeeRate_, // 单位是10**18，范围是[0,10**18] ，代表的是交易手续费
-        uint256 k_, // adjust curve's type
+        uint256 k_, // adjust curve's type, limit in [0，10**18], 单位是 10**18，代表价格曲线波动系数 0是恒定价格卖币，10**18是类UNI的bonding curve
         uint256 i_, // 代表的是base 对 quote的价格比例.decimals 18 - baseTokenDecimals+ quoteTokenDecimals. If use oracle, i set here wouldn't be used.
         address o_, // oracle address
         bool isOpenTwap_, // use twap price or not

@@ -14,7 +14,7 @@ import {
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers'
 import { formatEther, parseEther } from 'ethers/lib/utils'
 import { expect } from 'chai'
-import { latestBlockNumber, ZERO_ADDRESS } from './helpers'
+import { latestBlockNumber, setBlockTimestampTo, ZERO_ADDRESS } from './helpers'
 import { BigNumber } from 'bignumber.js'
 import { useLogger } from '../scripts/utils'
 import { random } from 'lodash'
@@ -38,6 +38,8 @@ describe('DppCtrl and DppFactory', () => {
   let aToken: MockBEP20
   let bToken: MockBEP20
   let weth: WETH9
+
+  let startBlockNumber: number
 
   const deadline = '99999999999999999'
 
@@ -123,6 +125,12 @@ describe('DppCtrl and DppFactory', () => {
     await bToken.connect(bob).approve(dppRouter.address, approveAmount)
     await aToken.connect(carol).approve(dppRouter.address, approveAmount)
     await bToken.connect(carol).approve(dppRouter.address, approveAmount)
+
+    startBlockNumber = await latestBlockNumber()
+  })
+
+  beforeEach(async () => {
+    await setBlockTimestampTo(startBlockNumber)
   })
 
   it('only admin initialize', async () => {
@@ -134,15 +142,20 @@ describe('DppCtrl and DppFactory', () => {
     expect(String(await testDpp._BASE_RESERVE_())).equal(parseEther('100').toString())
   })
 
-  it.only('deposit and remove', async () => {
+  it('deposit and remove', async () => {
     await testDppCtrl.connect(maintainer).addDuetDppLiquidity(parseEther('100'), parseEther('100'), 0, 0, 0, deadline)
 
     //deposit(user)
     await testDppCtrl.connect(bob).addDuetDppLiquidity(parseEther('100'), parseEther('100'), 0, 0, 0, deadline)
-    expect(String(await testDpp._BASE_RESERVE_())).equal(parseEther('200')) // check dpp pool state
+    expect(String(await testDpp._BASE_RESERVE_())).equal(parseEther('300')) // check dpp pool state
     let mHoldTokens = await testDppCtrl.balanceOf(maintainer.address)
     let bHoldTokens = await testDppCtrl.balanceOf(bob.address)
     logger.log('check dppCtrl tokens:', mHoldTokens, bHoldTokens) // checkTokens
+
+    // test recommend
+    let recBase = await testDppCtrl.recommendBaseInAmount(parseEther('50'))
+    let recQuote = await testDppCtrl.recommendQuoteInAmount(parseEther('100'))
+    logger.log('recBase:', formatEther(recBase[0]), 'recQuote:', formatEther(recQuote[1]))
 
     // deposit unbalance(user)
     let beforeA = await aToken.balanceOf(bob.address)
@@ -185,5 +198,51 @@ describe('DppCtrl and DppFactory', () => {
     logger.log('check withdraw 2:', formatEther(AfterWithdrawBob2), formatEther(AfterWithdrawBob))
     let AfterCtrlBob2 = await testDppCtrl.balanceOf(bob.address)
     logger.log('check withdraw 2 crtl:', formatEther(AfterCtrlBob2))
+  })
+
+  it('cal out and recIn', async () => {
+    let outRes = await testDppCtrl.recommendBaseAndQuote(parseEther('1'))
+    //let calOut = await testDppCtrl.calBaseAndQuoteOut(parseEther('1'))
+    //logger.log('the same:', outRes, calOut)
+
+    let beforeCtrlBob = await testDppCtrl.balanceOf(bob.address)
+    await testDppCtrl.connect(bob).addDuetDppLiquidity(outRes[0], outRes[1], 0, 0, 0, deadline)
+    let afterCtrlBob = await testDppCtrl.balanceOf(bob.address)
+    logger.log('check out ctrl right:', Number(formatEther(afterCtrlBob)) - Number(formatEther(beforeCtrlBob)))
+  })
+
+  it('change oracle', async () => {
+    let res = await testDpp.querySellBase(bob.address, parseEther('10'))
+    let beforeOracleRes = res[0]
+
+    // test enableOracle
+    await expect(testDppCtrl.connect(maintainer).enableOracle()).revertedWith(
+      'Duet Dpp Controller: invaild oracle price',
+    )
+
+    await testOracle.connect(maintainer).setPrice(aToken.address, '3758563499999999839')
+    await testDppCtrl.connect(maintainer).enableOracle()
+
+    res = await testDpp.querySellBase(bob.address, parseEther('10'))
+    let afterOracleRes = res[0]
+
+    logger.log('check oracle price:', formatEther(beforeOracleRes), formatEther(afterOracleRes))
+
+    await testOracle.connect(maintainer).setPrice(aToken.address, '0')
+    // test zero oracle
+    await expect(testDppCtrl.connect(maintainer).changeOracle(testOracle.address)).revertedWith(
+      'Duet Dpp Controller: invaild oracle price',
+    )
+    // test invalid oracle
+    await expect(testDppCtrl.connect(maintainer).changeOracle(testDpp.address)).to.be.revertedWith(
+      'function selector was not recognized and there',
+    )
+
+    // test disableOracle newI
+    await expect(testDppCtrl.connect(maintainer).disableOracle('0')).revertedWith('Duet Dpp Controller: invaild new I')
+
+    await testDppCtrl.connect(maintainer).disableOracle('239856349999999983992')
+    res = await testDpp.querySellBase(bob.address, parseEther('10'))
+    expect(String(res[0])).equal(String(beforeOracleRes), 'wrong price')
   })
 })

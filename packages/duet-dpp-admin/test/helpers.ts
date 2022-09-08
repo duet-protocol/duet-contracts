@@ -22,4 +22,13 @@ export async function latestBlockNumber() {
   return (await ethers.provider.getBlock('latest')).number
 }
 
+export async function setBlockTimestampTo(timestamp: number) {
+  const now = (await ethers.provider.getBlock('latest')).timestamp
+  const delta = timestamp - now
+  if (delta > 0) {
+    await network.provider.send('evm_increaseTime', [delta])
+    await network.provider.send('evm_mine')
+  }
+}
+
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
