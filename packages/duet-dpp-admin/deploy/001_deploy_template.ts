@@ -7,6 +7,7 @@ import config from '../config'
 import { useLogger } from '../scripts/utils'
 import { HardhatDeployRuntimeEnvironment } from '../types/hardhat-deploy'
 import { useNetworkName, advancedDeploy } from './.defines'
+import { FactoryNames } from './002_deploy_factory'
 
 const gasLimit = 3000000
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
@@ -24,7 +25,7 @@ export enum TemplateNames {
 
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { deployments, getNamedAccounts } = hre as unknown as HardhatDeployRuntimeEnvironment
-  const { deploy, get, read, execute } = deployments
+  const { deploy, getOrNull, read, execute } = deployments
 
   const networkName = useNetworkName()
 
@@ -50,7 +51,8 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     },
   )
 
-  const DppTemplate = await advancedDeploy(
+  const dppFactoryInfo = await getOrNull(FactoryNames.DuetDPPFactory)
+  const dppTemplate = await advancedDeploy(
     {
       hre,
       logger,
@@ -67,8 +69,15 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
       })
     },
   )
-
-  const DppAdminTemp = await advancedDeploy(
+  const exeOptions = {
+    gasLimit: 3000000,
+    from: deployer,
+  }
+  if (dppTemplate.newlyDeployed && dppFactoryInfo) {
+    logger.info('executing updateDppTemplate...')
+    await execute(FactoryNames.DuetDPPFactory, exeOptions, 'updateDppTemplate', dppTemplate.address)
+  }
+  const dppAdminTemp = await advancedDeploy(
     {
       hre,
       logger,
@@ -85,8 +94,11 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
       })
     },
   )
-
-  const DppControllerTemp = await advancedDeploy(
+  if (dppAdminTemp.newlyDeployed && dppFactoryInfo) {
+    logger.info('executing updateAdminTemplate...')
+    await execute(FactoryNames.DuetDPPFactory, exeOptions, 'updateAdminTemplate', dppAdminTemp.address)
+  }
+  const dppControllerTemp = await advancedDeploy(
     {
       hre,
       logger,
@@ -103,5 +115,10 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
       })
     },
   )
+
+  if (dppControllerTemp.newlyDeployed && dppFactoryInfo) {
+    logger.info('executing updateControllerTemplate...')
+    await execute(FactoryNames.DuetDPPFactory, exeOptions, 'updateControllerTemplate', dppControllerTemp.address)
+  }
 }
 export default func
