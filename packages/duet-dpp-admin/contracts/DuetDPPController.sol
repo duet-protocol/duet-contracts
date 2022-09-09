@@ -65,7 +65,7 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
         string memory connect = "-";
         string memory suffix = "DuetLP_";
 
-        name = string(abi.encodePacked(suffix, connect, _BASE_TOKEN_.symbol(), connect, _QUOTE_TOKEN_.symbol()));
+        name = string(abi.encodePacked(suffix, _BASE_TOKEN_.symbol(), connect, _QUOTE_TOKEN_.symbol()));
         symbol = "Duet-LP";
         decimals = _BASE_TOKEN_.decimals();
 
