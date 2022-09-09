@@ -86,6 +86,24 @@ contract DuetDPPFactory is Adminable, Initializable {
         dppControllerTemplate = newController_;
     }
 
+    function delOnePool(
+        address baseToken_,
+        address quoteToken_,
+        address dppCtrlAddress_,
+        address creator_
+    ) external onlyAdmin {
+        registry[baseToken_][quoteToken_] = address(0);
+        uint256 len = userRegistry[creator_].length;
+        for (uint256 i = 0; i < len; ++i) {
+            if (userRegistry[creator_][i] == dppCtrlAddress_) {
+                userRegistry[creator_][i] = userRegistry[creator_][len - 1];
+                userRegistry[creator_].pop();
+
+                break;
+            }
+        }
+    }
+
     // ============ Functions ============
 
     function _createDODOPrivatePool() internal returns (address newPrivatePool) {
@@ -132,7 +150,12 @@ contract DuetDPPFactory is Adminable, Initializable {
 
             dppController = _createDPPController(creator_, dppAddress, dppAdminModel);
 
-            IDPPOracleAdmin(dppAdminModel).init(dppController, dppAddress, creator_, dodoApproveProxy);
+            IDPPOracleAdmin(dppAdminModel).init(
+                dppController, // owner
+                dppAddress,
+                dppController, // del dpp admin's operator
+                dodoApproveProxy
+            );
         }
 
         registry[baseToken_][quoteToken_] = dppController;
