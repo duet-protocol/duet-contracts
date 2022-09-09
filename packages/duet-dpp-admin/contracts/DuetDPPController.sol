@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity 0.8.9;
 
-import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { IERC20Metadata } from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import { SafeMath } from "@openzeppelin/contracts/utils/math/SafeMath.sol";
@@ -19,8 +18,8 @@ import { DuetDppLpFunding } from "./DuetDppLpFunding.sol";
 
 contract DuetDppController is Adminable, DuetDppLpFunding {
     using SafeMath for uint256;
-    using UniversalERC20 for IERC20;
-    using SafeERC20 for IERC20;
+    using UniversalERC20 for IERC20Metadata;
+    using SafeERC20 for IERC20Metadata;
 
     address public _WETH_;
     bool flagInit = false;
@@ -59,16 +58,16 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
         _setAdmin(admin);
 
         // load pool info
-        _BASE_TOKEN_ = IERC20(IDODOV2(_DPP_ADDRESS_)._BASE_TOKEN_());
-        _QUOTE_TOKEN_ = IERC20(IDODOV2(_DPP_ADDRESS_)._QUOTE_TOKEN_());
+        _BASE_TOKEN_ = IERC20Metadata(IDODOV2(_DPP_ADDRESS_)._BASE_TOKEN_());
+        _QUOTE_TOKEN_ = IERC20Metadata(IDODOV2(_DPP_ADDRESS_)._QUOTE_TOKEN_());
         _updateDppInfo();
 
-        string memory connect = "_";
-        string memory suffix = "Duet";
+        string memory connect = "-";
+        string memory suffix = "DuetLP_";
 
-        name = string(abi.encodePacked(suffix, connect, addressToShortString(address(this))));
-        symbol = "Duet_LP";
-        decimals = IERC20Metadata(IDODOV2(_DPP_ADDRESS_)._BASE_TOKEN_()).decimals();
+        name = string(abi.encodePacked(suffix, connect, _BASE_TOKEN_.symbol(), connect, _QUOTE_TOKEN_.symbol()));
+        symbol = "Duet-LP";
+        decimals = _BASE_TOKEN_.decimals();
 
         // ============================== Permit ====================================
         uint256 chainId;
@@ -338,11 +337,11 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
                 require(msg.value >= amount, "ETH_VALUE_WRONG");
                 // case:msg.value > adjustAmount
                 IWETH(_WETH_).deposit{ value: amount }();
-                if (to != address(this)) SafeERC20.safeTransfer(IERC20(_WETH_), to, amount);
+                if (to != address(this)) SafeERC20.safeTransfer(IERC20Metadata(_WETH_), to, amount);
             }
         } else {
             if (amount > 0) {
-                IERC20(token).safeTransferFrom(from, to, amount);
+                IERC20Metadata(token).safeTransferFrom(from, to, amount);
             }
         }
     }
@@ -360,7 +359,7 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
             }
         } else {
             if (amount > 0) {
-                SafeERC20.safeTransfer(IERC20(token), to, amount);
+                IERC20Metadata(token).safeTransfer(to, amount);
             }
         }
     }

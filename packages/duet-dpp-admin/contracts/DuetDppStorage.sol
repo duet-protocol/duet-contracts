@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity 0.8.9;
 
-import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import { IERC20Metadata } from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 
 contract DuetDppStorage {
     // ============ pool info ===============
     address public _DPP_ADDRESS_;
     address public _DPP_ADMIN_ADDRESS_;
-    IERC20 public _BASE_TOKEN_;
-    IERC20 public _QUOTE_TOKEN_;
+    IERC20Metadata public _BASE_TOKEN_;
+    IERC20Metadata public _QUOTE_TOKEN_;
     uint64 public _LP_FEE_RATE_;
     uint128 public _I_;
     uint64 public _K_;
