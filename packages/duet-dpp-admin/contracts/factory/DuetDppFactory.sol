@@ -152,10 +152,17 @@ contract DuetDPPFactory is Adminable, Initializable {
 
             IDPPOracleAdmin(dppAdminModel).init(
                 dppController, // owner
+<<<<<<< HEAD
                 dppAddress,
                 dppController, // del dpp admin's operator
                 dodoApproveProxy
             );
+=======
+                dppAddress, 
+                dppController, // del dpp admin's operator
+                dodoApproveProxy
+            ); 
+>>>>>>> 8704504 (feat(dpp-admin):add del pool func and fix operator&oracle)
         }
 
         registry[baseToken_][quoteToken_] = dppController;
