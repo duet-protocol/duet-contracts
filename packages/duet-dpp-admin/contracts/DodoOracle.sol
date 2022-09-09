@@ -35,15 +35,17 @@ contract DodoOracle is Adminable, Initializable {
         require(price > 0, "Invalid price from oracle");
 
         uint256 baseTokenDecimals = IERC20(base_).decimals();
-        // decimals for Dodo is `18 - quote + base`
-        // quote token is always BUSD, so use base decimals as dodo oracle decimals.
+        require(baseTokenDecimals < 36, "decimals of base token is too high");
+        // decimals for Dodo is `18 - base + quote`
+        // quote token is always BUSD, it is 1e18
         // duet oracle returns 1e8 value
-        if (baseTokenDecimals == 8) {
+        uint256 targetDecimals = uint256(18 - int256(baseTokenDecimals) + 18);
+        if (targetDecimals == 8) {
             return price;
         }
-        if (baseTokenDecimals > 8) {
-            return price * 10**(baseTokenDecimals - 8);
+        if (targetDecimals > 8) {
+            return price * 10**(targetDecimals - 8);
         }
-        return price / (10**(8 - baseTokenDecimals));
+        return price / (10**(8 - targetDecimals));
     }
 }
