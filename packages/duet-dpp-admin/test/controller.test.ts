@@ -174,14 +174,16 @@ describe('DppCtrl and DppFactory', () => {
         carol.address,
         deadline,
       )
-    
+
     // test deposit slippage
-    let baseMinAmountIn = new BigNumber(recBase[0].toString()).times(0.99).toFixed(0);
-    let quoteMinAmountIn = new BigNumber(recBase[1].toString()).times(0.99).toFixed(0);
-    await expect(testDppCtrl.connect(bob).addDuetDppLiquidity(recBase[0], recBase[1], baseMinAmountIn, quoteMinAmountIn, 0, deadline)).revertedWith(
-      "Duet Dpp Controller: deposit amount is not enough",
-    )
-    logger.log("base In:", recBase[0].toString())
+    let baseMinAmountIn = new BigNumber(recBase[0].toString()).times(0.99).toFixed(0)
+    let quoteMinAmountIn = new BigNumber(recBase[1].toString()).times(0.99).toFixed(0)
+    await expect(
+      testDppCtrl
+        .connect(bob)
+        .addDuetDppLiquidity(recBase[0], recBase[1], baseMinAmountIn, quoteMinAmountIn, 0, deadline),
+    ).revertedWith('Duet Dpp Controller: deposit amount is not enough')
+    logger.log('base In:', recBase[0].toString())
 
     // withdraw after one swap(user)
     let beforeWithdrawBob = await aToken.balanceOf(bob.address)
@@ -189,7 +191,7 @@ describe('DppCtrl and DppFactory', () => {
     let AfterWithdrawBob = await aToken.balanceOf(bob.address)
     logger.log('check withdraw:', formatEther(beforeWithdrawBob), formatEther(AfterWithdrawBob))
     let AfterCtrlBob = await testDppCtrl.balanceOf(bob.address)
-    let outAmounts = await testDppCtrl.recommendBaseAndQuote(AfterCtrlBob);
+    let outAmounts = await testDppCtrl.recommendBaseAndQuote(AfterCtrlBob)
 
     // swap, sell quote
     await dppRouter
@@ -202,14 +204,21 @@ describe('DppCtrl and DppFactory', () => {
         deadline,
       )
 
-    // test remove slippage 
-    let baseMinAmount = new BigNumber(outAmounts[0].toString()).times(0.99).toFixed(0);
-    let quoteMinAmount = new BigNumber(outAmounts[1].toString()).times(0.99).toFixed(0);
-    await expect(testDppCtrl.connect(bob).removeDuetDppLiquidity(AfterCtrlBob, parseEther(baseMinAmount.toString()), parseEther(quoteMinAmount.toString()), 0, deadline)).revertedWith(
-      "Duet Dpp Controller: WITHDRAW_NOT_ENOUGH",
-    )
-    logger.log("base out:", outAmounts[0].toString())
-
+    // test remove slippage
+    let baseMinAmount = new BigNumber(outAmounts[0].toString()).times(0.99).toFixed(0)
+    let quoteMinAmount = new BigNumber(outAmounts[1].toString()).times(0.99).toFixed(0)
+    await expect(
+      testDppCtrl
+        .connect(bob)
+        .removeDuetDppLiquidity(
+          AfterCtrlBob,
+          parseEther(baseMinAmount.toString()),
+          parseEther(quoteMinAmount.toString()),
+          0,
+          deadline,
+        ),
+    ).revertedWith('Duet Dpp Controller: WITHDRAW_NOT_ENOUGH')
+    logger.log('base out:', outAmounts[0].toString())
 
     // withdraw after two swap(user)
     await testDppCtrl.connect(bob).removeDuetDppLiquidity(AfterCtrlBob, parseEther('0'), parseEther('0'), 0, deadline)
@@ -253,9 +262,7 @@ describe('DppCtrl and DppFactory', () => {
       'Duet Dpp Controller: invaild oracle price',
     )
     // test invalid oracle
-    await expect(testDppCtrl.connect(maintainer).changeOracle(testDpp.address)).to.be.revertedWith(
-      '',
-    )
+    await expect(testDppCtrl.connect(maintainer).changeOracle(testDpp.address)).to.be.revertedWith('')
 
     // test disableOracle newI
     await expect(testDppCtrl.connect(maintainer).disableOracle('0')).revertedWith('Duet Dpp Controller: invaild new I')

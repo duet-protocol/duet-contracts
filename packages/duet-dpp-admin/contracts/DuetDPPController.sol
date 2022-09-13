@@ -231,7 +231,7 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
         uint256 shareAmount,
         uint256 baseMinAmount,
         uint256 quoteMinAmount,
-        uint8 flag, 
+        uint8 flag,
         uint256 deadLine
     )
         external
@@ -254,8 +254,8 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
                 _K_,
                 baseOutAmount,
                 quoteOutAmount,
-                minBaseReserve, 
-                minQuoteReserve 
+                minBaseReserve,
+                minQuoteReserve
             ),
             "Duet Dpp Controller: Reset Failed"
         );

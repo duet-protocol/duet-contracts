@@ -100,7 +100,7 @@ contract DuetDPPFactory is Adminable, Initializable {
     ) external onlyAdmin {
         require(registry[baseToken_][quoteToken_] != address(0), "pool not exist");
         registry[baseToken_][quoteToken_] = address(0);
-        uint len = userRegistry[creator_].length;
+        uint256 len = userRegistry[creator_].length;
         for (uint256 i = 0; i < len; ++i) {
             if (userRegistry[creator_][i] == dppCtrlAddress_) {
                 userRegistry[creator_][i] = userRegistry[creator_][len - 1];
@@ -132,15 +132,15 @@ contract DuetDPPFactory is Adminable, Initializable {
     /// @param isOpenTwap_ use twap price or not
     /// @param isOracleEnabled_ use oracle or not
     function createDPPController(
-        address creator_, 
+        address creator_,
         address baseToken_,
         address quoteToken_,
-        uint256 lpFeeRate_, 
-        uint256 k_, 
-        uint256 i_, 
-        address o_, 
-        bool isOpenTwap_, 
-        bool isOracleEnabled_ 
+        uint256 lpFeeRate_,
+        uint256 k_,
+        uint256 i_,
+        address o_,
+        bool isOpenTwap_,
+        bool isOracleEnabled_
     ) external onlyAdmin {
         require(
             registry[baseToken_][quoteToken_] == address(0) && registry[quoteToken_][baseToken_] == address(0),
