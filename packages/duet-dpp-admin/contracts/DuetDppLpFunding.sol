@@ -72,7 +72,10 @@ contract DuetDppLpFunding is DuetDppLp, ReentrancyGuard {
         baseAmount = baseBalance.mul(shareAmount).div(totalShares);
         quoteAmount = quoteBalance.mul(shareAmount).div(totalShares);
 
-        require(baseAmount >= baseMinAmount && quoteAmount >= quoteMinAmount, "Duet Dpp Controller: WITHDRAW_NOT_ENOUGH");
+        require(
+            baseAmount >= baseMinAmount && quoteAmount >= quoteMinAmount,
+            "Duet Dpp Controller: WITHDRAW_NOT_ENOUGH"
+        );
 
         _burn(to, shareAmount);
 
