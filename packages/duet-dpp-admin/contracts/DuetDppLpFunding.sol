@@ -8,6 +8,9 @@ import { SafeMath } from "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import { IDODOV2 } from "./interfaces/IDODOV2.sol";
 import { DuetDppLp } from "./DuetDppLp.sol";
 
+/// @title DppLpFunding
+/// @author So. Lu
+/// @notice For buy lps and sell lps
 contract DuetDppLpFunding is DuetDppLp, ReentrancyGuard {
     using SafeMath for uint256;
     // ============ Events ============
@@ -69,7 +72,7 @@ contract DuetDppLpFunding is DuetDppLp, ReentrancyGuard {
         baseAmount = baseBalance.mul(shareAmount).div(totalShares);
         quoteAmount = quoteBalance.mul(shareAmount).div(totalShares);
 
-        require(baseAmount >= baseMinAmount && quoteAmount >= quoteMinAmount, "WITHDRAW_NOT_ENOUGH");
+        require(baseAmount >= baseMinAmount && quoteAmount >= quoteMinAmount, "Duet Dpp Controller: WITHDRAW_NOT_ENOUGH");
 
         _burn(to, shareAmount);
 

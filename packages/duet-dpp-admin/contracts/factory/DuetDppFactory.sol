@@ -10,6 +10,9 @@ import { IDPPController } from "../interfaces/IDPPController.sol";
 import { IDPPOracleAdmin } from "../interfaces/IDPPOracleAdmin.sol";
 import "../lib/Adminable.sol";
 
+/// @title DppController
+/// @author So. Lu
+/// @notice Use this contract to create controller
 contract DuetDPPFactory is Adminable, Initializable {
     // ============ default ============
 
@@ -62,14 +65,17 @@ contract DuetDPPFactory is Adminable, Initializable {
 
     // ============ Admin Operation Functions ============
 
+    /// @notice change dpp param - dodo maintainer
     function updateDefaultMaintainer(address newMaintainer_) external onlyAdmin {
         dodoDefaultMaintainer = newMaintainer_;
     }
 
+    /// @notice change dpp param - dodo feeModel
     function updateDefaultFeeModel(address newFeeModel_) external onlyAdmin {
         dodoDefautMtFeeRateModel = newFeeModel_;
     }
 
+    /// @notice change dpp param - dodo approve
     function updateDodoApprove(address newDodoApprove_) external onlyAdmin {
         dodoApproveProxy = newDodoApprove_;
     }
@@ -92,8 +98,9 @@ contract DuetDPPFactory is Adminable, Initializable {
         address dppCtrlAddress_,
         address creator_
     ) external onlyAdmin {
+        require(registry[baseToken_][quoteToken_] != address(0), "pool not exist");
         registry[baseToken_][quoteToken_] = address(0);
-        uint256 len = userRegistry[creator_].length;
+        uint len = userRegistry[creator_].length;
         for (uint256 i = 0; i < len; ++i) {
             if (userRegistry[creator_][i] == dppCtrlAddress_) {
                 userRegistry[creator_][i] = userRegistry[creator_][len - 1];
@@ -114,16 +121,26 @@ contract DuetDPPFactory is Adminable, Initializable {
         newDppAdminModel = ICloneFactory(CLONE_FACTORY).clone(dppAdminTemplate);
     }
 
+    /// @notice create dpp Controller
+    /// @param creator_ dpp controller's admin and dppAdmin's operator
+    /// @param baseToken_ basetoken address
+    /// @param quoteToken_ quotetoken address
+    /// @param lpFeeRate_ lp fee rate, unit is 10**18, range in [0, 10**18]
+    /// @param k_ a param for swap curve, limit in [0，10**18], unit is  10**18，0 is stable price curve，10**18 is bonding curve like uni
+    /// @param i_ base to quote price, decimals 18 - baseTokenDecimals+ quoteTokenDecimals. If use oracle, i set here wouldn't be used.
+    /// @param o_ oracle address
+    /// @param isOpenTwap_ use twap price or not
+    /// @param isOracleEnabled_ use oracle or not
     function createDPPController(
-        address creator_, // dpp controller's admin and dppAdmin's operator
+        address creator_, 
         address baseToken_,
         address quoteToken_,
-        uint256 lpFeeRate_, // 单位是10**18，范围是[0,10**18] ，代表的是交易手续费
-        uint256 k_, // adjust curve's type, limit in [0，10**18], 单位是 10**18，代表价格曲线波动系数 0是恒定价格卖币，10**18是类UNI的bonding curve
-        uint256 i_, // 代表的是base 对 quote的价格比例.decimals 18 - baseTokenDecimals+ quoteTokenDecimals. If use oracle, i set here wouldn't be used.
-        address o_, // oracle address
-        bool isOpenTwap_, // use twap price or not
-        bool isOracleEnabled_ // use oracle or not
+        uint256 lpFeeRate_, 
+        uint256 k_, 
+        uint256 i_, 
+        address o_, 
+        bool isOpenTwap_, 
+        bool isOracleEnabled_ 
     ) external onlyAdmin {
         require(
             registry[baseToken_][quoteToken_] == address(0) && registry[quoteToken_][baseToken_] == address(0),
@@ -152,17 +169,10 @@ contract DuetDPPFactory is Adminable, Initializable {
 
             IDPPOracleAdmin(dppAdminModel).init(
                 dppController, // owner
-<<<<<<< HEAD
                 dppAddress,
                 dppController, // del dpp admin's operator
                 dodoApproveProxy
             );
-=======
-                dppAddress, 
-                dppController, // del dpp admin's operator
-                dodoApproveProxy
-            ); 
->>>>>>> 8704504 (feat(dpp-admin):add del pool func and fix operator&oracle)
         }
 
         registry[baseToken_][quoteToken_] = dppController;
