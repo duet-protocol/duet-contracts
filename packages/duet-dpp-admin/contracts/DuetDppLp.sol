@@ -8,6 +8,9 @@ import { SafeMath } from "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import { DecimalMath } from "./lib/DecimalMath.sol";
 import { DuetDppStorage } from "./DuetDppStorage.sol";
 
+/// @title DppLp
+/// @author So. Lu
+/// @notice lp token's method, the same with erc20 tokens
 contract DuetDppLp is DuetDppStorage {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;

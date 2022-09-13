@@ -3,6 +3,9 @@ pragma solidity 0.8.9;
 
 import { IERC20Metadata } from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 
+/// @title DppStorage
+/// @author So. Lu
+/// @notice record dpp state
 contract DuetDppStorage {
     // ============ pool info ===============
     address public _DPP_ADDRESS_;

@@ -16,6 +16,9 @@ import { IOracle } from "./external/interfaces/IOracle.sol";
 
 import { DuetDppLpFunding } from "./DuetDppLpFunding.sol";
 
+/// @title DppController
+/// @author So. Lu
+/// @notice Use this contract to control dpp state(onlyAdmin), withdraw and deposit lps
 contract DuetDppController is Adminable, DuetDppLpFunding {
     using SafeMath for uint256;
     using UniversalERC20 for IERC20Metadata;
@@ -24,11 +27,10 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
     address public _WETH_;
     bool flagInit = false;
 
-    /** 主要用于frontrun保护，当项目方发起交易，修改池子参数时，可能会造成池子的价格改变，
-     * 这时候机器人可能会frontrun套利，因此这两个参数设定后，
-     * 当执行时池子现存的base，quote的数量小于传入的值，reset交易会revert，防止被套利 **/
-    uint256 minBaseReserve = 0;
-    uint256 minQuoteReserve = 0;
+    /// minBaseReserve for frontrun protection, reset function default param, no use
+    /// minQuoteReserve for frontrun protection, reset function default param, no use
+    uint256 public minBaseReserve = 0;
+    uint256 public minQuoteReserve = 0;
 
     modifier judgeExpired(uint256 deadLine) {
         require(deadLine >= block.timestamp, "Duet Dpp Controller: EXPIRED");
@@ -88,6 +90,11 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
     }
 
     // ========= change DPP Oracle and Parameters , onlyAdmin ==========
+
+    /// @notice change price I
+    /// @param newI new price I of dpp pool
+    /// @param minBaseReserve_ for frontrun protection,
+    /// @param minQuoteReserve_ for frontrun protection
     function tunePrice(
         uint256 newI,
         uint256 minBaseReserve_,
@@ -98,6 +105,12 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
         return true;
     }
 
+    /// @notice change params for dpp pool
+    /// @param newLpFeeRate lp fee rate for dpp pool
+    /// @param newI new price I of dpp pool
+    /// @param newK a param for swap curve, limit in [0，10**18], unit is  10**18，0 is stable price curve，10**18 is bonding curve like uni
+    /// @param minBaseReserve_ for frontrun protection,
+    /// @param minQuoteReserve_ for frontrun protection
     function tuneParameters(
         uint256 newLpFeeRate,
         uint256 newI,
@@ -116,6 +129,7 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
         return true;
     }
 
+    /// @notice change oracle address
     function changeOracle(address newOracle) external onlyAdmin {
         require(IOracle(newOracle).prices(address(_BASE_TOKEN_)) > 0, "Duet Dpp Controller: invaild oracle price");
         IDPPOracleAdmin(_DPP_ADMIN_ADDRESS_).changeOracle(newOracle);
@@ -127,11 +141,18 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
         IDPPOracleAdmin(_DPP_ADMIN_ADDRESS_).enableOracle();
     }
 
+    /// @notice disable oracle and set new I
     function disableOracle(uint256 newI) external onlyAdmin {
         require(newI > 0, "Duet Dpp Controller: invaild new I");
         IDPPOracleAdmin(_DPP_ADMIN_ADDRESS_).disableOracle(newI);
     }
 
+    /// @notice use for freeze dppAdmin to change params, while swap is normal
+    function setFreezeTimestamp(uint256 timestamp_) external onlyAdmin {
+        IDPPOracleAdmin(_DPP_ADMIN_ADDRESS_).setFreezeTimestamp(timestamp_);
+    }
+
+    /// @notice change default minBaseReserve and minQuoteReserve
     function changeMinRes(uint256 newBaseR_, uint256 newQuoteR_) external onlyAdmin {
         minBaseReserve = newBaseR_;
         minQuoteReserve = newQuoteR_;
@@ -139,12 +160,19 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
 
     // =========== deal with LP ===============
 
+    /// @notice add dpp liquidity
+    /// @param baseInAmount users declare adding base amount
+    /// @param quoteInAmount users declare adding quote amount
+    /// @param baseMinAmount slippage protection, baseInAmount *(1 - slippage)
+    /// @param quoteMinAmount slippage protection, quoteInAmount *(1 - slippage)
+    /// @param flag describe token type, 0 - ERC20, 1 - baseInETH, 2 - quoteInETH
+    /// @param deadLine time limit
     function addDuetDppLiquidity(
         uint256 baseInAmount,
         uint256 quoteInAmount,
         uint256 baseMinAmount,
         uint256 quoteMinAmount,
-        uint8 flag, // 0 - ERC20, 1 - baseInETH, 2 - quoteInETH
+        uint8 flag,
         uint256 deadLine
     )
         external
@@ -193,11 +221,17 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
         }
     }
 
+    /// @notice remove dpp liquidity
+    /// @param shareAmount users withdraw lp amount
+    /// @param baseMinAmount slippage protection, baseOutAmount *(1 - slippage)
+    /// @param quoteMinAmount slippage protection, quoteOutAmount *(1 - slippage)
+    /// @param flag describe token type, 0 - ERC20, 3 - baseOutETH, 4 - quoteOutETH
+    /// @param deadLine time limit
     function removeDuetDppLiquidity(
         uint256 shareAmount,
         uint256 baseMinAmount,
         uint256 quoteMinAmount,
-        uint8 flag, // 0 - ERC20, 1 - baseInETH, 2 - quoteInETH, 3 - baseOutETH, 4 - quoteOutETH
+        uint8 flag, 
         uint256 deadLine
     )
         external
@@ -220,8 +254,8 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
                 _K_,
                 baseOutAmount,
                 quoteOutAmount,
-                minBaseReserve, //minBaseReserve,
-                minQuoteReserve //minQuoteReserve
+                minBaseReserve, 
+                minQuoteReserve 
             ),
             "Duet Dpp Controller: Reset Failed"
         );
@@ -289,6 +323,7 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
         }
     }
 
+    /// @notice enter baseInAmount cal outAmount
     function recommendQuoteInAmount(uint256 baseInAmount_)
         external
         view
@@ -297,6 +332,7 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
         return _calRecommendAmounts(baseInAmount_, 0, 0);
     }
 
+    /// @notice enter quoteInAmount cal outBaseAmount
     function recommendBaseInAmount(uint256 quoteInAmount_)
         external
         view
@@ -305,6 +341,7 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
         return _calRecommendAmounts(0, quoteInAmount_, 1);
     }
 
+    /// @notice enter lp amount  cal baseAmount and quoteAmount
     function recommendBaseAndQuote(uint256 shareAmount_)
         external
         view

@@ -48,4 +48,6 @@ interface IDPPOracleAdmin {
     function enableOracle() external;
 
     function disableOracle(uint256 newI) external;
+
+    function setFreezeTimestamp(uint256 timestamp) external;
 }
