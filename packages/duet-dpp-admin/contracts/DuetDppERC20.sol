@@ -11,7 +11,7 @@ import { DuetDppStorage } from "./DuetDppStorage.sol";
 /// @title DppLp
 /// @author So. Lu
 /// @notice lp token's method, the same with erc20 tokens
-contract DuetDppLp is DuetDppStorage {
+contract DuetDppERC20 is DuetDppStorage {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
@@ -126,7 +126,7 @@ contract DuetDppLp is DuetDppStorage {
         bytes32 r,
         bytes32 s
     ) external {
-        require(deadline >= block.timestamp, "DODO_DVM_LP: EXPIRED");
+        require(deadline >= block.timestamp, "Duet_LP: EXPIRED");
         bytes32 digest = keccak256(
             abi.encodePacked(
                 "\x19\x01",
@@ -135,7 +135,7 @@ contract DuetDppLp is DuetDppStorage {
             )
         );
         address recoveredAddress = ecrecover(digest, v, r, s);
-        require(recoveredAddress != address(0) && recoveredAddress == owner, "DODO_DVM_LP: INVALID_SIGNATURE");
+        require(recoveredAddress != address(0) && recoveredAddress == owner, "Duet_LP: INVALID_SIGNATURE");
         _approve(owner, spender, value);
     }
 }
