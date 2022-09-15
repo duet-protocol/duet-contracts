@@ -6,12 +6,12 @@ import { DecimalMath } from "./lib/DecimalMath.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import { SafeMath } from "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import { IDODOV2 } from "./interfaces/IDODOV2.sol";
-import { DuetDppLp } from "./DuetDppLp.sol";
+import { DuetDppERC20 } from "./DuetDppERC20.sol";
 
 /// @title DppLpFunding
 /// @author So. Lu
 /// @notice For buy lps and sell lps
-contract DuetDppLpFunding is DuetDppLp, ReentrancyGuard {
+contract DuetDppLpFunding is DuetDppERC20, ReentrancyGuard {
     using SafeMath for uint256;
     // ============ Events ============
 
