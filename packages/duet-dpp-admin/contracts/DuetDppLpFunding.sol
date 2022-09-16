@@ -13,6 +13,8 @@ import { DuetDppERC20 } from "./DuetDppERC20.sol";
 /// @notice For buy lps and sell lps
 contract DuetDppLpFunding is DuetDppERC20, ReentrancyGuard {
     using SafeMath for uint256;
+
+    uint256 public constant MINIMUM_SUPPLY = 10**3 + 1;
     // ============ Events ============
 
     event BuyShares(address to, uint256 increaseShares, uint256 totalShares);
@@ -43,7 +45,8 @@ contract DuetDppLpFunding is DuetDppERC20, ReentrancyGuard {
         if (totalSupply == 0) {
             // case 1. initial supply
             require(baseBalance >= 10**3, "INSUFFICIENT_LIQUIDITY_MINED");
-            shares = baseBalance; // 以免出现balance很大但shares很小的情况
+            _mint(address(0), MINIMUM_SUPPLY);
+            shares = baseBalance.sub(MINIMUM_SUPPLY); // 以免出现balance很大但shares很小的情况
         } else if (baseReserve > 0 && quoteReserve == 0) {
             // case 2. supply when quote reserve is 0
             shares = baseInput.mul(totalSupply).div(baseReserve);
@@ -65,7 +68,7 @@ contract DuetDppLpFunding is DuetDppERC20, ReentrancyGuard {
         uint256 baseMinAmount,
         uint256 quoteMinAmount
     ) internal returns (uint256 baseAmount, uint256 quoteAmount) {
-        require(shareAmount <= _SHARES_[to], "DLP_NOT_ENOUGH");
+        require(shareAmount <= _SHARES_[to], "Duet_LP_NOT_ENOUGH");
         (uint256 baseBalance, uint256 quoteBalance) = IDODOV2(_DPP_ADDRESS_).getVaultReserve();
         uint256 totalShares = totalSupply;
 
