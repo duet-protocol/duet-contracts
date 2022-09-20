@@ -10,6 +10,7 @@ interface IDPPController {
     ) external;
 
     function _BASE_TOKEN_() external view returns (address base);
+
     function _QUOTE_TOKEN_() external view returns (address quote);
 
     function recommendBaseAndQuote(uint256 shareAmount_)

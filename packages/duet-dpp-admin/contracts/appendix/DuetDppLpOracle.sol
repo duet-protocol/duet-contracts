@@ -44,12 +44,12 @@ contract DuetDppLpOracle is IUSDOracle, Initializable, OwnableUpgradeable {
     }
 
     // get latest price
-    // warn!: high risk 
+    // warn!: high risk
     function getPrice(address _token) external view override returns (uint256 price) {
         require(_AVAILABLE_, "duet lp oracle: high risk");
 
         CtrlInfo memory curCtrl = getCtrlInfo(_token);
-        (uint256 baseOut, uint256 quoteOut) = curCtrl.controller.recommendBaseAndQuote(10 ** curCtrl.baseTokenDecimals);
+        (uint256 baseOut, uint256 quoteOut) = curCtrl.controller.recommendBaseAndQuote(10**curCtrl.baseTokenDecimals);
         (, int256 basePrice, , , ) = aggregators[curCtrl.baseToken].latestRoundData();
         (, int256 quotePrice, , , ) = aggregators[curCtrl.quoteToken].latestRoundData();
         require(basePrice >= 0 && quotePrice >= 0, "Negative Price!");
@@ -57,14 +57,14 @@ contract DuetDppLpOracle is IUSDOracle, Initializable, OwnableUpgradeable {
         // base-quote decimal correct
         // ctrl-lp is base decimals, just need to correct quote decimals
         uint256 priceWithDecimal;
-        if(curCtrl.baseTokenDecimals - curCtrl.quoteTokenDecimals > 0) {
-            uint correctDecimal = curCtrl.baseTokenDecimals - curCtrl.quoteTokenDecimals;
-            priceWithDecimal = baseOut * uint256(basePrice) + quoteOut * uint256(quotePrice) * (10 ** correctDecimal);
-        } else if(curCtrl.baseTokenDecimals - curCtrl.quoteTokenDecimals == 0) {
+        if (curCtrl.baseTokenDecimals - curCtrl.quoteTokenDecimals > 0) {
+            uint256 correctDecimal = curCtrl.baseTokenDecimals - curCtrl.quoteTokenDecimals;
+            priceWithDecimal = baseOut * uint256(basePrice) + quoteOut * uint256(quotePrice) * (10**correctDecimal);
+        } else if (curCtrl.baseTokenDecimals - curCtrl.quoteTokenDecimals == 0) {
             priceWithDecimal = baseOut * uint256(basePrice) + quoteOut * uint256(quotePrice);
-        } else if(curCtrl.baseTokenDecimals - curCtrl.quoteTokenDecimals < 0 ) {
-            uint correctDecimal = curCtrl.quoteTokenDecimals - curCtrl.baseTokenDecimals;
-            priceWithDecimal = baseOut * uint256(basePrice) + quoteOut * uint256(quotePrice) / (10 ** correctDecimal);
+        } else if (curCtrl.baseTokenDecimals - curCtrl.quoteTokenDecimals < 0) {
+            uint256 correctDecimal = curCtrl.quoteTokenDecimals - curCtrl.baseTokenDecimals;
+            priceWithDecimal = baseOut * uint256(basePrice) + (quoteOut * uint256(quotePrice)) / (10**correctDecimal);
         }
 
         return priceWithDecimal / (10**curCtrl.baseTokenDecimals);
