@@ -25,15 +25,11 @@ export enum TemplateNames {
 
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { deployments, getNamedAccounts } = hre as unknown as HardhatDeployRuntimeEnvironment
-  const { deploy, getOrNull, read, execute } = deployments
-
-  const networkName = useNetworkName()
-
-  if (networkName === 'bsc') return
+  const { deploy, getOrNull, execute } = deployments
 
   const { deployer } = await getNamedAccounts()
 
-  const cloneFactory = await advancedDeploy(
+  await advancedDeploy(
     {
       hre,
       logger,
