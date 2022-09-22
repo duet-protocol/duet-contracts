@@ -65,7 +65,7 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
         _updateDppInfo();
 
         string memory connect = "-";
-        string memory suffix = "DuetLP_";
+        string memory suffix = "DuetLP";
 
         name = string(abi.encodePacked(suffix, _BASE_TOKEN_.symbol(), connect, _QUOTE_TOKEN_.symbol()));
         symbol = "Duet-LP";
@@ -92,7 +92,7 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
     // ========= change DPP Oracle and Parameters , onlyAdmin ==========
 
     /// @notice change price I
-    /// @param newI new price I of dpp pool
+    /// @param newI new price I of dpp pool, unit is 10 ** [18+ quote - base]
     /// @param minBaseReserve_ for frontrun protection,
     /// @param minQuoteReserve_ for frontrun protection
     function tunePrice(
@@ -106,8 +106,8 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
     }
 
     /// @notice change params for dpp pool
-    /// @param newLpFeeRate lp fee rate for dpp pool
-    /// @param newI new price I of dpp pool
+    /// @param newLpFeeRate lp fee rate for dpp pool, unit is 10**18, range in [0, 10**18],eg 3,00000,00000,00000 = 0.003 = 0.3%
+    /// @param newI new price I of dpp pool, unit is 10 ** [18+ quote - base]
     /// @param newK a param for swap curve, limit in [0，10**18], unit is  10**18，0 is stable price curve，10**18 is bonding curve like uni
     /// @param minBaseReserve_ for frontrun protection,
     /// @param minQuoteReserve_ for frontrun protection
@@ -185,7 +185,7 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
             uint256 quoteAdjustedInAmount
         )
     {
-        (baseAdjustedInAmount, quoteAdjustedInAmount) = _adjustedAddLiquidityInAmount(baseInAmount, quoteInAmount);
+        (baseAdjustedInAmount, quoteAdjustedInAmount) = _adjustedAddLiquidityInAmount(baseInAmount, quoteInAmount, 3);
         require(
             baseAdjustedInAmount >= baseMinAmount && quoteAdjustedInAmount >= quoteMinAmount,
             "Duet Dpp Controller: deposit amount is not enough"
@@ -265,46 +265,23 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
         shares = shareAmount;
     }
 
-    function _adjustedAddLiquidityInAmount(uint256 baseInAmount, uint256 quoteInAmount)
-        internal
-        view
-        returns (uint256 baseAdjustedInAmount, uint256 quoteAdjustedInAmount)
-    {
-        (uint256 baseReserve, uint256 quoteReserve) = IDODOV2(_DPP_ADDRESS_).getVaultReserve();
-        if (quoteReserve == 0 && baseReserve == 0) {
-            require(msg.sender == admin, "Duet Dpp Controller: Must initialized by admin");
-            // Must initialized by admin
-            baseAdjustedInAmount = baseInAmount;
-            quoteAdjustedInAmount = quoteInAmount;
-        }
-        if (quoteReserve == 0 && baseReserve > 0) {
-            baseAdjustedInAmount = baseInAmount;
-            quoteAdjustedInAmount = 0;
-        }
-        if (quoteReserve > 0 && baseReserve > 0) {
-            uint256 baseIncreaseRatio = DecimalMath.divFloor(baseInAmount, baseReserve);
-            uint256 quoteIncreaseRatio = DecimalMath.divFloor(quoteInAmount, quoteReserve);
-            if (baseIncreaseRatio <= quoteIncreaseRatio) {
-                baseAdjustedInAmount = baseInAmount;
-                quoteAdjustedInAmount = DecimalMath.mulFloor(quoteReserve, baseIncreaseRatio);
-            } else {
-                quoteAdjustedInAmount = quoteInAmount;
-                baseAdjustedInAmount = DecimalMath.mulFloor(baseReserve, quoteIncreaseRatio);
-            }
-        }
-    }
-
-    function _calRecommendAmounts(
+    function _adjustedAddLiquidityInAmount(
         uint256 baseInAmount,
         uint256 quoteInAmount,
-        uint8 flag // flag=0 is baseIn fixed, flag=1 is quoteIn fixed
+        uint8 flag // flag=0 is baseIn fixed, flag=1 is quoteIn fixed， flag = 3 is naturally compare
     ) internal view returns (uint256 baseAdjustedInAmount, uint256 quoteAdjustedInAmount) {
         (uint256 baseReserve, uint256 quoteReserve) = IDODOV2(_DPP_ADDRESS_).getVaultReserve();
         if (quoteReserve == 0 && baseReserve == 0) {
+            // when initialize, just support query quoteInAmount
             require(msg.sender == admin, "Duet Dpp Controller: Must initialized by admin");
             // Must initialized by admin
             baseAdjustedInAmount = baseInAmount;
-            quoteAdjustedInAmount = quoteInAmount;
+            if (flag != 3) {
+                (uint256 i, , , , , , ) = IDODOV2(_DPP_ADDRESS_).getPMMStateForCall();
+                quoteAdjustedInAmount = DecimalMath.mulFloor(baseInAmount, i);
+            } else {
+                quoteAdjustedInAmount = quoteInAmount;
+            }
         }
         if (quoteReserve == 0 && baseReserve > 0) {
             baseAdjustedInAmount = baseInAmount;
@@ -313,7 +290,7 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
         if (quoteReserve > 0 && baseReserve > 0) {
             uint256 baseIncreaseRatio = DecimalMath.divFloor(baseInAmount, baseReserve);
             uint256 quoteIncreaseRatio = DecimalMath.divFloor(quoteInAmount, quoteReserve);
-            if (flag == 0) {
+            if ((flag == 3 && baseIncreaseRatio <= quoteIncreaseRatio) || flag == 0) {
                 baseAdjustedInAmount = baseInAmount;
                 quoteAdjustedInAmount = DecimalMath.mulFloor(quoteReserve, baseIncreaseRatio);
             } else {
@@ -323,22 +300,22 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
         }
     }
 
-    /// @notice enter baseInAmount cal outAmount
+    /// @notice enter baseInAmount cal outAmount, when initialize, just support query quoteInAmount
     function recommendQuoteInAmount(uint256 baseInAmount_)
         external
         view
         returns (uint256 baseAdjustedInAmount, uint256 quoteAdjustedInAmount)
     {
-        return _calRecommendAmounts(baseInAmount_, 0, 0);
+        return _adjustedAddLiquidityInAmount(baseInAmount_, 0, 0);
     }
 
-    /// @notice enter quoteInAmount cal outBaseAmount
+    /// @notice enter quoteInAmount cal outBaseAmount, when initialize, this function will return 0, just support recommendQuoteInAmount
     function recommendBaseInAmount(uint256 quoteInAmount_)
         external
         view
         returns (uint256 baseAdjustedInAmount, uint256 quoteAdjustedInAmount)
     {
-        return _calRecommendAmounts(0, quoteInAmount_, 1);
+        return _adjustedAddLiquidityInAmount(0, quoteInAmount_, 1);
     }
 
     /// @notice enter lp amount  cal baseAmount and quoteAmount

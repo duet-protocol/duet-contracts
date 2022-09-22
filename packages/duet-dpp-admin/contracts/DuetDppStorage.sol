@@ -12,9 +12,9 @@ contract DuetDppStorage {
     address public _DPP_ADMIN_ADDRESS_;
     IERC20Metadata public _BASE_TOKEN_;
     IERC20Metadata public _QUOTE_TOKEN_;
-    uint64 public _LP_FEE_RATE_;
-    uint128 public _I_;
-    uint64 public _K_;
+    uint64 public _LP_FEE_RATE_; // lp fee rate for dpp pool, unit is 10**18, range in [0, 10**18],eg 3,00000,00000,00000 = 0.003 = 0.3%
+    uint128 public _I_; // base to quote price, decimals 18 - baseTokenDecimals+ quoteTokenDecimals. If use oracle, i set here wouldn't be used.
+    uint64 public _K_; // a param for swap curve, limit in [0，10**18], unit is  10**18，0 is stable price curve，10**18 is bonding curve like uni
 
     // ============ Shares (ERC20) ============
 
