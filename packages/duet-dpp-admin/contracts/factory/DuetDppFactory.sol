@@ -125,7 +125,7 @@ contract DuetDPPFactory is Adminable, Initializable {
     /// @param creator_ dpp controller's admin and dppAdmin's operator
     /// @param baseToken_ basetoken address
     /// @param quoteToken_ quotetoken address
-    /// @param lpFeeRate_ lp fee rate, unit is 10**18, range in [0, 10**18]
+    /// @param lpFeeRate_ lp fee rate, unit is 10**18, range in [0, 10**18], eg 3,00000,00000,00000 = 0.003 = 0.3%
     /// @param k_ a param for swap curve, limit in [0，10**18], unit is  10**18，0 is stable price curve，10**18 is bonding curve like uni
     /// @param i_ base to quote price, decimals 18 - baseTokenDecimals+ quoteTokenDecimals. If use oracle, i set here wouldn't be used.
     /// @param o_ oracle address

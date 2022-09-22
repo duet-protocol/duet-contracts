@@ -271,6 +271,4 @@ describe('DppCtrl and DppFactory', () => {
     res = await testDpp.querySellBase(bob.address, parseEther('10'))
     expect(String(res[0])).equal(String(beforeOracleRes), 'wrong price')
   })
-
-  it('del one pool from factory', async () => {})
 })
