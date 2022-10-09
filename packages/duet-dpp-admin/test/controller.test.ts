@@ -141,6 +141,15 @@ describe('DppCtrl and DppFactory', () => {
     await testDppCtrl.connect(maintainer).addDuetDppLiquidity(parseEther('100'), parseEther('100'), 0, 0, 0, deadline)
     expect(String(await testDpp._BASE_RESERVE_())).equal(parseEther('100').toString())
   })
+  /*
+  it('test ratio', async () => {
+    await testDppCtrl.connect(maintainer).addDuetDppLiquidity(parseEther('1900'), parseEther('1900'), 0, 0, 0, deadline)
+
+    await testDppCtrl.connect(bob).addDuetDppLiquidity('1900', '1900', 0, 0, 0, deadline)
+    let bHoldTokens = await testDppCtrl.balanceOf(bob.address)
+    logger.log('check ratio:', bHoldTokens)
+  })
+  */
 
   it('deposit and remove', async () => {
     await testDppCtrl.connect(maintainer).addDuetDppLiquidity(parseEther('100'), parseEther('100'), 0, 0, 0, deadline)
