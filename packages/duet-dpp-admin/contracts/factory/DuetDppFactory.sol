@@ -50,6 +50,7 @@ contract DuetDPPFactory is Adminable, Initializable {
         address dodoApproveProxy_,
         address weth_
     ) public initializer {
+        require(admin_ != address(0), "Duet_dpp_factory: admin is zero address");
         _setAdmin(admin_);
         WETH = weth_;
 
@@ -67,28 +68,34 @@ contract DuetDPPFactory is Adminable, Initializable {
 
     /// @notice change dpp param - dodo maintainer
     function updateDefaultMaintainer(address newMaintainer_) external onlyAdmin {
+        require(newMaintainer_ != address(0), "Duet_dpp_factory: maintainer is zero address");
         dodoDefaultMaintainer = newMaintainer_;
     }
 
     /// @notice change dpp param - dodo feeModel
     function updateDefaultFeeModel(address newFeeModel_) external onlyAdmin {
+        require(newFeeModel_ != address(0), "Duet_dpp_factory: feeModel is zero address");
         dodoDefautMtFeeRateModel = newFeeModel_;
     }
 
     /// @notice change dpp param - dodo approve
     function updateDodoApprove(address newDodoApprove_) external onlyAdmin {
+        require(newDodoApprove_ != address(0), "Duet_dpp_factory: dodoApprove is zero address");
         dodoApproveProxy = newDodoApprove_;
     }
 
     function updateDppTemplate(address newDPPTemplate_) external onlyAdmin {
+        require(newDPPTemplate_ != address(0), "Duet_dpp_factory: dpp template is zero address");
         dppTemplate = newDPPTemplate_;
     }
 
     function updateAdminTemplate(address newDPPAdminTemplate_) external onlyAdmin {
+        require(newDPPAdminTemplate_ != address(0), "Duet_dpp_factory: dpp admin template is zero address");
         dppAdminTemplate = newDPPAdminTemplate_;
     }
 
     function updateControllerTemplate(address newController_) external onlyAdmin {
+        require(newController_ != address(0), "Duet_dpp_factory: dpp ctrl template is zero address");
         dppControllerTemplate = newController_;
     }
 
