@@ -72,11 +72,14 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
         decimals = _BASE_TOKEN_.decimals();
 
         // ============================== Permit ====================================
+        _CACHED_CHAIN_ID = block.chainid;
+        _CACHED_THIS = address(this);
+
         uint256 chainId;
         assembly {
             chainId := chainid()
         }
-        DOMAIN_SEPARATOR = keccak256(
+        bytes32 _DOMAIN_SEPARATOR = keccak256(
             abi.encode(
                 // keccak256('EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)'),
                 0x8b73c3c69bb8fe3d512ecc4cf759cc79239f7b179b0ffacaa9a75d522b39400f,
@@ -86,6 +89,7 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
                 address(this)
             )
         );
+        _CACHED_DOMAIN_SEPARATOR = _DOMAIN_SEPARATOR;
         // ==========================================================================
     }
 
