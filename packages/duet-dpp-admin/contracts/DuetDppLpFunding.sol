@@ -52,10 +52,9 @@ contract DuetDppLpFunding is DuetDppERC20, ReentrancyGuard {
             shares = baseInput.mul(totalSupply).div(baseReserve);
         } else if (baseReserve > 0 && quoteReserve > 0) {
             // case 3. normal case
-            uint256 baseInputRatio = DecimalMath.divFloor(baseInput, baseReserve);
-            uint256 quoteInputRatio = DecimalMath.divFloor(quoteInput, quoteReserve);
-            uint256 mintRatio = quoteInputRatio < baseInputRatio ? quoteInputRatio : baseInputRatio;
-            shares = DecimalMath.mulFloor(totalSupply, mintRatio);
+            uint256 baseInputShare = (baseInput * totalSupply) / baseReserve;
+            uint256 quoteInputShare = (quoteInput * totalSupply) / quoteReserve;
+            shares = baseInputShare < quoteInputShare ? baseInputShare : quoteInputShare;
         }
         _mint(to, shares);
         emit BuyShares(to, shares, _SHARES_[to]);

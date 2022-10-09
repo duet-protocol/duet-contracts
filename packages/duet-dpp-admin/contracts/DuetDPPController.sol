@@ -288,14 +288,14 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
             quoteAdjustedInAmount = 0;
         }
         if (quoteReserve > 0 && baseReserve > 0) {
-            uint256 baseIncreaseRatio = DecimalMath.divFloor(baseInAmount, baseReserve);
-            uint256 quoteIncreaseRatio = DecimalMath.divFloor(quoteInAmount, quoteReserve);
-            if ((flag == 3 && baseIncreaseRatio <= quoteIncreaseRatio) || flag == 0) {
+            uint256 baseInFix = (quoteInAmount * baseReserve) / quoteReserve;
+            uint256 quoteInFix = (baseInAmount * quoteReserve) / baseReserve;
+            if ((flag == 3 && quoteInFix <= quoteInAmount) || flag == 0) {
                 baseAdjustedInAmount = baseInAmount;
-                quoteAdjustedInAmount = DecimalMath.mulFloor(quoteReserve, baseIncreaseRatio);
+                quoteAdjustedInAmount = quoteInFix;
             } else {
                 quoteAdjustedInAmount = quoteInAmount;
-                baseAdjustedInAmount = DecimalMath.mulFloor(baseReserve, quoteIncreaseRatio);
+                baseAdjustedInAmount = baseInFix;
             }
         }
     }
