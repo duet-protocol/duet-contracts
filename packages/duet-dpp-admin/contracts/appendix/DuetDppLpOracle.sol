@@ -57,12 +57,12 @@ contract DuetDppLpOracle is IUSDOracle, Initializable, OwnableUpgradeable {
         // base-quote decimal correct
         // ctrl-lp is base decimals, just need to correct quote decimals
         uint256 priceWithDecimal;
-        if (curCtrl.baseTokenDecimals > curCtrl.quoteTokenDecimals ) {
+        if (curCtrl.baseTokenDecimals > curCtrl.quoteTokenDecimals) {
             uint256 correctDecimal = curCtrl.baseTokenDecimals - curCtrl.quoteTokenDecimals;
             priceWithDecimal = baseOut * uint256(basePrice) + quoteOut * uint256(quotePrice) * (10**correctDecimal);
         } else if (curCtrl.baseTokenDecimals - curCtrl.quoteTokenDecimals == 0) {
             priceWithDecimal = baseOut * uint256(basePrice) + quoteOut * uint256(quotePrice);
-        } else if (curCtrl.baseTokenDecimals < curCtrl.quoteTokenDecimals  ) {
+        } else if (curCtrl.baseTokenDecimals < curCtrl.quoteTokenDecimals) {
             uint256 correctDecimal = curCtrl.quoteTokenDecimals - curCtrl.baseTokenDecimals;
             priceWithDecimal = baseOut * uint256(basePrice) + (quoteOut * uint256(quotePrice)) / (10**correctDecimal);
         }

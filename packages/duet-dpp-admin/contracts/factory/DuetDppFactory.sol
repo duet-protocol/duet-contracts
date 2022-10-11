@@ -40,6 +40,8 @@ contract DuetDPPFactory is Adminable, Initializable {
     event NewDPP(address baseToken, address quoteToken, address creator, address dpp, address dppController);
     event DelDPPCtrl(address baseToken, address quoteToken, address creator, address dppController);
 
+    constructor() initializer {}
+
     function initialize(
         address admin_,
         address cloneFactory_,
