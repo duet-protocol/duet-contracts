@@ -41,8 +41,8 @@ contract DYTokenERC20 is DYTokenBase {
         uint256 shares = 0;
         if (totalSupply() == 0) {
             require(_amount >= 10000, "too small");
-            // permanently lock the first MINIMUM_SUPPLY tokens
-            _mint(address(0), MINIMUM_SUPPLY);
+            // lock the first MINIMUM_SUPPLY tokens to controller
+            _mint(controller, MINIMUM_SUPPLY);
             shares = _amount;
         } else {
             shares = (_amount * totalSupply()) / total;

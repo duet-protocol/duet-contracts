@@ -67,7 +67,7 @@ contract DYTokenNative is DYTokenBase {
         if (totalSupply() == 0) {
             require(_amount >= 10000, "too small");
             // permanently lock the first MINIMUM_SUPPLY tokens
-            _mint(address(0), MINIMUM_SUPPLY);
+            _mint(controller, MINIMUM_SUPPLY);
             shares = _amount;
         } else {
             shares = (_amount * totalSupply()) / total;

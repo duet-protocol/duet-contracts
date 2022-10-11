@@ -59,14 +59,14 @@ module.exports = {
       url: 'http://127.0.0.1:8545',
     },
 
-    testbsc: {
+    bsctest: {
       // https://data-seed-prebsc-1-s1.binance.org:8545/
       // https://data-seed-prebsc-1-s3.binance.org:8545/
       // https://data-seed-prebsc-2-s2.binance.org:8545/
+      allowUnlimitedContractSize: true,
       url: 'https://data-seed-prebsc-2-s2.binance.org:8545/',
       chainId: 97,
-      gasPrice: 20000000000,
-      accounts: [process.env.KEY_BSC_TEST],
+      accounts: [process.env.KEY_BSC_TEST, process.env.KEY_PROXY_ADMIN_BSC_TEST],
     },
 
     bsc: {
