@@ -71,6 +71,8 @@ contract AppController is Constants, IController, OwnableUpgradeable {
     // vault => user => ValidVault
     // set by user
     mapping(address => mapping(address => ValidVault)) public override validVaultsOfUser;
+    VaultState public globalState;
+    address public vaultFactory;
 
     // vault => quota
     mapping(address => uint256) public vaultsBorrowQuota;
@@ -104,7 +106,9 @@ contract AppController is Constants, IController, OwnableUpgradeable {
     );
     event BorrowQuotaChanged(address vault, address operator, uint256 prevQuota, uint256 newQuota);
 
-    constructor() initializer {}
+    event VaultFactoryChanged(address preivousFactory, address newFactory);
+  constructor() initializer {}
+
 
     function initialize() external initializer {
         OwnableUpgradeable.__Ownable_init();
@@ -115,8 +119,22 @@ contract AppController is Constants, IController, OwnableUpgradeable {
         isOpenLiquidate = true;
     }
 
+    function setVaultFactory(address vaultFactory_) external onlyOwner {
+        emit VaultFactoryChanged(vaultFactory, vaultFactory_);
+        vaultFactory = vaultFactory_;
+    }
+
+    function setGlobalState(VaultState memory state_) external onlyOwner {
+        globalState = state_;
+    }
+
+    modifier onlyOwnerOrFactory() {
+        require(owner() == _msgSender() || vaultFactory == _msgSender(), "Ownable: caller is not the owner or factory");
+        _;
+    }
+
     // ======  yield =======
-    function setDYToken(address _underlying, address _dToken) external onlyOwner {
+    function setDYToken(address _underlying, address _dToken) external onlyOwnerOrFactory {
         require(_dToken != address(0), "INVALID_DTOKEN");
         address oldDToken = dyTokens[_underlying];
         dyTokens[_underlying] = _dToken;
@@ -177,7 +195,7 @@ contract AppController is Constants, IController, OwnableUpgradeable {
         address _oracle,
         uint16 _discount,
         uint16 _premium
-    ) external onlyOwner {
+    ) external onlyOwnerOrFactory {
         require(_oracle != address(0), "INVALID_ORACLE");
         require(_discount <= PercentBase, "DISCOUT_TOO_BIG");
         require(_premium >= PercentBase, "PREMIUM_TOO_SMALL");
@@ -227,7 +245,7 @@ contract AppController is Constants, IController, OwnableUpgradeable {
         address _dyToken,
         address _vault,
         uint256 vtype
-    ) external onlyOwner {
+    ) external onlyOwnerOrFactory {
         require(IVault(_vault).isDuetVault(), "INVALIE_VALUT");
         address old = dyTokenVaults[_dyToken];
         dyTokenVaults[_dyToken] = _vault;
@@ -255,12 +273,12 @@ contract AppController is Constants, IController, OwnableUpgradeable {
         set.remove(vault);
     }
 
-    function setVaultStates(address _vault, VaultState memory _state) external onlyOwner {
+    function setVaultStates(address _vault, VaultState memory _state) external onlyOwnerOrFactory {
         vaultStates[_vault] = _state;
         emit SetVaultStates(_vault, _state);
     }
 
-    function initValidVault(address[] memory _vault, ValidVault[] memory _state) external onlyOwner {
+    function initValidVault(address[] memory _vault, ValidVault[] memory _state) external onlyOwnerOrFactory {
         uint256 len1 = _vault.length;
         uint256 len2 = _state.length;
         require(len1 == len2 && len1 != 0, "INVALID_PARAM");
@@ -509,7 +527,10 @@ contract AppController is Constants, IController, OwnableUpgradeable {
         uint256
     ) external view {
         VaultState memory state = vaultStates[_vault];
-        require(state.enabled && state.enableDeposit, "DEPOSITE_DISABLE");
+        require(
+            globalState.enabled && globalState.enableDeposit && state.enabled && state.enableDeposit,
+            "DEPOSITE_DISABLE"
+        );
     }
 
     /**
@@ -524,14 +545,16 @@ contract AppController is Constants, IController, OwnableUpgradeable {
         uint256 _amount
     ) external view {
         VaultState memory state = vaultStates[_vault];
-        require(state.enabled && state.enableBorrow, "BORROW_DISABLED");
-        uint256 borrowQuota = vaultsBorrowQuota[_vault];
-        uint256 borrowedAmount = IERC20(IVault(_vault).underlying()).totalSupply();
         require(
-            borrowQuota == 0 || borrowedAmount + _amount <= borrowQuota,
-            "AppController: amount to borrow exceeds quota"
+            globalState.enabled && globalState.enableBorrow && state.enabled && state.enableBorrow,
+            "BORROW_DISABLED"
         );
-
+      uint256 borrowQuota = vaultsBorrowQuota[_vault];
+      uint256 borrowedAmount = IERC20(IVault(_vault).underlying()).totalSupply();
+      require(
+        borrowQuota == 0 || borrowedAmount + _amount <= borrowQuota,
+        "AppController: amount to borrow exceeds quota"
+      );
         uint256 totalDepositValue = accValidVaultVaule(_user, true);
         uint256 pendingBrorowValue = accPendingValue(
             _user,
@@ -549,7 +572,10 @@ contract AppController is Constants, IController, OwnableUpgradeable {
         uint256 _amount
     ) external view {
         VaultState memory state = vaultStates[_vault];
-        require(state.enabled && state.enableWithdraw, "WITHDRAW_DISABLED");
+        require(
+            globalState.enabled && globalState.enableWithdraw && state.enabled && state.enableWithdraw,
+            "WITHDRAW_DISABLED"
+        );
 
         if (isCollateralizedVault(_vault, _user)) {
             uint256 pendingDepositValidValue = accValidPendingValue(
@@ -569,7 +595,7 @@ contract AppController is Constants, IController, OwnableUpgradeable {
         uint256 _amount
     ) external view {
         VaultState memory state = vaultStates[_vault];
-        require(state.enabled && state.enableRepay, "REPAY_DISABLED");
+        require(globalState.enabled && globalState.enableRepay && state.enabled && state.enableRepay, "REPAY_DISABLED");
     }
 
     function liquidate(address _borrower, bytes calldata data) external {
@@ -769,7 +795,10 @@ contract AppController is Constants, IController, OwnableUpgradeable {
 
     function beforeLiquidate(address _borrower, address _vault) internal view {
         VaultState memory state = vaultStates[_vault];
-        require(state.enabled && state.enableLiquidate, "LIQ_DISABLED");
+        require(
+            globalState.enabled && globalState.enableLiquidate && state.enabled && state.enableLiquidate,
+            "LIQ_DISABLED"
+        );
     }
     //  ======   vault end =======
 }

@@ -2,6 +2,16 @@
 pragma solidity >=0.8.0;
 
 interface IController {
+    // manage Vault state for risk control
+    struct VaultState {
+        bool enabled;
+        bool enableDeposit;
+        bool enableWithdraw;
+        bool enableBorrow;
+        bool enableRepay;
+        bool enableLiquidate;
+    }
+
     function dyTokens(address) external view returns (address);
 
     function getValueConf(address _underlying)
@@ -78,7 +88,26 @@ interface IController {
         Yes
     }
 
+    function initValidVault(address[] memory _vault, ValidVault[] memory _state) external;
+
     function validVaults(address _vault) external view returns (ValidVault);
 
     function validVaultsOfUser(address _vault, address _user) external view returns (ValidVault);
+
+    function setDYToken(address _underlying, address _dToken) external;
+
+    function setVault(
+        address _dyToken,
+        address _vault,
+        uint256 vtype
+    ) external;
+
+    function setOracles(
+        address _underlying,
+        address _oracle,
+        uint16 _discount,
+        uint16 _premium
+    ) external;
+
+    function setVaultStates(address _vault, VaultState memory _state) external;
 }
