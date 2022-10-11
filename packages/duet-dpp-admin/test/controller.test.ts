@@ -1,4 +1,4 @@
-import { ethers, network } from 'hardhat'
+import { ethers, network, upgrades } from 'hardhat'
 import {
   CloneFactory,
   DPPOracle,
@@ -77,7 +77,24 @@ describe('DppCtrl and DppFactory', () => {
 
     dppRouter = await DppRouter.connect(maintainer).deploy(maintainer.address)
 
-    duetDPPFactory = await DuetFac.connect(maintainer).deploy()
+    duetDPPFactory = (await upgrades.deployProxy(
+      DuetFac,
+      [
+        maintainer.address,
+        cloneFac.address,
+        dpp.address,
+        dppAdmin.address,
+        dppCtrl.address,
+        maintainer.address,
+        feeRate.address,
+        maintainer.address, //dodoApproveProxy,
+        weth.address,
+      ],
+      { unsafeAllow: ['constructor'], constructorArgs: [] },
+    )) as DuetDPPFactory
+
+    /*
+    await DuetFac.connect(maintainer).deploy()
     await duetDPPFactory.connect(maintainer).initialize(
       maintainer.address,
       cloneFac.address,
@@ -89,6 +106,7 @@ describe('DppCtrl and DppFactory', () => {
       maintainer.address, //dodoApproveProxy,
       weth.address,
     )
+    */
 
     // create a new dpp pool
     await duetDPPFactory.connect(maintainer).createDPPController(
