@@ -195,8 +195,8 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
             "Duet Dpp Controller: deposit amount is not enough"
         );
 
-        _deposit(msg.sender, _DPP_ADDRESS_, IDODOV2(_DPP_ADDRESS_)._BASE_TOKEN_(), baseAdjustedInAmount, flag == 1);
-        _deposit(msg.sender, _DPP_ADDRESS_, IDODOV2(_DPP_ADDRESS_)._QUOTE_TOKEN_(), quoteAdjustedInAmount, flag == 2);
+        _deposit(msg.sender, _DPP_ADDRESS_, address(_BASE_TOKEN_), baseAdjustedInAmount, flag == 1);
+        _deposit(msg.sender, _DPP_ADDRESS_, address(_QUOTE_TOKEN_), quoteAdjustedInAmount, flag == 2);
 
         //mint lp tokens to users
 
@@ -264,8 +264,8 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
             "Duet Dpp Controller: Reset Failed"
         );
 
-        _withdraw(payable(msg.sender), IDODOV2(_DPP_ADDRESS_)._BASE_TOKEN_(), baseOutAmount, flag == 3);
-        _withdraw(payable(msg.sender), IDODOV2(_DPP_ADDRESS_)._QUOTE_TOKEN_(), quoteOutAmount, flag == 4);
+        _withdraw(payable(msg.sender), address(_BASE_TOKEN_), baseOutAmount, flag == 3);
+        _withdraw(payable(msg.sender), address(_QUOTE_TOKEN_), quoteOutAmount, flag == 4);
         shares = shareAmount;
     }
 
