@@ -189,6 +189,11 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
             uint256 quoteAdjustedInAmount
         )
     {
+        // oracle check
+        address _O_ = IDPPOracle(_DPP_ADDRESS_)._O_();
+        require(IOracle(_O_).prices(address(_BASE_TOKEN_)) > 0, "Duet Dpp Controller: invaild oracle price");
+        require(IDPPOracle(_DPP_ADDRESS_)._IS_ORACLE_ENABLED(), "Duet Dpp Controller: disanble oracle dpp");
+
         (baseAdjustedInAmount, quoteAdjustedInAmount) = _adjustedAddLiquidityInAmount(baseInAmount, quoteInAmount, 3);
         require(
             baseAdjustedInAmount >= baseMinAmount && quoteAdjustedInAmount >= quoteMinAmount,
@@ -247,6 +252,11 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
             uint256 quoteOutAmount
         )
     {
+        // oracle check
+        address _O_ = IDPPOracle(_DPP_ADDRESS_)._O_();
+        require(IOracle(_O_).prices(address(_BASE_TOKEN_)) > 0, "Duet Dpp Controller: invaild oracle price");
+        require(IDPPOracle(_DPP_ADDRESS_)._IS_ORACLE_ENABLED(), "Duet Dpp Controller: disanble oracle dpp");
+
         //mint lp tokens to users
         (baseOutAmount, quoteOutAmount) = _sellShares(shareAmount, msg.sender, baseMinAmount, quoteMinAmount);
         // reset dpp pool

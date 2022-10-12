@@ -1,13 +1,23 @@
 {
   "manifestVersion": "3.2",
   "admin": {
-    "address": "0x68B1D87F95878fE05B998F19b66F4baba5De1aed",
-    "txHash": "0x47220da442d99b9f0767911e84dadbfa38fe8cdafb1ca1c48a29af2073e5d0b9"
+    "address": "0x59b670e9fA9D0A427751Af201D676719a970857b",
+    "txHash": "0x8e22b051e4ff70b2fd6acce4be7798740916ee534b679aa1e90cb0017ac40b29"
   },
   "proxies": [
     {
       "address": "0x3Aa5ebB10DC797CAC828524e59A333d0A371443c",
       "txHash": "0x58c0d24c98a4358e5c3e882f9275f3b6de08cd92787a94643873313bdfced3ee",
+      "kind": "transparent"
+    },
+    {
+      "address": "0xc6e7DF5E7b4f2A278906862b61205850344D4e7d",
+      "txHash": "0xd56c7712baf8756248548adabe845dee3c9fd6a88ae81f89ff0d80a9cdcee2b0",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x4ed7c70F96B99c776995fB64377f0d4aB3B0e1C1",
+      "txHash": "0x073a5fa6a89532b642d9525d581c2e4d2432d0eeeb8be878bd405608f8c41840",
       "kind": "transparent"
     }
   ],
@@ -121,6 +131,292 @@
             "type": "t_mapping(t_address,t_array(t_address)dyn_storage)",
             "contract": "DuetDPPFactory",
             "src": "contracts/factory/DuetDppFactory.sol:36"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_address)dyn_storage": {
+            "label": "address[]",
+            "numberOfBytes": "32"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_mapping(t_address,t_address)": {
+            "label": "mapping(address => address)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_array(t_address)dyn_storage)": {
+            "label": "mapping(address => address[])",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_mapping(t_address,t_address))": {
+            "label": "mapping(address => mapping(address => address))",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        }
+      }
+    },
+    "e88659c0afd8e191ade1dd115952791ccfc6ae27c8f25597470fd605e7edac45": {
+      "address": "0x68B1D87F95878fE05B998F19b66F4baba5De1aed",
+      "txHash": "0x0a89b0dae17e6161ceacf8ebf7f6c1a7d1ed866847be6cf0f7add9fc0b79c40c",
+      "layout": {
+        "storage": [
+          {
+            "label": "admin",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_address",
+            "contract": "Adminable",
+            "src": "contracts/lib/Adminable.sol:7"
+          },
+          {
+            "label": "_initialized",
+            "offset": 20,
+            "slot": "0",
+            "type": "t_uint8",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:62",
+            "retypedFrom": "bool"
+          },
+          {
+            "label": "_initializing",
+            "offset": 21,
+            "slot": "0",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:67"
+          },
+          {
+            "label": "CLONE_FACTORY",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_address",
+            "contract": "DuetDPPFactory",
+            "src": "contracts/factory/DuetDppFactory.sol:19"
+          },
+          {
+            "label": "WETH",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_address",
+            "contract": "DuetDPPFactory",
+            "src": "contracts/factory/DuetDppFactory.sol:20"
+          },
+          {
+            "label": "dodoDefautMtFeeRateModel",
+            "offset": 0,
+            "slot": "3",
+            "type": "t_address",
+            "contract": "DuetDPPFactory",
+            "src": "contracts/factory/DuetDppFactory.sol:21"
+          },
+          {
+            "label": "dodoApproveProxy",
+            "offset": 0,
+            "slot": "4",
+            "type": "t_address",
+            "contract": "DuetDPPFactory",
+            "src": "contracts/factory/DuetDppFactory.sol:22"
+          },
+          {
+            "label": "dodoDefaultMaintainer",
+            "offset": 0,
+            "slot": "5",
+            "type": "t_address",
+            "contract": "DuetDPPFactory",
+            "src": "contracts/factory/DuetDppFactory.sol:23"
+          },
+          {
+            "label": "dppTemplate",
+            "offset": 0,
+            "slot": "6",
+            "type": "t_address",
+            "contract": "DuetDPPFactory",
+            "src": "contracts/factory/DuetDppFactory.sol:27"
+          },
+          {
+            "label": "dppAdminTemplate",
+            "offset": 0,
+            "slot": "7",
+            "type": "t_address",
+            "contract": "DuetDPPFactory",
+            "src": "contracts/factory/DuetDppFactory.sol:28"
+          },
+          {
+            "label": "dppControllerTemplate",
+            "offset": 0,
+            "slot": "8",
+            "type": "t_address",
+            "contract": "DuetDPPFactory",
+            "src": "contracts/factory/DuetDppFactory.sol:29"
+          },
+          {
+            "label": "registry",
+            "offset": 0,
+            "slot": "9",
+            "type": "t_mapping(t_address,t_mapping(t_address,t_address))",
+            "contract": "DuetDPPFactory",
+            "src": "contracts/factory/DuetDppFactory.sol:34"
+          },
+          {
+            "label": "userRegistry",
+            "offset": 0,
+            "slot": "10",
+            "type": "t_mapping(t_address,t_array(t_address)dyn_storage)",
+            "contract": "DuetDPPFactory",
+            "src": "contracts/factory/DuetDppFactory.sol:36"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_address)dyn_storage": {
+            "label": "address[]",
+            "numberOfBytes": "32"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_mapping(t_address,t_address)": {
+            "label": "mapping(address => address)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_array(t_address)dyn_storage)": {
+            "label": "mapping(address => address[])",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_mapping(t_address,t_address))": {
+            "label": "mapping(address => mapping(address => address))",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        }
+      }
+    },
+    "f3c6a44a090b9e24764190b12ebd467103e6ca9838cc27e12717c11676f621f1": {
+      "address": "0xc6e7DF5E7b4f2A278906862b61205850344D4e7d",
+      "txHash": "0x2b9ca0007c75c785cb535cbd198f4f9ebecb02864bf44a3efbf31c3f96dec839",
+      "layout": {
+        "storage": [
+          {
+            "label": "admin",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_address",
+            "contract": "Adminable",
+            "src": "contracts/lib/Adminable.sol:7"
+          },
+          {
+            "label": "_initialized",
+            "offset": 20,
+            "slot": "0",
+            "type": "t_uint8",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:62",
+            "retypedFrom": "bool"
+          },
+          {
+            "label": "_initializing",
+            "offset": 21,
+            "slot": "0",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:67"
+          },
+          {
+            "label": "CLONE_FACTORY",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_address",
+            "contract": "DuetDPPFactory",
+            "src": "contracts/factory/DuetDppFactory.sol:20"
+          },
+          {
+            "label": "WETH",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_address",
+            "contract": "DuetDPPFactory",
+            "src": "contracts/factory/DuetDppFactory.sol:21"
+          },
+          {
+            "label": "dodoDefautMtFeeRateModel",
+            "offset": 0,
+            "slot": "3",
+            "type": "t_address",
+            "contract": "DuetDPPFactory",
+            "src": "contracts/factory/DuetDppFactory.sol:22"
+          },
+          {
+            "label": "dodoApproveProxy",
+            "offset": 0,
+            "slot": "4",
+            "type": "t_address",
+            "contract": "DuetDPPFactory",
+            "src": "contracts/factory/DuetDppFactory.sol:23"
+          },
+          {
+            "label": "dodoDefaultMaintainer",
+            "offset": 0,
+            "slot": "5",
+            "type": "t_address",
+            "contract": "DuetDPPFactory",
+            "src": "contracts/factory/DuetDppFactory.sol:24"
+          },
+          {
+            "label": "dppTemplate",
+            "offset": 0,
+            "slot": "6",
+            "type": "t_address",
+            "contract": "DuetDPPFactory",
+            "src": "contracts/factory/DuetDppFactory.sol:28"
+          },
+          {
+            "label": "dppAdminTemplate",
+            "offset": 0,
+            "slot": "7",
+            "type": "t_address",
+            "contract": "DuetDPPFactory",
+            "src": "contracts/factory/DuetDppFactory.sol:29"
+          },
+          {
+            "label": "dppControllerTemplate",
+            "offset": 0,
+            "slot": "8",
+            "type": "t_address",
+            "contract": "DuetDPPFactory",
+            "src": "contracts/factory/DuetDppFactory.sol:30"
+          },
+          {
+            "label": "registry",
+            "offset": 0,
+            "slot": "9",
+            "type": "t_mapping(t_address,t_mapping(t_address,t_address))",
+            "contract": "DuetDPPFactory",
+            "src": "contracts/factory/DuetDppFactory.sol:35"
+          },
+          {
+            "label": "userRegistry",
+            "offset": 0,
+            "slot": "10",
+            "type": "t_mapping(t_address,t_array(t_address)dyn_storage)",
+            "contract": "DuetDPPFactory",
+            "src": "contracts/factory/DuetDppFactory.sol:37"
           }
         ],
         "types": {
