@@ -37,6 +37,7 @@ describe('DppCtrl and DppFactory', () => {
 
   let aToken: MockBEP20
   let bToken: MockBEP20
+  let cToken: MockBEP20
   let weth: WETH9
 
   let startBlockNumber: number
@@ -65,6 +66,8 @@ describe('DppCtrl and DppFactory', () => {
     await bToken.connect(maintainer).mint(maintainer.address, parseEther('10000'))
     await bToken.connect(maintainer).mint(bob.address, parseEther('10000'))
     await bToken.connect(maintainer).mint(carol.address, parseEther('10000'))
+    cToken = await MockBEP20.connect(maintainer).deploy('mocked cToken', 'CCC', maintainer.address)
+    await cToken.connect(maintainer).mint(maintainer.address, parseEther('10000'))
     weth = await weth9.connect(maintainer).deploy()
 
     let dpp: DPPOracle = await DPPOracle.connect(maintainer).deploy()
@@ -74,6 +77,7 @@ describe('DppCtrl and DppFactory', () => {
     let feeRate: FeeRateModel = await FeeRateModel.connect(maintainer).deploy()
     testOracle = await MockOracle.connect(maintainer).deploy()
     await testOracle.connect(maintainer).initialize(maintainer.address)
+    await testOracle.connect(maintainer).setPrice(aToken.address, '239856349999999983992')
 
     dppRouter = await DppRouter.connect(maintainer).deploy(maintainer.address)
 
@@ -118,7 +122,7 @@ describe('DppCtrl and DppFactory', () => {
       '239856349999999983992', //i
       testOracle.address, //o
       false,
-      false,
+      true,
     )
 
     //load dppCtrl and dpp
@@ -158,6 +162,66 @@ describe('DppCtrl and DppFactory', () => {
 
     await testDppCtrl.connect(maintainer).addDuetDppLiquidity(parseEther('100'), parseEther('100'), 0, 0, 0, deadline)
     expect(String(await testDpp._BASE_RESERVE_())).equal(parseEther('100').toString())
+  })
+
+  it.only('test oracle protection', async () => {
+    const MockOracle = await ethers.getContractFactory('MockOracle')
+    let testOracleZero = await MockOracle.connect(maintainer).deploy()
+    await testOracleZero.connect(maintainer).initialize(maintainer.address)
+
+    await expect(
+      duetDPPFactory.connect(maintainer).createDPPController(
+        maintainer.address,
+        aToken.address,
+        cToken.address,
+        '700000000000000', //lpFeeRate
+        '100000000000000', //k
+        '239856349999999983992', //i
+        testOracleZero.address, //o
+        false,
+        true,
+      ),
+    ).revertedWith('Duet Dpp Factory: set invaild oracle')
+
+    await testOracleZero.connect(maintainer).setPrice(aToken.address, '239856349999999983992')
+
+    await duetDPPFactory.connect(maintainer).createDPPController(
+      maintainer.address,
+      aToken.address,
+      cToken.address,
+      '700000000000000', //lpFeeRate
+      '100000000000000', //k
+      '239856349999999983992', //i
+      testOracleZero.address, //o
+      false,
+      false,
+    )
+
+    let dppCtrlAddress = await duetDPPFactory.userRegistry(maintainer.address, 1)
+    const DuetDppCtrl = await ethers.getContractFactory('DuetDppController')
+    let testCtrl2 = await DuetDppCtrl.attach(dppCtrlAddress)
+
+    //approve
+    const approveAmount = '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'
+    await aToken.connect(maintainer).approve(dppCtrlAddress, approveAmount)
+    await cToken.connect(maintainer).approve(dppCtrlAddress, approveAmount)
+
+    // disable oracle liquidity check
+    await expect(
+      testCtrl2.connect(maintainer).addDuetDppLiquidity(parseEther('100'), parseEther('100'), 0, 0, 0, deadline),
+    ).revertedWith('Duet Dpp Controller: disanble oracle dpp')
+
+    await testCtrl2.connect(maintainer).enableOracle()
+    await testOracleZero.connect(maintainer).setPrice(aToken.address, '0')
+
+    await expect(
+      testCtrl2.connect(maintainer).addDuetDppLiquidity(parseEther('100'), parseEther('100'), 0, 0, 0, deadline),
+    ).revertedWith('Duet Dpp Controller: invaild oracle price')
+
+    await testOracleZero.connect(maintainer).setPrice(aToken.address, '239856349999999983992')
+    testCtrl2.connect(maintainer).addDuetDppLiquidity(parseEther('100'), parseEther('100'), 0, 0, 0, deadline)
+    let macToken = await testCtrl2.balanceOf(maintainer.address)
+    logger.log('oracle test mint:', macToken)
   })
   /*
   it('test ratio', async () => {
@@ -270,6 +334,7 @@ describe('DppCtrl and DppFactory', () => {
     let res = await testDpp.querySellBase(bob.address, parseEther('10'))
     let beforeOracleRes = res[0]
 
+    await testOracle.connect(maintainer).setPrice(aToken.address, '0')
     // test enableOracle
     await expect(testDppCtrl.connect(maintainer).enableOracle()).revertedWith(
       'Duet Dpp Controller: invaild oracle price',

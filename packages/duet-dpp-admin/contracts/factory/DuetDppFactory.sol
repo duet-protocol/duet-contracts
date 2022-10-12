@@ -8,6 +8,7 @@ import { ICloneFactory } from "../lib/CloneFactory.sol";
 import { IDPPOracle } from "../interfaces/IDPPOracle.sol";
 import { IDPPController } from "../interfaces/IDPPController.sol";
 import { IDPPOracleAdmin } from "../interfaces/IDPPOracleAdmin.sol";
+import { IOracle } from "../external/interfaces/IOracle.sol";
 import "../lib/Adminable.sol";
 
 /// @title DppController
@@ -177,6 +178,9 @@ contract DuetDPPFactory is Adminable, Initializable {
             registry[baseToken_][quoteToken_] == address(0) && registry[quoteToken_][baseToken_] == address(0),
             "HAVE CREATED"
         );
+        if (isOracleEnabled_) {
+            require(IOracle(o_).prices(address(baseToken_)) > 0, "Duet Dpp Factory: set invaild oracle");
+        }
         address dppAddress;
         address dppController;
         {
