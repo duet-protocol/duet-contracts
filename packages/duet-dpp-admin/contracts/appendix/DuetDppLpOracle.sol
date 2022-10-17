@@ -60,7 +60,7 @@ contract DuetDppLpOracle is IUSDOracle, Initializable, OwnableUpgradeable {
         if (curCtrl.baseTokenDecimals > curCtrl.quoteTokenDecimals) {
             uint256 correctDecimal = curCtrl.baseTokenDecimals - curCtrl.quoteTokenDecimals;
             priceWithDecimal = baseOut * uint256(basePrice) + quoteOut * uint256(quotePrice) * (10**correctDecimal);
-        } else if (curCtrl.baseTokenDecimals - curCtrl.quoteTokenDecimals == 0) {
+        } else if (curCtrl.baseTokenDecimals == curCtrl.quoteTokenDecimals) {
             priceWithDecimal = baseOut * uint256(basePrice) + quoteOut * uint256(quotePrice);
         } else {
             uint256 correctDecimal = curCtrl.quoteTokenDecimals - curCtrl.baseTokenDecimals;
