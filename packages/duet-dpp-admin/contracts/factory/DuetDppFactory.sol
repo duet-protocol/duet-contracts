@@ -33,8 +33,6 @@ contract DuetDPPFactory is Adminable, Initializable {
 
     // base->quote->dppController
     mapping(address => mapping(address => address)) public registry;
-    // registry dppController
-    mapping(address => address[]) public userRegistry;
 
     // ============ Events ============
 
@@ -131,15 +129,6 @@ contract DuetDPPFactory is Adminable, Initializable {
     ) external onlyAdmin {
         require(registry[baseToken_][quoteToken_] != address(0), "pool not exist");
         registry[baseToken_][quoteToken_] = address(0);
-        uint256 len = userRegistry[creator_].length;
-        for (uint256 i = 0; i < len; ++i) {
-            if (userRegistry[creator_][i] == dppCtrlAddress_) {
-                userRegistry[creator_][i] = userRegistry[creator_][len - 1];
-                userRegistry[creator_].pop();
-
-                break;
-            }
-        }
         emit DelDPPCtrl(baseToken_, quoteToken_, creator_, dppCtrlAddress_);
     }
 
@@ -211,7 +200,6 @@ contract DuetDPPFactory is Adminable, Initializable {
         }
 
         registry[baseToken_][quoteToken_] = dppController;
-        userRegistry[creator_].push(dppController);
         emit NewDPP(baseToken_, quoteToken_, creator_, dppAddress, dppController);
     }
 
