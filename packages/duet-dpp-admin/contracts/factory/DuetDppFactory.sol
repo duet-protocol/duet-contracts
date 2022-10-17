@@ -179,7 +179,7 @@ contract DuetDPPFactory is Adminable, Initializable {
             "HAVE CREATED"
         );
         if (isOracleEnabled_) {
-            require(IOracle(o_).prices(address(baseToken_)) > 0, "Duet Dpp Factory: set invaild oracle");
+            require(IOracle(o_).prices(address(baseToken_)) > 0, "Duet Dpp Factory: set invalid oracle");
         }
         address dppAddress;
         address dppController;
