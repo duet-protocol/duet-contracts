@@ -135,13 +135,13 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
 
     /// @notice change oracle address
     function changeOracle(address newOracle) external onlyAdmin {
-        require(IOracle(newOracle).prices(address(_BASE_TOKEN_)) > 0, "Duet Dpp Controller: invaild oracle price");
+        require(IOracle(newOracle).prices(address(_BASE_TOKEN_)) > 0, "Duet Dpp Controller: invalid oracle price");
         IDPPOracleAdmin(_DPP_ADMIN_ADDRESS_).changeOracle(newOracle);
     }
 
     function enableOracle() external onlyAdmin {
         address _O_ = IDPPOracle(_DPP_ADDRESS_)._O_();
-        require(IOracle(_O_).prices(address(_BASE_TOKEN_)) > 0, "Duet Dpp Controller: invaild oracle price");
+        require(IOracle(_O_).prices(address(_BASE_TOKEN_)) > 0, "Duet Dpp Controller: invalid oracle price");
         IDPPOracleAdmin(_DPP_ADMIN_ADDRESS_).enableOracle();
     }
 
@@ -191,8 +191,8 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
     {
         // oracle check
         address _O_ = IDPPOracle(_DPP_ADDRESS_)._O_();
-        require(IOracle(_O_).prices(address(_BASE_TOKEN_)) > 0, "Duet Dpp Controller: invaild oracle price");
-        require(IDPPOracle(_DPP_ADDRESS_)._IS_ORACLE_ENABLED(), "Duet Dpp Controller: disanble oracle dpp");
+        require(IOracle(_O_).prices(address(_BASE_TOKEN_)) > 0, "Duet Dpp Controller: invalid oracle price");
+        require(IDPPOracle(_DPP_ADDRESS_)._IS_ORACLE_ENABLED(), "Duet Dpp Controller: oracle dpp disabled");
 
         (baseAdjustedInAmount, quoteAdjustedInAmount) = _adjustedAddLiquidityInAmount(baseInAmount, quoteInAmount, 3);
         require(
@@ -254,8 +254,8 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
     {
         // oracle check
         address _O_ = IDPPOracle(_DPP_ADDRESS_)._O_();
-        require(IOracle(_O_).prices(address(_BASE_TOKEN_)) > 0, "Duet Dpp Controller: invaild oracle price");
-        require(IDPPOracle(_DPP_ADDRESS_)._IS_ORACLE_ENABLED(), "Duet Dpp Controller: disanble oracle dpp");
+        require(IOracle(_O_).prices(address(_BASE_TOKEN_)) > 0, "Duet Dpp Controller: invalid oracle price");
+        require(IDPPOracle(_DPP_ADDRESS_)._IS_ORACLE_ENABLED(), "Duet Dpp Controller: oracle dpp disabled");
 
         //mint lp tokens to users
         (baseOutAmount, quoteOutAmount) = _sellShares(shareAmount, msg.sender, baseMinAmount, quoteMinAmount);

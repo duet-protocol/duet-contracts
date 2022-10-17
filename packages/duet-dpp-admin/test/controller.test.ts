@@ -209,14 +209,14 @@ describe('DppCtrl and DppFactory', () => {
     // disable oracle liquidity check
     await expect(
       testCtrl2.connect(maintainer).addDuetDppLiquidity(parseEther('100'), parseEther('100'), 0, 0, 0, deadline),
-    ).revertedWith('Duet Dpp Controller: disanble oracle dpp')
+    ).revertedWith('Duet Dpp Controller: oracle dpp disabled')
 
     await testCtrl2.connect(maintainer).enableOracle()
     await testOracleZero.connect(maintainer).setPrice(aToken.address, '0')
 
     await expect(
       testCtrl2.connect(maintainer).addDuetDppLiquidity(parseEther('100'), parseEther('100'), 0, 0, 0, deadline),
-    ).revertedWith('Duet Dpp Controller: invaild oracle price')
+    ).revertedWith('Duet Dpp Controller: invalid oracle price')
 
     await testOracleZero.connect(maintainer).setPrice(aToken.address, '239856349999999983992')
     testCtrl2.connect(maintainer).addDuetDppLiquidity(parseEther('100'), parseEther('100'), 0, 0, 0, deadline)
@@ -337,7 +337,7 @@ describe('DppCtrl and DppFactory', () => {
     await testOracle.connect(maintainer).setPrice(aToken.address, '0')
     // test enableOracle
     await expect(testDppCtrl.connect(maintainer).enableOracle()).revertedWith(
-      'Duet Dpp Controller: invaild oracle price',
+      'Duet Dpp Controller: invalid oracle price',
     )
 
     await testOracle.connect(maintainer).setPrice(aToken.address, '3758563499999999839')
@@ -351,7 +351,7 @@ describe('DppCtrl and DppFactory', () => {
     await testOracle.connect(maintainer).setPrice(aToken.address, '0')
     // test zero oracle
     await expect(testDppCtrl.connect(maintainer).changeOracle(testOracle.address)).revertedWith(
-      'Duet Dpp Controller: invaild oracle price',
+      'Duet Dpp Controller: invalid oracle price',
     )
     // test invalid oracle
     await expect(testDppCtrl.connect(maintainer).changeOracle(testDpp.address)).to.be.revertedWith('')
