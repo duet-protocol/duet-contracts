@@ -42,16 +42,6 @@ contract AppController is Constants, IController, OwnableUpgradeable {
 
     mapping(address => EnumerableSet.AddressSet) internal userJoinedBorrowVaults;
 
-    // manage Vault state for risk control
-    struct VaultState {
-        bool enabled;
-        bool enableDeposit;
-        bool enableWithdraw;
-        bool enableBorrow;
-        bool enableRepay;
-        bool enableLiquidate;
-    }
-
     // Vault => VaultStatus
     mapping(address => VaultState) public vaultStates;
 
@@ -107,8 +97,8 @@ contract AppController is Constants, IController, OwnableUpgradeable {
     event BorrowQuotaChanged(address vault, address operator, uint256 prevQuota, uint256 newQuota);
 
     event VaultFactoryChanged(address preivousFactory, address newFactory);
-  constructor() initializer {}
 
+    constructor() initializer {}
 
     function initialize() external initializer {
         OwnableUpgradeable.__Ownable_init();
@@ -549,12 +539,12 @@ contract AppController is Constants, IController, OwnableUpgradeable {
             globalState.enabled && globalState.enableBorrow && state.enabled && state.enableBorrow,
             "BORROW_DISABLED"
         );
-      uint256 borrowQuota = vaultsBorrowQuota[_vault];
-      uint256 borrowedAmount = IERC20(IVault(_vault).underlying()).totalSupply();
-      require(
-        borrowQuota == 0 || borrowedAmount + _amount <= borrowQuota,
-        "AppController: amount to borrow exceeds quota"
-      );
+        uint256 borrowQuota = vaultsBorrowQuota[_vault];
+        uint256 borrowedAmount = IERC20(IVault(_vault).underlying()).totalSupply();
+        require(
+            borrowQuota == 0 || borrowedAmount + _amount <= borrowQuota,
+            "AppController: amount to borrow exceeds quota"
+        );
         uint256 totalDepositValue = accValidVaultVaule(_user, true);
         uint256 pendingBrorowValue = accPendingValue(
             _user,

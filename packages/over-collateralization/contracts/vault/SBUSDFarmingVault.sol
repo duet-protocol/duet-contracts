@@ -25,6 +25,8 @@ contract SBUSDFarmingVault is DepositVaultBase {
     address public underlyingToken;
     uint256 internal underlyingScale;
 
+    constructor() initializer {}
+
     function initialize(
         address _controller,
         address _feeConf,
@@ -161,7 +163,7 @@ contract SBUSDFarmingVault is DepositVaultBase {
 
     /**
     @notice 取款
-    @dev 提现转给指定的接受者 to 
+    @dev 提现转给指定的接受者 to
     @param amount 提取数量
     @param unpack 是否解包underlying
     @param onlyBUSD 用户withdraw的资产是否只接收BUSD, false表示允许接收BUSD和DUSD两种

@@ -17,22 +17,6 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     args: [],
     log: true,
   })
-  // await execute(
-  //   'AppController',
-  //   {
-  //     ...exeOptions,
-  //     from: deployer,
-  //   },
-  //   'setGlobalState',
-  //   {
-  //     enabled: true,
-  //     enableDeposit: true,
-  //     enableWithdraw: true,
-  //     enableBorrow: true,
-  //     enableRepay: true,
-  //     enableLiquidate: true,
-  //   },
-  // )
   if (!ret.newlyDeployed) {
     return
   }

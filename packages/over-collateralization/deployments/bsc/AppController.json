@@ -484,7 +484,7 @@
             }
           ],
           "indexed": false,
-          "internalType": "struct AppController.VaultState",
+          "internalType": "struct IController.VaultState",
           "name": "state",
           "type": "tuple"
         }
@@ -577,6 +577,25 @@
         }
       ],
       "name": "ValueConfChanged",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "preivousFactory",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "newFactory",
+          "type": "address"
+        }
+      ],
+      "name": "VaultFactoryChanged",
       "type": "event"
     },
     {
@@ -876,6 +895,44 @@
       "type": "function"
     },
     {
+      "inputs": [],
+      "name": "globalState",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "enabled",
+          "type": "bool"
+        },
+        {
+          "internalType": "bool",
+          "name": "enableDeposit",
+          "type": "bool"
+        },
+        {
+          "internalType": "bool",
+          "name": "enableWithdraw",
+          "type": "bool"
+        },
+        {
+          "internalType": "bool",
+          "name": "enableBorrow",
+          "type": "bool"
+        },
+        {
+          "internalType": "bool",
+          "name": "enableRepay",
+          "type": "bool"
+        },
+        {
+          "internalType": "bool",
+          "name": "enableLiquidate",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
       "inputs": [
         {
           "internalType": "address[]",
@@ -1100,6 +1157,51 @@
     {
       "inputs": [
         {
+          "components": [
+            {
+              "internalType": "bool",
+              "name": "enabled",
+              "type": "bool"
+            },
+            {
+              "internalType": "bool",
+              "name": "enableDeposit",
+              "type": "bool"
+            },
+            {
+              "internalType": "bool",
+              "name": "enableWithdraw",
+              "type": "bool"
+            },
+            {
+              "internalType": "bool",
+              "name": "enableBorrow",
+              "type": "bool"
+            },
+            {
+              "internalType": "bool",
+              "name": "enableRepay",
+              "type": "bool"
+            },
+            {
+              "internalType": "bool",
+              "name": "enableLiquidate",
+              "type": "bool"
+            }
+          ],
+          "internalType": "struct IController.VaultState",
+          "name": "state_",
+          "type": "tuple"
+        }
+      ],
+      "name": "setGlobalState",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
           "internalType": "uint256",
           "name": "_liquidateRate",
           "type": "uint256"
@@ -1237,6 +1339,19 @@
       "inputs": [
         {
           "internalType": "address",
+          "name": "vaultFactory_",
+          "type": "address"
+        }
+      ],
+      "name": "setVaultFactory",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
           "name": "_vault",
           "type": "address"
         },
@@ -1273,7 +1388,7 @@
               "type": "bool"
             }
           ],
-          "internalType": "struct AppController.VaultState",
+          "internalType": "struct IController.VaultState",
           "name": "_state",
           "type": "tuple"
         }
@@ -1443,7 +1558,7 @@
               "type": "bool"
             }
           ],
-          "internalType": "struct AppController.VaultState",
+          "internalType": "struct IController.VaultState",
           "name": "state",
           "type": "tuple"
         }
@@ -1625,6 +1740,19 @@
           "internalType": "enum IController.ValidVault",
           "name": "",
           "type": "uint8"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "vaultFactory",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
         }
       ],
       "stateMutability": "view",

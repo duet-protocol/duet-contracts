@@ -170,6 +170,37 @@
       "inputs": [
         {
           "indexed": false,
+          "internalType": "address",
+          "name": "vault",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "prevQuota",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "newQuota",
+          "type": "uint256"
+        }
+      ],
+      "name": "BorrowQuotaChanged",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
           "internalType": "uint256",
           "name": "collateralRate",
           "type": "uint256"
@@ -1290,6 +1321,24 @@
       "inputs": [
         {
           "internalType": "address",
+          "name": "vault_",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "quota_",
+          "type": "uint256"
+        }
+      ],
+      "name": "setVaultBorrowQuota",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
           "name": "vaultFactory_",
           "type": "address"
         }
@@ -1748,6 +1797,25 @@
           "internalType": "bool",
           "name": "enableLiquidate",
           "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "vaultsBorrowQuota",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
         }
       ],
       "stateMutability": "view",
