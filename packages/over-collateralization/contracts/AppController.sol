@@ -72,6 +72,8 @@ contract AppController is Constants, IController, OwnableUpgradeable {
     // set by user
     mapping(address => mapping(address => ValidVault)) public override validVaultsOfUser;
 
+    // vault => quota
+    mapping(address => uint256) public vaultsBorrowQuota;
     // EVENT
     event UnderlyingDTokenChanged(address indexed underlying, address oldDToken, address newDToken);
     event UnderlyingStrategyChanged(address indexed underlying, address oldStrage, address newDToken, uint256 stype);
@@ -100,8 +102,9 @@ contract AppController is Constants, IController, OwnableUpgradeable {
         address targetVault,
         uint256 targetAmount
     );
+    event BorrowQuotaChanged(address vault, address operator, uint256 prevQuota, uint256 newQuota);
 
-    constructor() {}
+    constructor() initializer {}
 
     function initialize() external initializer {
         OwnableUpgradeable.__Ownable_init();
@@ -143,6 +146,11 @@ contract AppController is Constants, IController, OwnableUpgradeable {
     }
 
     // ======  vault  =======
+    function setVaultBorrowQuota(address vault_, uint256 quota_) external onlyOwner {
+        emit BorrowQuotaChanged(vault_, msg.sender, vaultsBorrowQuota[vault_], quota_);
+        vaultsBorrowQuota[vault_] = quota_;
+    }
+
     function setOpenLiquidate(bool _open) external onlyOwner {
         isOpenLiquidate = _open;
         emit OpenLiquidateChanged(_open);
@@ -517,6 +525,12 @@ contract AppController is Constants, IController, OwnableUpgradeable {
     ) external view {
         VaultState memory state = vaultStates[_vault];
         require(state.enabled && state.enableBorrow, "BORROW_DISABLED");
+        uint256 borrowQuota = vaultsBorrowQuota[_vault];
+        uint256 borrowedAmount = IERC20(IVault(_vault).underlying()).totalSupply();
+        require(
+            borrowQuota == 0 || borrowedAmount + _amount <= borrowQuota,
+            "AppController: amount to borrow exceeds quota"
+        );
 
         uint256 totalDepositValue = accValidVaultVaule(_user, true);
         uint256 pendingBrorowValue = accPendingValue(

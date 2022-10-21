@@ -4,6 +4,9 @@ require('@openzeppelin/hardhat-upgrades')
 require('hardhat-abi-exporter')
 require('@typechain/hardhat')
 require('hardhat-deploy')
+const { task } = require('hardhat/config')
+const path = require('path')
+const fs = require('fs')
 
 require('dotenv').config()
 const tenderly = require('@tenderly/hardhat-tenderly')
@@ -124,3 +127,26 @@ module.exports = {
     apiKey: scankey,
   },
 }
+
+task('verify-legacy', 'verify duet legacy contracts', async (taskArgs, hre) => {
+  const contracts = [
+    {
+      file: 'AppController.sol',
+      name: 'AppController',
+      deployment: 'AppController_Implementation.json',
+    },
+  ]
+  const networkName = hre.network.name
+  const deploymentPath = path.resolve(__dirname, 'deployments', networkName)
+  if (!fs.existsSync(deploymentPath)) {
+    throw new Error(`Invalid network '${networkName}'`)
+  }
+  for (const contract of contracts) {
+    const deployment = require(path.resolve(deploymentPath, contract.deployment))
+    try {
+      await hre.run(`verify`, { contract: `contracts/${contract.file}:${contract.name}`, address: deployment.address })
+    } catch (e) {
+      console.error(e)
+    }
+  }
+})

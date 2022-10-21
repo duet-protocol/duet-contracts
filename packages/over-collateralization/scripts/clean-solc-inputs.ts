@@ -21,6 +21,10 @@ for (const network of ['bsc', 'bsctest']) {
   solcInputsInUsed = uniq(solcInputsInUsed)
   logger.info(network, 'solcInputsInUsed', solcInputsInUsed.join(','))
 
+  if (!fs.existsSync(path.resolve(dir, 'solcInputs'))) {
+    logger.info(network, 'skipped dir:', dir, ', as it is empty')
+    continue
+  }
   for (const solcFile of fs.readdirSync(path.resolve(dir, 'solcInputs'))) {
     const hash = solcFile.substring(0, solcFile.length - '.json'.length)
     if (!solcInputsInUsed.includes(hash)) {

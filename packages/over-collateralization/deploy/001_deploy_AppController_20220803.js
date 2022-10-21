@@ -16,7 +16,6 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   const ret = await deploy('AppController_Implementation', {
     from: proxyAdmin,
     contract: 'AppController',
-    skipIfAlreadyDeployed: true,
     args: [],
     log: true,
   })
@@ -34,3 +33,4 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   await execute('AppController', { gasLimit: 300000, from: proxyAdmin }, 'upgradeTo', ret.address)
   console.log('Upgraded AppController to: ', ret.address)
 }
+// npx hardhat verify --contract contracts/AppController.sol:dWTI 0x587Fb3e1C6819fd54e3740C6C4C7832484eF451b --network bsc
