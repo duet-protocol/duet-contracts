@@ -1,5 +1,5 @@
 {
-  "address": "0x8e0d4beF4e13443ddb7Ac24E36B19fe44d70C45E",
+  "address": "0x4A41657DD6b36Ef2376aC7Ee1a5eA50771e385b3",
   "abi": [
     {
       "inputs": [
@@ -21,28 +21,28 @@
       "type": "function"
     }
   ],
-  "transactionHash": "0xf10ebfa594602c40c17b93b50a43b3408f1869cd83c832808057f445f33adf87",
+  "transactionHash": "0x08d98292ad6c1bb31eba9cf3381d981caf9fc3ecfc308410f502406d06092086",
   "receipt": {
     "to": null,
     "from": "0x00d7A6a2F161d3f4971a3d1B071Ef55b284FD3Bf",
-    "contractAddress": "0x8e0d4beF4e13443ddb7Ac24E36B19fe44d70C45E",
-    "transactionIndex": 175,
-    "gasUsed": "111757",
+    "contractAddress": "0x4A41657DD6b36Ef2376aC7Ee1a5eA50771e385b3",
+    "transactionIndex": 40,
+    "gasUsed": "133279",
     "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-    "blockHash": "0xadfe9b55b6ccae491c42abcf4dbb132b1990c011408c2f1203f4229e30ce5718",
-    "transactionHash": "0xf10ebfa594602c40c17b93b50a43b3408f1869cd83c832808057f445f33adf87",
+    "blockHash": "0x495b13d795952b3ec71863513c712e533e1cf4ec076d117d5d7288ad3021f7c2",
+    "transactionHash": "0x08d98292ad6c1bb31eba9cf3381d981caf9fc3ecfc308410f502406d06092086",
     "logs": [],
-    "blockNumber": 21496451,
-    "cumulativeGasUsed": "20643178",
+    "blockNumber": 22364389,
+    "cumulativeGasUsed": "2334688",
     "status": 1,
     "byzantium": true
   },
   "args": [],
   "numDeployments": 1,
-  "solcInputHash": "dcc3fabce80967d9e00b0f08f1a0b4c4",
-  "metadata": "{\"compiler\":{\"version\":\"0.8.9+commit.e5eed63a\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"prototype\",\"type\":\"address\"}],\"name\":\"clone\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"proxy\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/lib/CloneFactory.sol\":\"CloneFactory\"},\"evmVersion\":\"london\",\"libraries\":{\":__CACHE_BREAKER__\":\"0x00000000d41867734bbee4c6863d9255b2b06ac1\"},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"contracts/lib/CloneFactory.sol\":{\"content\":\"/*\\n\\n    Copyright 2020 DODO ZOO.\\n    SPDX-License-Identifier: Apache-2.0\\n\\n*/\\n\\npragma solidity 0.8.9;\\npragma experimental ABIEncoderV2;\\n\\ninterface ICloneFactory {\\n    function clone(address prototype) external returns (address proxy);\\n}\\n\\n// introduction of proxy mode design: https://docs.openzeppelin.com/upgrades/2.8/\\n// minimum implementation of transparent proxy: https://eips.ethereum.org/EIPS/eip-1167\\n\\ncontract CloneFactory is ICloneFactory {\\n    function clone(address prototype) external override returns (address proxy) {\\n        bytes20 targetBytes = bytes20(prototype);\\n        assembly {\\n            let clone := mload(0x40)\\n            mstore(clone, 0x3d602d80600a3d3981f3363d3d373d3d3d363d73000000000000000000000000)\\n            mstore(add(clone, 0x14), targetBytes)\\n            mstore(add(clone, 0x28), 0x5af43d82803e903d91602b57fd5bf30000000000000000000000000000000000)\\n            proxy := create(0, clone, 0x37)\\n        }\\n        return proxy;\\n    }\\n}\\n\",\"keccak256\":\"0xfdc78317ec0e26ba3f439da26cad975ff0c939a7ce86ac3ad8af80485556f104\",\"license\":\"Apache-2.0\"}},\"version\":1}",
-  "bytecode": "0x608060405234801561001057600080fd5b5061010e806100206000396000f3fe6080604052348015600f57600080fd5b506004361060285760003560e01c80638124b78e14602d575b600080fd5b603c603836600460aa565b6058565b6040516001600160a01b03909116815260200160405180910390f35b6000808260601b9050604051733d602d80600a3d3981f3363d3d373d3d3d363d7360601b81528160148201526e5af43d82803e903d91602b57fd5bf360881b60288201526037816000f0949350505050565b60006020828403121560bb57600080fd5b81356001600160a01b038116811460d157600080fd5b939250505056fea2646970667358221220bd782f5ca495ee7e905aef1424360ac2e844f2123c8fe504595789cb45f88dff64736f6c63430008090033",
-  "deployedBytecode": "0x6080604052348015600f57600080fd5b506004361060285760003560e01c80638124b78e14602d575b600080fd5b603c603836600460aa565b6058565b6040516001600160a01b03909116815260200160405180910390f35b6000808260601b9050604051733d602d80600a3d3981f3363d3d373d3d3d363d7360601b81528160148201526e5af43d82803e903d91602b57fd5bf360881b60288201526037816000f0949350505050565b60006020828403121560bb57600080fd5b81356001600160a01b038116811460d157600080fd5b939250505056fea2646970667358221220bd782f5ca495ee7e905aef1424360ac2e844f2123c8fe504595789cb45f88dff64736f6c63430008090033",
+  "solcInputHash": "010d19d2824a92bd25be986df93e8d50",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.9+commit.e5eed63a\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"prototype\",\"type\":\"address\"}],\"name\":\"clone\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"proxy\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/lib/CloneFactory.sol\":\"CloneFactory\"},\"evmVersion\":\"london\",\"libraries\":{\":__CACHE_BREAKER__\":\"0x00000000d41867734bbee4c6863d9255b2b06ac1\"},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"contracts/lib/CloneFactory.sol\":{\"content\":\"/*\\n\\n    Copyright 2020 DODO ZOO.\\n    SPDX-License-Identifier: Apache-2.0\\n\\n*/\\n\\npragma solidity 0.8.9;\\npragma experimental ABIEncoderV2;\\n\\ninterface ICloneFactory {\\n    function clone(address prototype) external returns (address proxy);\\n}\\n\\n// introduction of proxy mode design: https://docs.openzeppelin.com/upgrades/2.8/\\n// minimum implementation of transparent proxy: https://eips.ethereum.org/EIPS/eip-1167\\n\\ncontract CloneFactory is ICloneFactory {\\n    function clone(address prototype) external override returns (address proxy) {\\n        bytes20 targetBytes = bytes20(prototype);\\n        assembly {\\n            let clone := mload(0x40)\\n            mstore(clone, 0x3d602d80600a3d3981f3363d3d373d3d3d363d73000000000000000000000000)\\n            mstore(add(clone, 0x14), targetBytes)\\n            mstore(add(clone, 0x28), 0x5af43d82803e903d91602b57fd5bf30000000000000000000000000000000000)\\n            proxy := create(0, clone, 0x37)\\n        }\\n        require(proxy != address(0), \\\"DuetCloneFactory: address zero\\\");\\n        return proxy;\\n    }\\n}\\n\",\"keccak256\":\"0x28116103c7190e9ce1e7a34c02d882c699b9a540fb201ae0ee51a6c18ba42ac2\",\"license\":\"Apache-2.0\"}},\"version\":1}",
+  "bytecode": "0x608060405234801561001057600080fd5b50610172806100206000396000f3fe608060405234801561001057600080fd5b506004361061002b5760003560e01c80638124b78e14610030575b600080fd5b61004361003e36600461010c565b61005f565b6040516001600160a01b03909116815260200160405180910390f35b6000808260601b9050604051733d602d80600a3d3981f3363d3d373d3d3d363d7360601b81528160148201526e5af43d82803e903d91602b57fd5bf360881b60288201526037816000f09250506001600160a01b0382166101065760405162461bcd60e51b815260206004820152601e60248201527f44756574436c6f6e65466163746f72793a2061646472657373207a65726f0000604482015260640160405180910390fd5b50919050565b60006020828403121561011e57600080fd5b81356001600160a01b038116811461013557600080fd5b939250505056fea264697066735822122083242ccf4dee1b1d0e4c3c67a285cced789e0770f072b8b8844486a2380cf4be64736f6c63430008090033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b506004361061002b5760003560e01c80638124b78e14610030575b600080fd5b61004361003e36600461010c565b61005f565b6040516001600160a01b03909116815260200160405180910390f35b6000808260601b9050604051733d602d80600a3d3981f3363d3d373d3d3d363d7360601b81528160148201526e5af43d82803e903d91602b57fd5bf360881b60288201526037816000f09250506001600160a01b0382166101065760405162461bcd60e51b815260206004820152601e60248201527f44756574436c6f6e65466163746f72793a2061646472657373207a65726f0000604482015260640160405180910390fd5b50919050565b60006020828403121561011e57600080fd5b81356001600160a01b038116811461013557600080fd5b939250505056fea264697066735822122083242ccf4dee1b1d0e4c3c67a285cced789e0770f072b8b8844486a2380cf4be64736f6c63430008090033",
   "devdoc": {
     "kind": "dev",
     "methods": {},
