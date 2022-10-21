@@ -14,6 +14,8 @@ contract MintVault is TokenRecipient, MintVaultBase {
     using SafeERC20Upgradeable for IERC20Upgradeable;
     uint256 internal decimalScale;
 
+    constructor() initializer {}
+
     function initialize(
         address _controller,
         address _feeConf,

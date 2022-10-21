@@ -9,6 +9,8 @@
     "abi": "pnpm run prettier && hardhat export-abi",
     "deploy:bsc": "pnpm run prettier && npx hardhat deploy --network bsc &&  ts-node -T ./scripts/clean-solc-inputs.ts",
     "deploy:bsctest": "pnpm run prettier && npx hardhat deploy --network bsctest &&  ts-node -T ./scripts/clean-solc-inputs.ts",
+    "verify:bsc": "npx hardhat verify-legacy --network bsc",
+    "verify:bsctest": "npx hardhat verify-legacy --network bsctest",
     "prettier": "prettier --write --cache  --config ../../.prettierrc --ignore-path ../../.prettierignore --no-error-on-unmatched-pattern 'contracts/**/*.sol' **/*.js **/*.ts **/*.json **/*.yml **/*.yaml",
     "pre-commit": "pnpm run prettier"
   },
@@ -44,6 +46,7 @@
     "@openzeppelin/contracts-upgradeable": "^4.4.0",
     "@uniswap/lib": "^4.0.1-alpha",
     "@uniswap/v2-core": "^1.0.1",
+    "axios": "^0.27.2",
     "bignumber": "^1.1.0",
     "hardhat-abi-exporter": "^2.4.0"
   }

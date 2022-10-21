@@ -18,6 +18,8 @@ contract VaultFactory is Initializable, Adminable {
 
     event VaultCreated(address indexed vault);
 
+    constructor() initializer {}
+
     function initialize(
         IController controller_,
         address feeConf_,

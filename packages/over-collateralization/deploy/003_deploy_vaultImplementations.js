@@ -12,24 +12,22 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   const singleFarmingVault = await deploy('SingleFarmingVaultTemplate', {
     from: deployer,
     contract: 'SingleFarmingVault',
-    skipIfAlreadyDeployed: true,
     args: [],
     log: true,
   })
 
   if (singleFarmingVault.newlyDeployed) {
-    execute('VaultFactory', exeOptions, 'setVaultImplementation', 'Single', singleFarmingVault.address)
+    await execute('VaultFactory', exeOptions, 'setVaultImplementation', 'Single', singleFarmingVault.address)
   }
 
   const lpFarmingVault = await deploy('LpFarmingVaultTemplate', {
     from: deployer,
     contract: 'LpFarmingVault',
-    skipIfAlreadyDeployed: true,
     args: [],
     log: true,
   })
 
   if (lpFarmingVault.newlyDeployed) {
-    execute('VaultFactory', exeOptions, 'setVaultImplementation', 'PancakeLP', lpFarmingVault.address)
+    await execute('VaultFactory', exeOptions, 'setVaultImplementation', 'PancakeLP', lpFarmingVault.address)
   }
 }

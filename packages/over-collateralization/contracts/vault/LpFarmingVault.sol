@@ -32,6 +32,8 @@ contract LpFarmingVault is DepositVaultBase {
     address public token1;
     uint256 internal decimal1Scale; // no used again
 
+    constructor() initializer {}
+
     function initialize(
         address _controller,
         address _feeConf,

@@ -12,7 +12,6 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   // }
   const { deployer, proxyAdmin } = await getNamedAccounts()
   const exeOptions = { gasLimit: 300000, from: deployer }
-
   const controller = await get('AppController')
   const feeConf = await get('FeeConf')
   const factory = await deploy('VaultFactory', {
@@ -30,7 +29,15 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     log: true,
   })
 
-  if (factory.newlyDeployed) {
-    execute('AppController', { gasLimit: 3000000, from: deployer }, 'setVaultFactory', factory.address)
+  if (factory.newlyDeployed && factory.numDeployments < 2) {
+    await execute('AppController', { gasLimit: 3000000, from: deployer }, 'setVaultFactory', factory.address)
+    await execute('AppController', exeOptions, 'setGlobalState', {
+      enabled: true,
+      enableDeposit: true,
+      enableWithdraw: true,
+      enableBorrow: true,
+      enableRepay: true,
+      enableLiquidate: true,
+    })
   }
 }

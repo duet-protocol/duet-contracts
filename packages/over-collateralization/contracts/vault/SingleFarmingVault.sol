@@ -25,6 +25,8 @@ contract SingleFarmingVault is DepositVaultBase {
     address public underlyingToken;
     uint256 internal underlyingScale;
 
+    constructor() initializer {}
+
     function initialize(
         address _controller,
         address _feeConf,
@@ -134,7 +136,7 @@ contract SingleFarmingVault is DepositVaultBase {
     }
 
     /**
-    @notice 用户 Vault 价值估值
+@notice 用户 Vault 价值估值
     @param dp Discount 或 Premium
   */
     function userValue(address user, bool dp) external view override returns (uint256) {
