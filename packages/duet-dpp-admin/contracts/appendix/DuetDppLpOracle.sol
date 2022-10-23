@@ -2,15 +2,18 @@
 pragma solidity 0.8.9;
 
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import { IERC20Metadata } from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 
 import "../interfaces/IUSDOracle.sol";
 import "../interfaces/IDPPController.sol";
 import "../chainlink/AggregatorV3Interface.sol";
+import "../interfaces/IDodoOracle.sol";
+import "../lib/Adminable.sol";
 
-contract DuetDppLpOracle is IUSDOracle, Initializable, OwnableUpgradeable {
-    bool _AVAILABLE_;
+contract DuetDppLpOracle is IUSDOracle, Initializable, Adminable {
+    address public usdLikeToken;
+    IDodoOracle public dodoOracle;
+    uint256 public constant decimals = 8;
 
     struct CtrlInfo {
         IDPPController controller;
@@ -20,62 +23,80 @@ contract DuetDppLpOracle is IUSDOracle, Initializable, OwnableUpgradeable {
         uint256 quoteTokenDecimals;
     }
 
-    mapping(address => AggregatorV3Interface) public aggregators;
+    constructor() initializer {}
 
-    event SetAggregator(address indexed token, AggregatorV3Interface indexed aggregator);
-
-    constructor() {}
-
-    function initialize() external initializer {
-        OwnableUpgradeable.__Ownable_init();
-        _AVAILABLE_ = false;
+    function initialize(
+        address admin_,
+        address usdLikeToken_,
+        IDodoOracle dodoOracle_
+    ) external initializer {
+        _setAdmin(admin_);
+        usdLikeToken = usdLikeToken_;
+        dodoOracle = dodoOracle_;
     }
 
-    function setAggregator(address token, AggregatorV3Interface aggregator) external onlyOwner {
-        uint8 dec = aggregator.decimals();
-        require(dec == 8, "not support decimals");
-        aggregators[token] = aggregator;
-        emit SetAggregator(token, aggregator);
+    function setUsdLikeToken(address usdLikeToken_) external onlyAdmin {
+        usdLikeToken = usdLikeToken_;
     }
 
-    // set status for use this oracle
-    function setAvailable(bool _aval) external onlyOwner {
-        _AVAILABLE_ = _aval;
+    function setDodoOracle(IDodoOracle dodoOracle_) external onlyAdmin {
+        dodoOracle = dodoOracle_;
     }
 
-    // get latest price
-    // warn!: high risk
-    function getPrice(address _token) external view override returns (uint256 price) {
-        require(_AVAILABLE_, "duet lp oracle: high risk");
+    /**
+     * !!! UNSAFE !!!
+     * !!! FOR DISPLAY ONLY !!!
+     * @dev This oracle can only be used for display purposes and cannot be used as any actual value judgment basis.
+     * @return Unsafe USD value with precision of 8
+     */
+    function getPrice(address controllerToken_) external view override returns (uint256) {
+        CtrlInfo memory curCtrl = getCtrlInfo(controllerToken_);
+        require(curCtrl.quoteToken == usdLikeToken, "DuetDppLpOracle: Invalid LP Token");
 
-        CtrlInfo memory curCtrl = getCtrlInfo(_token);
-        (uint256 baseOut, uint256 quoteOut) = curCtrl.controller.recommendBaseAndQuote(10**curCtrl.baseTokenDecimals);
-        (, int256 basePrice, , , ) = aggregators[curCtrl.baseToken].latestRoundData();
-        (, int256 quotePrice, , , ) = aggregators[curCtrl.quoteToken].latestRoundData();
-        require(basePrice >= 0 && quotePrice >= 0, "Negative Price!");
+        (uint256 baseTokenAmount, uint256 quoteTokenAmount) = curCtrl.controller.recommendBaseAndQuote(
+            10**IERC20Metadata(address(curCtrl.controller)).decimals()
+        );
 
-        // base-quote decimal correct
-        // ctrl-lp is base decimals, just need to correct quote decimals
-        uint256 priceWithDecimal;
-        if (curCtrl.baseTokenDecimals > curCtrl.quoteTokenDecimals) {
-            uint256 correctDecimal = curCtrl.baseTokenDecimals - curCtrl.quoteTokenDecimals;
-            priceWithDecimal = baseOut * uint256(basePrice) + quoteOut * uint256(quotePrice) * (10**correctDecimal);
-        } else if (curCtrl.baseTokenDecimals == curCtrl.quoteTokenDecimals) {
-            priceWithDecimal = baseOut * uint256(basePrice) + quoteOut * uint256(quotePrice);
-        } else {
-            uint256 correctDecimal = curCtrl.quoteTokenDecimals - curCtrl.baseTokenDecimals;
-            priceWithDecimal = baseOut * uint256(basePrice) + (quoteOut * uint256(quotePrice)) / (10**correctDecimal);
-        }
+        // 1e18
+        uint256 baseTokenPrice = dodoOracle.prices(curCtrl.baseToken);
+        require(baseTokenPrice > 0, "DuetDppLpOracle: Invalid base token price");
 
-        return priceWithDecimal / (10**curCtrl.baseTokenDecimals);
+        // 1e8
+        uint256 baseTokenValue = convertDecimal(
+            (baseTokenAmount * baseTokenPrice) / 1e18,
+            curCtrl.baseTokenDecimals,
+            decimals
+        );
+
+        // 1e8
+        uint256 quoteValue = convertDecimal(quoteTokenAmount, curCtrl.quoteTokenDecimals, decimals);
+        return baseTokenValue + quoteValue;
     }
 
-    function getCtrlInfo(address _ctrl) public view returns (CtrlInfo memory ctrlInfo) {
-        ctrlInfo.controller = IDPPController(_ctrl);
+    function getCtrlInfo(address controllerToken_) public view returns (CtrlInfo memory ctrlInfo) {
+        ctrlInfo.controller = IDPPController(controllerToken_);
 
-        ctrlInfo.baseToken = IDPPController(_ctrl)._BASE_TOKEN_();
-        ctrlInfo.quoteToken = IDPPController(_ctrl)._QUOTE_TOKEN_();
+        ctrlInfo.baseToken = IDPPController(controllerToken_)._BASE_TOKEN_();
+        ctrlInfo.quoteToken = IDPPController(controllerToken_)._QUOTE_TOKEN_();
         ctrlInfo.baseTokenDecimals = IERC20Metadata(ctrlInfo.baseToken).decimals();
         ctrlInfo.quoteTokenDecimals = IERC20Metadata(ctrlInfo.quoteToken).decimals();
+    }
+
+    /**
+     * @dev convert a value from sourceDecimal to targetDecimal
+     */
+    function convertDecimal(
+        uint256 value_,
+        uint256 sourceDecimal_,
+        uint256 targetDecimal_
+    ) public pure returns (uint256) {
+        if (sourceDecimal_ > targetDecimal_) {
+            return value_ / (sourceDecimal_ - targetDecimal_);
+        }
+
+        if (sourceDecimal_ < targetDecimal_) {
+            return value_ * (targetDecimal_ - sourceDecimal_);
+        }
+        return value_;
     }
 }

@@ -126,7 +126,7 @@ describe('DppCtrl and DppFactory', () => {
     )
 
     //load dppCtrl and dpp
-    let dppCtrlAddress = await duetDPPFactory.userRegistry(maintainer.address, 0)
+    let dppCtrlAddress = await duetDPPFactory.getDppController(aToken.address, bToken.address)
     testDppCtrl = await DuetDppCtrl.attach(dppCtrlAddress)
     let dppAddress = await testDppCtrl._DPP_ADDRESS_()
     testDpp = await DPPOracle.attach(dppAddress)
@@ -181,7 +181,7 @@ describe('DppCtrl and DppFactory', () => {
         false,
         true,
       ),
-    ).revertedWith('Duet Dpp Factory: set invaild oracle')
+    ).revertedWith('Duet Dpp Factory: set invalid oracle')
 
     await testOracleZero.connect(maintainer).setPrice(aToken.address, '239856349999999983992')
 
@@ -197,7 +197,7 @@ describe('DppCtrl and DppFactory', () => {
       false,
     )
 
-    let dppCtrlAddress = await duetDPPFactory.userRegistry(maintainer.address, 1)
+    let dppCtrlAddress = await duetDPPFactory.getDppController(aToken.address, bToken.address)
     const DuetDppCtrl = await ethers.getContractFactory('DuetDppController')
     let testCtrl2 = await DuetDppCtrl.attach(dppCtrlAddress)
 
@@ -357,7 +357,7 @@ describe('DppCtrl and DppFactory', () => {
     await expect(testDppCtrl.connect(maintainer).changeOracle(testDpp.address)).to.be.revertedWith('')
 
     // test disableOracle newI
-    await expect(testDppCtrl.connect(maintainer).disableOracle('0')).revertedWith('Duet Dpp Controller: invaild new I')
+    await expect(testDppCtrl.connect(maintainer).disableOracle('0')).revertedWith('Duet Dpp Controller: invalid new I')
 
     await testDppCtrl.connect(maintainer).disableOracle('239856349999999983992')
     res = await testDpp.querySellBase(bob.address, parseEther('10'))
