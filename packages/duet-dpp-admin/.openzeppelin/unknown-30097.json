@@ -2,7 +2,7 @@
   "manifestVersion": "3.2",
   "admin": {
     "address": "0x59b670e9fA9D0A427751Af201D676719a970857b",
-    "txHash": "0x8e22b051e4ff70b2fd6acce4be7798740916ee534b679aa1e90cb0017ac40b29"
+    "txHash": "0x2547eb8b79bd0c4818f82b7ba535c7f4bd1b8701bb3f69c542a93d12e3198774"
   },
   "proxies": [
     {
@@ -17,7 +17,7 @@
     },
     {
       "address": "0x4ed7c70F96B99c776995fB64377f0d4aB3B0e1C1",
-      "txHash": "0x073a5fa6a89532b642d9525d581c2e4d2432d0eeeb8be878bd405608f8c41840",
+      "txHash": "0xff4b2fe214275eeb8c43973de96c9487d6677e9f5556623718458e91145a9258",
       "kind": "transparent"
     }
   ],
@@ -308,9 +308,9 @@
         }
       }
     },
-    "f3c6a44a090b9e24764190b12ebd467103e6ca9838cc27e12717c11676f621f1": {
+    "7e26b5db3270e34c1922fed8c58ea3a34d7a112e215477a29bf70039fd28b71b": {
       "address": "0xc6e7DF5E7b4f2A278906862b61205850344D4e7d",
-      "txHash": "0x2b9ca0007c75c785cb535cbd198f4f9ebecb02864bf44a3efbf31c3f96dec839",
+      "txHash": "0x60993d3a8a9cc9559cfeab170708835cc77658c615314958be8beb07600c46ee",
       "layout": {
         "storage": [
           {
@@ -409,14 +409,6 @@
             "type": "t_mapping(t_address,t_mapping(t_address,t_address))",
             "contract": "DuetDPPFactory",
             "src": "contracts/factory/DuetDppFactory.sol:35"
-          },
-          {
-            "label": "userRegistry",
-            "offset": 0,
-            "slot": "10",
-            "type": "t_mapping(t_address,t_array(t_address)dyn_storage)",
-            "contract": "DuetDPPFactory",
-            "src": "contracts/factory/DuetDppFactory.sol:37"
           }
         ],
         "types": {
@@ -424,20 +416,12 @@
             "label": "address",
             "numberOfBytes": "20"
           },
-          "t_array(t_address)dyn_storage": {
-            "label": "address[]",
-            "numberOfBytes": "32"
-          },
           "t_bool": {
             "label": "bool",
             "numberOfBytes": "1"
           },
           "t_mapping(t_address,t_address)": {
             "label": "mapping(address => address)",
-            "numberOfBytes": "32"
-          },
-          "t_mapping(t_address,t_array(t_address)dyn_storage)": {
-            "label": "mapping(address => address[])",
             "numberOfBytes": "32"
           },
           "t_mapping(t_address,t_mapping(t_address,t_address))": {

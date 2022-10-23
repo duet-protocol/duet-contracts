@@ -132,6 +132,10 @@ contract DuetDPPFactory is Adminable, Initializable {
         emit DelDPPCtrl(baseToken_, quoteToken_, creator_, dppCtrlAddress_);
     }
 
+    function getDppController(address base_, address quote_) public view returns (address dppAddress) {
+        dppAddress = registry[base_][quote_];
+    }
+
     // ============ Functions ============
 
     function _createDODOPrivatePool() internal returns (address newPrivatePool) {

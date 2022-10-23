@@ -5,8 +5,9 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "./interfaces/IDuetOracle.sol";
 import "./interfaces/IERC20.sol";
 import "./lib/Adminable.sol";
+import "./interfaces/IDodoOracle.sol";
 
-contract DodoOracle is Adminable, Initializable {
+contract DodoOracle is Adminable, Initializable, IDodoOracle {
     // token address => duet oracle
     mapping(address => IDuetOracle) public duetOracleMapping;
     /**

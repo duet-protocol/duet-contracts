@@ -4,39 +4,39 @@ import { HardhatRuntimeEnvironment } from 'hardhat/types'
 // eslint-disable-next-line node/no-unpublished-import
 import { useLogger } from '../scripts/utils'
 import { HardhatDeployRuntimeEnvironment } from '../types/hardhat-deploy'
-import { advancedDeploy } from './.defines'
+import { advancedDeploy, NetworkName } from './.defines'
+import { DodoOracleNames } from './003_deploy_dodoOracle'
+import config from '../config'
 
 const logger = useLogger(__filename)
 
-export enum DodoOracleNames {
-  DodoOracle = 'DodoOracle',
+export enum DuetDppLpOracleNames {
+  DuetDppLpOracle = 'DuetDppLpOracle',
 }
 
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { deployments, getNamedAccounts } = hre as unknown as HardhatDeployRuntimeEnvironment
-  const { deploy } = deployments
+  const { deploy, get } = deployments
 
   const { deployer } = await getNamedAccounts()
-
+  const networkName = hre.network.name as NetworkName
   await advancedDeploy(
     {
       hre,
       logger,
       proxied: true,
-      name: DodoOracleNames.DodoOracle,
+      name: DuetDppLpOracleNames.DuetDppLpOracle,
     },
     async ({ name }) => {
       return await deploy(name, {
         from: deployer,
-        contract: 'DodoOracle',
+        contract: 'DuetDppLpOracle',
         proxy: {
           execute: {
             init: {
               methodName: 'initialize',
-              /*
-               address admin_,
-               */
-              args: [deployer],
+              // address admin_, address usdLikeToken_, IDodoOracle dodoOracle_
+              args: [deployer, config.address.usd[networkName], (await get(DodoOracleNames.DodoOracle)).address],
             },
           },
         },
