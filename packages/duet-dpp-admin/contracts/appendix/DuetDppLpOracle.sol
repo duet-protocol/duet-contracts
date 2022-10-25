@@ -91,11 +91,11 @@ contract DuetDppLpOracle is IUSDOracle, Initializable, Adminable {
         uint256 targetDecimal_
     ) public pure returns (uint256) {
         if (sourceDecimal_ > targetDecimal_) {
-            return value_ / (sourceDecimal_ - targetDecimal_);
+            return value_ / (10**(sourceDecimal_ - targetDecimal_));
         }
 
         if (sourceDecimal_ < targetDecimal_) {
-            return value_ * (targetDecimal_ - sourceDecimal_);
+            return value_ * (10**(targetDecimal_ - sourceDecimal_));
         }
         return value_;
     }
