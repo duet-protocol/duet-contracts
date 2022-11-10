@@ -27,7 +27,10 @@ contract DiscountBond is ERC20Upgradeable, ReentrancyGuardUpgradeable, IBond {
     event BondRedeemed(address indexed account, uint256 amount);
     event BondGranted(uint256 amount, uint256 inventoryAmount);
 
-    constructor() initializer {}
+    /// @custom:oz-upgrades-unsafe-allow constructor
+    constructor() {
+        _disableInitializers();
+    }
 
     function initialize(
         string memory name_,
