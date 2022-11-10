@@ -32,7 +32,10 @@ contract BondFactory is IBondFactory, Initializable, Adminable {
     event BondCreated(address bondToken);
     event BondRemoved(address bondToken);
 
-    constructor() initializer {}
+    /// @custom:oz-upgrades-unsafe-allow constructor
+    constructor() {
+        _disableInitializers();
+    }
 
     function initialize(address admin_) public initializer {
         _setAdmin(admin_);
@@ -155,6 +158,7 @@ contract BondFactory is IBondFactory, Initializable, Adminable {
             }
             kindBondsMapping[kind][i] = kindBondsMapping[kind][kindBondLength - 1];
             kindBondsMapping[kind].pop();
+            break;
         }
 
         uint256 seriesBondLength = seriesBondsMapping[series].length;
@@ -164,6 +168,7 @@ contract BondFactory is IBondFactory, Initializable, Adminable {
             }
             seriesBondsMapping[series][j] = seriesBondsMapping[series][seriesBondLength - 1];
             seriesBondsMapping[series].pop();
+            break;
         }
 
         emit BondRemoved(bondTokenAddress);
