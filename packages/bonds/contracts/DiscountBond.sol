@@ -60,7 +60,6 @@ contract DiscountBond is ERC20Upgradeable, ReentrancyGuardUpgradeable, IBond {
     }
 
     modifier tradingGuard() {
-        require(getPrice() > 0, "INVALID_PRICE");
         _;
     }
 
@@ -77,13 +76,14 @@ contract DiscountBond is ERC20Upgradeable, ReentrancyGuardUpgradeable, IBond {
         emit BondGranted(amount_, inventoryAmount);
     }
 
-    function getPrice() public view returns (uint256) {
+    function getPrice() public view returns (IBondFactory.BondPrice memory) {
         return factory.getPrice(address(this));
     }
 
     function mintByUnderlyingAmount(address account_, uint256 underlyingAmount_)
         external
         beforeMaturity
+        nonReentrant
         returns (uint256 bondAmount)
     {
         underlyingToken.safeTransferFrom(msg.sender, address(this), underlyingAmount_);
@@ -101,12 +101,13 @@ contract DiscountBond is ERC20Upgradeable, ReentrancyGuardUpgradeable, IBond {
         returns (uint256 bondAmount)
     {
         require(underlyingAmount_ >= MIN_TRADING_AMOUNT, "DiscountBond: AMOUNT_TOO_LOW");
-        bondAmount = (underlyingAmount_ * factory.priceFactor()) / getPrice();
+        bondAmount = (underlyingAmount_ * factory.priceFactor()) / getPrice().ask;
         require(inventoryAmount >= bondAmount, "DiscountBond: INSUFFICIENT_LIQUIDITY");
     }
 
     function mintByBondAmount(address account_, uint256 bondAmount_)
         external
+        nonReentrant
         beforeMaturity
         returns (uint256 underlyingAmount)
     {
@@ -126,12 +127,13 @@ contract DiscountBond is ERC20Upgradeable, ReentrancyGuardUpgradeable, IBond {
     {
         require(bondAmount_ >= MIN_TRADING_AMOUNT, "DiscountBond: AMOUNT_TOO_LOW");
         require(inventoryAmount >= bondAmount_, "DiscountBond: INSUFFICIENT_LIQUIDITY");
-        underlyingAmount = (bondAmount_ * getPrice()) / factory.priceFactor();
+        underlyingAmount = (bondAmount_ * getPrice().ask) / factory.priceFactor();
     }
 
     function sellByBondAmount(uint256 bondAmount_)
         public
         beforeMaturity
+        nonReentrant
         tradingGuard
         returns (uint256 underlyingAmount)
     {
@@ -151,7 +153,7 @@ contract DiscountBond is ERC20Upgradeable, ReentrancyGuardUpgradeable, IBond {
     {
         require(bondAmount_ >= MIN_TRADING_AMOUNT, "DiscountBond: AMOUNT_TOO_LOW");
         require(balanceOf(msg.sender) >= bondAmount_, "DiscountBond: EXCEEDS_BALANCE");
-        underlyingAmount = (bondAmount_ * getPrice()) / factory.priceFactor();
+        underlyingAmount = (bondAmount_ * getPrice().bid) / factory.priceFactor();
         require(underlyingToken.balanceOf(address(this)) >= underlyingAmount, "DiscountBond: INSUFFICIENT_LIQUIDITY");
     }
 
@@ -167,10 +169,10 @@ contract DiscountBond is ERC20Upgradeable, ReentrancyGuardUpgradeable, IBond {
         if (block.timestamp >= maturity) {
             return faceValue(bondAmount_);
         }
-        return (bondAmount_ * getPrice()) / factory.priceFactor();
+        return (bondAmount_ * getPrice().price) / factory.priceFactor();
     }
 
-    function redeemFor(address account_, uint256 bondAmount_) public afterMaturity {
+    function redeemFor(address account_, uint256 bondAmount_) public afterMaturity nonReentrant {
         require(balanceOf(msg.sender) >= bondAmount_, "DiscountBond: EXCEEDS_BALANCE");
         _burn(msg.sender, bondAmount_);
         redeemedAmount += bondAmount_;

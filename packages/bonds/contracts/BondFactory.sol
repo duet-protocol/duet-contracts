@@ -25,7 +25,7 @@ contract BondFactory is IBondFactory, Initializable, Adminable {
     string[] public bondSeries;
 
     // bond => price
-    mapping(address => uint256) public bondPrices;
+    mapping(address => BondPrice) public bondPrices;
 
     event PriceUpdated(address indexed bondToken, uint256 price, uint256 previousPrice);
     event BondImplementationUpdated(string kind, address implementation, address previousImplementation);
@@ -38,11 +38,19 @@ contract BondFactory is IBondFactory, Initializable, Adminable {
         _setAdmin(admin_);
     }
 
+    function verifyPrice(BondPrice memory price) public view returns (BondPrice memory) {
+        require(
+            price.price > 0 && price.bid > 0 && price.ask > 0 && price.ask >= price.bid,
+            "BondFactory: INVALID_PRICE"
+        );
+        return price;
+    }
+
     function createBond(
         string memory kind_,
         string memory name_,
         string memory symbol_,
-        uint256 initialPrice_,
+        BondPrice calldata initialPrice_,
         uint256 initialGrant_,
         string memory series_,
         IERC20Upgradeable underlyingToken_,
@@ -51,7 +59,7 @@ contract BondFactory is IBondFactory, Initializable, Adminable {
         address proxyAdmin = address(this);
         address bondImpl = bondImplementations[kind_];
         require(bondImpl != address(0), "BondFactory: Invalid bond implementation");
-        require(initialPrice_ > 0, "BondFactory: INVALID_PRICE");
+        verifyPrice(initialPrice_);
         bytes memory proxyData;
         DuetTransparentUpgradeableProxy proxy = new DuetTransparentUpgradeableProxy(bondImpl, proxyAdmin, proxyData);
         bondTokenAddress = address(proxy);
@@ -59,7 +67,7 @@ contract BondFactory is IBondFactory, Initializable, Adminable {
         if (seriesBondsMapping[series_].length == 0) {
             bondSeries.push(series_);
         }
-        setPrice(bondTokenAddress, initialPrice_);
+        setPrice(bondTokenAddress, initialPrice_.price, initialPrice_.bid, initialPrice_.ask);
         if (initialGrant_ > 0) {
             grant(bondTokenAddress, initialGrant_);
         }
@@ -102,13 +110,20 @@ contract BondFactory is IBondFactory, Initializable, Adminable {
         }
     }
 
-    function setPrice(address bondToken_, uint256 price) public onlyAdmin {
-        emit PriceUpdated(bondToken_, price, bondPrices[bondToken_]);
-        bondPrices[bondToken_] = price;
+    function setPrice(
+        address bondToken_,
+        uint256 price,
+        uint256 bid,
+        uint256 ask
+    ) public onlyAdmin {
+        emit PriceUpdated(bondToken_, price, bondPrices[bondToken_].price);
+        bondPrices[bondToken_] = BondPrice({ price: price, bid: bid, ask: ask, lastUpdated: block.timestamp });
     }
 
-    function getPrice(address bondToken_) public view returns (uint256) {
-        return bondPrices[bondToken_];
+    function getPrice(address bondToken_) public view returns (BondPrice memory) {
+        BondPrice memory price = bondPrices[bondToken_];
+        verifyPrice(price);
+        return price;
     }
 
     function priceDecimals() public view returns (uint256) {
