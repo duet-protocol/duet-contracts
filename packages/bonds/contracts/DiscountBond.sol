@@ -21,6 +21,7 @@ contract DiscountBond is ERC20Upgradeable, ReentrancyGuardUpgradeable, IBond {
     string public series;
     uint256 public inventoryAmount;
     uint256 public redeemedAmount;
+    string public isin;
 
     event BondMinted(address indexed account, uint256 bondAmount, uint256 underlyingAmount);
     event BondSold(address indexed account, uint256 bondAmount, uint256 underlyingAmount);
@@ -38,7 +39,8 @@ contract DiscountBond is ERC20Upgradeable, ReentrancyGuardUpgradeable, IBond {
         string memory series_,
         address factory_,
         IERC20Upgradeable underlyingToken_,
-        uint256 maturity_
+        uint256 maturity_,
+        string memory isin_
     ) external initializer {
         __ERC20_init(name_, symbol_);
         __ReentrancyGuard_init();
@@ -50,6 +52,7 @@ contract DiscountBond is ERC20Upgradeable, ReentrancyGuardUpgradeable, IBond {
         underlyingToken = underlyingToken_;
         factory = IBondFactory(factory_);
         maturity = maturity_;
+        isin = isin_;
     }
 
     modifier beforeMaturity() {

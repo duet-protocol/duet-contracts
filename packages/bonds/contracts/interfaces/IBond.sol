@@ -11,12 +11,15 @@ interface IBond is IERC20Upgradeable {
         string memory series,
         address factory_,
         IERC20Upgradeable underlyingToken_,
-        uint256 maturity_
+        uint256 maturity_,
+        string memory isin_
     ) external;
 
     function kind() external returns (string memory);
 
     function series() external returns (string memory);
+
+    function isin() external returns (string memory);
 
     function underlyingOut(uint256 amount_, address to_) external;
 

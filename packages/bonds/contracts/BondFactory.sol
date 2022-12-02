@@ -8,8 +8,9 @@ import "./interfaces/IBondFactory.sol";
 import "./interfaces/IBond.sol";
 import "./libs/Adminable.sol";
 import "./libs/DuetTransparentUpgradeableProxy.sol";
+import "@private/shared/libs/Keepable.sol";
 
-contract BondFactory is IBondFactory, Initializable, Adminable {
+contract BondFactory is IBondFactory, Initializable, Adminable, Keepable {
     /**
      * @dev factor for percentage that described in integer. It makes 10000 means 100%, and 20 means 0.2%;
      *      Calculation formula: x * percentage / PERCENTAGE_FACTOR
@@ -24,6 +25,9 @@ contract BondFactory is IBondFactory, Initializable, Adminable {
     string[] public bondKinds;
     string[] public bondSeries;
 
+    // isin => bond address
+    mapping(string => address) public isinBondMapping;
+
     // bond => price
     mapping(address => BondPrice) public bondPrices;
 
@@ -31,6 +35,16 @@ contract BondFactory is IBondFactory, Initializable, Adminable {
     event BondImplementationUpdated(string kind, address implementation, address previousImplementation);
     event BondCreated(address bondToken);
     event BondRemoved(address bondToken);
+
+    modifier onlyAdminOrKeeper() virtual {
+        require(msg.sender == admin || msg.sender == keeper, "UNAUTHORIZED");
+
+        _;
+    }
+
+    function setKeeper(address newKeeper) external onlyAdmin {
+        _setKeeper(newKeeper);
+    }
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
@@ -57,16 +71,20 @@ contract BondFactory is IBondFactory, Initializable, Adminable {
         uint256 initialGrant_,
         string memory series_,
         IERC20Upgradeable underlyingToken_,
-        uint256 maturity_
+        uint256 maturity_,
+        string memory isin_
     ) external onlyAdmin returns (address bondTokenAddress) {
         address proxyAdmin = address(this);
         address bondImpl = bondImplementations[kind_];
         require(bondImpl != address(0), "BondFactory: Invalid bond implementation");
+        require(isinBondMapping[isin_] == address(0), "A bond for this isin already exists");
         verifyPrice(initialPrice_);
         bytes memory proxyData;
         DuetTransparentUpgradeableProxy proxy = new DuetTransparentUpgradeableProxy(bondImpl, proxyAdmin, proxyData);
         bondTokenAddress = address(proxy);
-        IBond(bondTokenAddress).initialize(name_, symbol_, series_, address(this), underlyingToken_, maturity_);
+        IBond(bondTokenAddress).initialize(name_, symbol_, series_, address(this), underlyingToken_, maturity_, isin_);
+        isinBondMapping[isin_] = bondTokenAddress;
+
         if (seriesBondsMapping[series_].length == 0) {
             bondSeries.push(series_);
         }
@@ -118,7 +136,7 @@ contract BondFactory is IBondFactory, Initializable, Adminable {
         uint256 price,
         uint256 bid,
         uint256 ask
-    ) public onlyAdmin {
+    ) public onlyAdminOrKeeper {
         emit PriceUpdated(bondToken_, price, bondPrices[bondToken_].price);
         bondPrices[bondToken_] = BondPrice({ price: price, bid: bid, ask: ask, lastUpdated: block.timestamp });
     }
@@ -170,6 +188,8 @@ contract BondFactory is IBondFactory, Initializable, Adminable {
             seriesBondsMapping[series].pop();
             break;
         }
+
+        delete isinBondMapping[bondToken_.isin()];
 
         emit BondRemoved(bondTokenAddress);
     }
