@@ -2,7 +2,7 @@
   "manifestVersion": "3.2",
   "admin": {
     "address": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
-    "txHash": "0x9dbf8f65a20ad92dd90fb5c27235ff34db6d545afb58fd92e58b4d6fc940930a"
+    "txHash": "0x508e40f16556f884efe9346aa064b7a944d968e11a6a0121f52c98c71fcce575"
   },
   "proxies": [
     {
@@ -32,14 +32,14 @@
     },
     {
       "address": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
-      "txHash": "0xd82d03550751d08ea2952d32381435df3a01c51b0e5c104b35b1e957745e2802",
+      "txHash": "0x8db08f97a68f74991c7e5c1cbb862d976231c78e177e3af453b1af3a57321d24",
       "kind": "transparent"
     }
   ],
   "impls": {
-    "90e364f99aaba873eb6ac0c704744a3112c4c3631db953689126a64627327571": {
+    "5e090fbf34371955420751650894c90591d3dbe577da9a0811bbffea02d2b7b4": {
       "address": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
-      "txHash": "0x324906ecbe6607c1a8e4288bc80716df1963993db89b391a63481db78e0c3cd7",
+      "txHash": "0xc2a2c8b641bf548ca6b2bcf72ca6e252a7b7d8810c819c26ea4db229b3956bf3",
       "layout": {
         "storage": [
           {
@@ -68,39 +68,39 @@
             "src": "contracts/libs/Adminable.sol:7"
           },
           {
-            "label": "bondImplementations",
+            "label": "keeper",
             "offset": 0,
             "slot": "1",
+            "type": "t_address",
+            "contract": "Keepable",
+            "src": "@private/shared/libs/Keepable.sol:7"
+          },
+          {
+            "label": "bondImplementations",
+            "offset": 0,
+            "slot": "2",
             "type": "t_mapping(t_string_memory_ptr,t_address)",
             "contract": "BondFactory",
-            "src": "contracts/BondFactory.sol:19"
+            "src": "contracts/BondFactory.sol:20"
           },
           {
             "label": "kindBondsMapping",
             "offset": 0,
-            "slot": "2",
+            "slot": "3",
             "type": "t_mapping(t_string_memory_ptr,t_array(t_address)dyn_storage)",
             "contract": "BondFactory",
-            "src": "contracts/BondFactory.sol:21"
+            "src": "contracts/BondFactory.sol:22"
           },
           {
             "label": "seriesBondsMapping",
             "offset": 0,
-            "slot": "3",
-            "type": "t_mapping(t_string_memory_ptr,t_array(t_address)dyn_storage)",
-            "contract": "BondFactory",
-            "src": "contracts/BondFactory.sol:23"
-          },
-          {
-            "label": "bondKinds",
-            "offset": 0,
             "slot": "4",
-            "type": "t_array(t_string_storage)dyn_storage",
+            "type": "t_mapping(t_string_memory_ptr,t_array(t_address)dyn_storage)",
             "contract": "BondFactory",
             "src": "contracts/BondFactory.sol:24"
           },
           {
-            "label": "bondSeries",
+            "label": "bondKinds",
             "offset": 0,
             "slot": "5",
             "type": "t_array(t_string_storage)dyn_storage",
@@ -108,12 +108,28 @@
             "src": "contracts/BondFactory.sol:25"
           },
           {
-            "label": "bondPrices",
+            "label": "bondSeries",
             "offset": 0,
             "slot": "6",
-            "type": "t_mapping(t_address,t_uint256)",
+            "type": "t_array(t_string_storage)dyn_storage",
             "contract": "BondFactory",
-            "src": "contracts/BondFactory.sol:28"
+            "src": "contracts/BondFactory.sol:26"
+          },
+          {
+            "label": "isinBondMapping",
+            "offset": 0,
+            "slot": "7",
+            "type": "t_mapping(t_string_memory_ptr,t_address)",
+            "contract": "BondFactory",
+            "src": "contracts/BondFactory.sol:29"
+          },
+          {
+            "label": "bondPrices",
+            "offset": 0,
+            "slot": "8",
+            "type": "t_mapping(t_address,t_struct(BondPrice)3954_storage)",
+            "contract": "BondFactory",
+            "src": "contracts/BondFactory.sol:32"
           }
         ],
         "types": {
@@ -133,8 +149,8 @@
             "label": "bool",
             "numberOfBytes": "1"
           },
-          "t_mapping(t_address,t_uint256)": {
-            "label": "mapping(address => uint256)",
+          "t_mapping(t_address,t_struct(BondPrice)3954_storage)": {
+            "label": "mapping(address => struct IBondFactory.BondPrice)",
             "numberOfBytes": "32"
           },
           "t_mapping(t_string_memory_ptr,t_address)": {
@@ -152,6 +168,36 @@
           "t_string_storage": {
             "label": "string",
             "numberOfBytes": "32"
+          },
+          "t_struct(BondPrice)3954_storage": {
+            "label": "struct IBondFactory.BondPrice",
+            "members": [
+              {
+                "label": "price",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "bid",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "ask",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "2"
+              },
+              {
+                "label": "lastUpdated",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "3"
+              }
+            ],
+            "numberOfBytes": "128"
           },
           "t_uint256": {
             "label": "uint256",
