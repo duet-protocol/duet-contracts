@@ -39,6 +39,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     },
   )
   if (discountBond.newlyDeployed) {
+    logger.info('setBondImplementation')
     await execute(
       BondFactoryNames.Factory,
       execOptions,

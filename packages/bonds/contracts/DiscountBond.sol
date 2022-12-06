@@ -82,8 +82,21 @@ contract DiscountBond is ERC20Upgradeable, ReentrancyGuardUpgradeable, IBond {
         emit BondGranted(amount_, inventoryAmount);
     }
 
-    function getPrice() public view returns (IBondFactory.BondPrice memory) {
-        return factory.getPrice(address(this));
+    function getPrice() public view returns (IBondFactory.BondPrice memory price) {
+        price = factory.getPrice(address(this));
+        uint256 priceFactor = factory.priceFactor();
+        uint256 minPrice = 8 * (10**(priceFactor - 1));
+        uint256 maxPrice = 12 * (10**(priceFactor - 1));
+        require(
+            price.price >= minPrice &&
+                price.price <= maxPrice &&
+                price.ask >= minPrice &&
+                price.ask <= maxPrice &&
+                price.bid >= minPrice &&
+                price.bid <= maxPrice,
+            "DiscountBond: INVALID_PRICE"
+        );
+        return price;
     }
 
     function mintByUnderlyingAmount(address account_, uint256 underlyingAmount_)
