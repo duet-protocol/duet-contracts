@@ -24,6 +24,7 @@ contract BondFactory is IBondFactory, Initializable, Adminable, Keepable {
     mapping(string => address[]) public seriesBondsMapping;
     string[] public bondKinds;
     string[] public bondSeries;
+    string[] public bondIsins;
 
     // isin => bond address
     mapping(string => address) public isinBondMapping;
@@ -42,10 +43,6 @@ contract BondFactory is IBondFactory, Initializable, Adminable, Keepable {
         _;
     }
 
-    function setKeeper(address newKeeper) external onlyAdmin {
-        _setKeeper(newKeeper);
-    }
-
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
         _disableInitializers();
@@ -53,6 +50,10 @@ contract BondFactory is IBondFactory, Initializable, Adminable, Keepable {
 
     function initialize(address admin_) public initializer {
         _setAdmin(admin_);
+    }
+
+    function setKeeper(address newKeeper) external onlyAdmin {
+        _setKeeper(newKeeper);
     }
 
     function verifyPrice(BondPrice memory price) public view returns (BondPrice memory) {
@@ -88,6 +89,7 @@ contract BondFactory is IBondFactory, Initializable, Adminable, Keepable {
         if (seriesBondsMapping[series_].length == 0) {
             bondSeries.push(series_);
         }
+        bondIsins.push(isin_);
         setPrice(bondTokenAddress, initialPrice_.price, initialPrice_.bid, initialPrice_.ask);
         if (initialGrant_ > 0) {
             grant(bondTokenAddress, initialGrant_);
@@ -107,6 +109,10 @@ contract BondFactory is IBondFactory, Initializable, Adminable, Keepable {
 
     function getBondSeries() external view returns (string[] memory) {
         return bondSeries;
+    }
+
+    function getBondIsins() external view returns (string[] memory) {
+        return bondIsins;
     }
 
     function getSeriesBondLength(string memory series_) external view returns (uint256) {
@@ -139,6 +145,7 @@ contract BondFactory is IBondFactory, Initializable, Adminable, Keepable {
     ) public onlyAdminOrKeeper {
         emit PriceUpdated(bondToken_, price, bondPrices[bondToken_].price);
         bondPrices[bondToken_] = BondPrice({ price: price, bid: bid, ask: ask, lastUpdated: block.timestamp });
+        verifyPrice(bondPrices[bondToken_]);
     }
 
     function getPrice(address bondToken_) public view returns (BondPrice memory) {
@@ -167,6 +174,8 @@ contract BondFactory is IBondFactory, Initializable, Adminable, Keepable {
         require(bondToken_.totalSupply() <= 0, "BondFactory: CANT_REMOVE");
         string memory kind = bondToken_.kind();
         string memory series = bondToken_.series();
+        bytes32 isin = keccak256(bytes(bondToken_.isin()));
+
         address bondTokenAddress = address(bondToken_);
 
         uint256 kindBondLength = kindBondsMapping[kind].length;
@@ -189,9 +198,27 @@ contract BondFactory is IBondFactory, Initializable, Adminable, Keepable {
             break;
         }
 
+        uint256 isinsLength = bondIsins.length;
+        for (uint256 k = 0; k < isinsLength; k++) {
+            if (keccak256(bytes(bondIsins[k])) != isin) {
+                continue;
+            }
+            bondIsins[k] = bondIsins[isinsLength - 1];
+            bondIsins.pop();
+            break;
+        }
+
         delete isinBondMapping[bondToken_.isin()];
 
         emit BondRemoved(bondTokenAddress);
+    }
+
+    function emergencyWithdraw(
+        IBond bond_,
+        IERC20Upgradeable token_,
+        uint256 amount_
+    ) external onlyAdmin {
+        bond_.emergencyWithdraw(token_, msg.sender, amount_);
     }
 
     function calculateFee(string memory kind_, uint256 tradingAmount) public view returns (uint256) {

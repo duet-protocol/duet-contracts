@@ -28,4 +28,10 @@ interface IBond is IERC20Upgradeable {
     function faceValue(uint256 bondAmount_) external view returns (uint256);
 
     function amountToUnderlying(uint256 bondAmount_) external view returns (uint256);
+
+    function emergencyWithdraw(
+        IERC20Upgradeable token_,
+        address to_,
+        uint256 amount_
+    ) external;
 }

@@ -2,7 +2,7 @@
   "manifestVersion": "3.2",
   "admin": {
     "address": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
-    "txHash": "0x508e40f16556f884efe9346aa064b7a944d968e11a6a0121f52c98c71fcce575"
+    "txHash": "0xc4d3d9ad77baaa62f3429744a1438145239fd53de92596935431d6f91a6195ab"
   },
   "proxies": [
     {
@@ -32,14 +32,14 @@
     },
     {
       "address": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
-      "txHash": "0x8db08f97a68f74991c7e5c1cbb862d976231c78e177e3af453b1af3a57321d24",
+      "txHash": "0xd0dc0b177a74a9907631d9a0e05b3ccdc15e348bb9ec512e8065b0904f89bd9b",
       "kind": "transparent"
     }
   ],
   "impls": {
-    "5e090fbf34371955420751650894c90591d3dbe577da9a0811bbffea02d2b7b4": {
+    "b38452d1f2bafe4c97f4ad0a28d79775f520be58bf608f05f829bbf5bad999f1": {
       "address": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
-      "txHash": "0xc2a2c8b641bf548ca6b2bcf72ca6e252a7b7d8810c819c26ea4db229b3956bf3",
+      "txHash": "0x9b56a9b0976d5de8d87c921f32d2a15fac440c0731fe28e85a32418ab6375979",
       "layout": {
         "storage": [
           {
@@ -65,7 +65,7 @@
             "slot": "0",
             "type": "t_address",
             "contract": "Adminable",
-            "src": "contracts/libs/Adminable.sol:7"
+            "src": "contracts/libs/Adminable.sol:11"
           },
           {
             "label": "keeper",
@@ -81,7 +81,7 @@
             "slot": "2",
             "type": "t_mapping(t_string_memory_ptr,t_address)",
             "contract": "BondFactory",
-            "src": "contracts/BondFactory.sol:20"
+            "src": "contracts/BondFactory.sol:24"
           },
           {
             "label": "kindBondsMapping",
@@ -89,7 +89,7 @@
             "slot": "3",
             "type": "t_mapping(t_string_memory_ptr,t_array(t_address)dyn_storage)",
             "contract": "BondFactory",
-            "src": "contracts/BondFactory.sol:22"
+            "src": "contracts/BondFactory.sol:26"
           },
           {
             "label": "seriesBondsMapping",
@@ -97,7 +97,7 @@
             "slot": "4",
             "type": "t_mapping(t_string_memory_ptr,t_array(t_address)dyn_storage)",
             "contract": "BondFactory",
-            "src": "contracts/BondFactory.sol:24"
+            "src": "contracts/BondFactory.sol:28"
           },
           {
             "label": "bondKinds",
@@ -105,7 +105,7 @@
             "slot": "5",
             "type": "t_array(t_string_storage)dyn_storage",
             "contract": "BondFactory",
-            "src": "contracts/BondFactory.sol:25"
+            "src": "contracts/BondFactory.sol:29"
           },
           {
             "label": "bondSeries",
@@ -113,7 +113,7 @@
             "slot": "6",
             "type": "t_array(t_string_storage)dyn_storage",
             "contract": "BondFactory",
-            "src": "contracts/BondFactory.sol:26"
+            "src": "contracts/BondFactory.sol:30"
           },
           {
             "label": "isinBondMapping",
@@ -121,15 +121,15 @@
             "slot": "7",
             "type": "t_mapping(t_string_memory_ptr,t_address)",
             "contract": "BondFactory",
-            "src": "contracts/BondFactory.sol:29"
+            "src": "contracts/BondFactory.sol:33"
           },
           {
             "label": "bondPrices",
             "offset": 0,
             "slot": "8",
-            "type": "t_mapping(t_address,t_struct(BondPrice)3954_storage)",
+            "type": "t_mapping(t_address,t_struct(BondPrice)6000_storage)",
             "contract": "BondFactory",
-            "src": "contracts/BondFactory.sol:32"
+            "src": "contracts/BondFactory.sol:36"
           }
         ],
         "types": {
@@ -149,7 +149,7 @@
             "label": "bool",
             "numberOfBytes": "1"
           },
-          "t_mapping(t_address,t_struct(BondPrice)3954_storage)": {
+          "t_mapping(t_address,t_struct(BondPrice)6000_storage)": {
             "label": "mapping(address => struct IBondFactory.BondPrice)",
             "numberOfBytes": "32"
           },
@@ -169,7 +169,7 @@
             "label": "string",
             "numberOfBytes": "32"
           },
-          "t_struct(BondPrice)3954_storage": {
+          "t_struct(BondPrice)6000_storage": {
             "label": "struct IBondFactory.BondPrice",
             "members": [
               {
