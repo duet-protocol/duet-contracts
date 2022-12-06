@@ -9,6 +9,8 @@ import { formatUnits, parseEther, parseUnits } from 'ethers/lib/utils'
 
 use(chaiAsPromised)
 
+const MOCK_MATURITY_TIME = Math.floor(new Date().valueOf() / 1000) + 86400 * 10
+
 const MOCK_PRICE = {
   price: parseUnits('0.98', 8),
   bid: parseUnits('0.97', 8),
@@ -46,8 +48,6 @@ describe('Bonds', function () {
     // give 2,000,000 usdc to bob
     await usdcToken.connect(admin).transfer(bob.address, parseEther('1000000'))
 
-    const maturityTime = Math.floor(new Date().valueOf() / 1000) + 86400 * 10
-
     const tx = await bondFactory
       .connect(admin)
       .createBond(
@@ -58,7 +58,7 @@ describe('Bonds', function () {
         parseUnits('1000000', 18),
         'USBills',
         usdcToken.address,
-        maturityTime,
+        MOCK_MATURITY_TIME,
         'US912796YB94',
       )
 
@@ -77,6 +77,10 @@ describe('Bonds', function () {
     await usdcToken.connect(alice).approve(bondToken.address, ethers.constants.MaxUint256)
     await usdcToken.connect(bob).approve(bondToken.address, ethers.constants.MaxUint256)
 
+    // console.log('first', usdcToken.allowance(bondToken.address, ))
+  })
+
+  it("bond token's attributes should be set correctly", async () => {
     // bondToken create success
     expect(await bondToken.name()).to.equal('dB26W001', "The bond's name should be set correctly.")
     expect(await bondToken.symbol()).to.equal('T-Bills@26Weeks#001', "The bond's symbol should be set correctly.")
@@ -95,15 +99,62 @@ describe('Bonds', function () {
       usdcToken.address,
       "The bond's underlyingToken should be set correctly.",
     )
-    expect(+(await bondToken.maturity())).to.equal(maturityTime, "The bond's maturityTime should be set correctly.")
+    expect(+(await bondToken.maturity())).to.equal(
+      MOCK_MATURITY_TIME,
+      "The bond's maturityTime should be set correctly.",
+    )
 
     expect(await bondFactory.isinBondMapping(await bondToken.isin())).to.equal(
       bondToken.address,
-      'it should able to get bond address by isin',
+      'It should able to get bond address by isin',
+    )
+
+    expect(await bondToken.factory()).to.eq(bondFactory.address, "Bond token's factory address should be right")
+  })
+
+  it('mintByBondAmount should be right', async () => {
+    const mintAmount = parseEther('8.2322')
+
+    const usdcOfAlice = await usdcToken.balanceOf(alice.address)
+    const usdcOfBondToken = await usdcToken.balanceOf(bondToken.address)
+    const bondTokenOfAlice = await bondToken.balanceOf(alice.address)
+    const bondTokenOfInventory = await bondToken.inventoryAmount()
+    // const price = await (await bondToken.getPrice()).bid
+
+    await bondToken.connect(alice).mintByBondAmount(alice.address, mintAmount)
+
+    const underlyingAmount = await bondToken.previewMintByBondAmount(mintAmount)
+
+    expect(await usdcToken.balanceOf(alice.address)).to.equal(
+      usdcOfAlice.sub(underlyingAmount),
+      "After minting bond, user's underlying token balance should be correct",
+    )
+    expect(await usdcToken.balanceOf(bondToken.address)).to.equal(
+      usdcOfBondToken.add(underlyingAmount),
+      "After minting bond, The bond contract's underlying token balance should be correct",
+    )
+    expect(await bondToken.balanceOf(alice.address)).to.equal(
+      bondTokenOfAlice.add(mintAmount),
+      "After minting bond, The user's bond token balance should be correct",
+    )
+    expect(await bondToken.inventoryAmount()).to.equal(
+      bondTokenOfInventory.sub(mintAmount),
+      "After minting bond, The bond token's inventoryAmount should be correct",
     )
   })
 
-  it('admin/keeper should able to get/set price', async () => {
+  // it("Bond kinds' length / series' length should be right", async () => {
+  //   bondFactory.bondKinds
+  // })
+
+  it(`previewMintByUnderlyingAmount should be right`, async () => {
+    const amount = parseUnits('2.3', 18)
+    const priceFactor = await bondFactory.priceFactor()
+    const ask = (await bondToken.getPrice()).ask
+    expect(await bondToken.previewMintByUnderlyingAmount(amount)).to.eq(amount.mul(priceFactor).div(ask))
+  })
+
+  it('Admin/keeper should able to get/set price', async () => {
     await bondFactory.connect(admin).setPrice(bondToken.address, MOCK_PRICE.price, MOCK_PRICE.bid, MOCK_PRICE.ask)
     expect((await bondToken.getPrice()).price).to.equal(MOCK_PRICE.price, 'admin should be able to set price')
 
@@ -167,7 +218,6 @@ describe('Bonds', function () {
 
   it(`user can sell bond`, async () => {
     const sellBondAmount = parseEther('36.23832')
-
     const usdcOfAlice = await usdcToken.balanceOf(alice.address)
     const usdcOfBondToken = await usdcToken.balanceOf(bondToken.address)
     const bondTokenOfAlice = await bondToken.balanceOf(alice.address)
@@ -214,6 +264,34 @@ describe('Bonds', function () {
 
     expect(await usdcToken.balanceOf(alice.address)).to.equal(
       usdcOfAlice.add(redeemAmount),
+      "After redeeming bond, user's underlying token balance should be correct",
+    )
+    expect(await usdcToken.balanceOf(bondToken.address)).to.equal(
+      usdcOfBondToken.sub(redeemAmount),
+      "After redeeming bond, The bond contract's underlying token balance should be correct",
+    )
+    expect(await bondToken.balanceOf(alice.address)).to.equal(
+      bondTokenOfAlice.sub(redeemAmount),
+      "After redeeming bond, The user's bond token balance should be correct",
+    )
+    expect(await bondToken.redeemedAmount()).to.equal(
+      bondTokenOfRedeemed.add(redeemAmount),
+      "After redeeming bond, The bond token's redeemedAmount should be correct",
+    )
+  })
+
+  it(`user can redeem for another person`, async () => {
+    const redeemAmount = parseEther('200.48')
+
+    const usdcOfBob = await usdcToken.balanceOf(bob.address)
+    const usdcOfBondToken = await usdcToken.balanceOf(bondToken.address)
+    const bondTokenOfAlice = await bondToken.balanceOf(alice.address)
+    const bondTokenOfRedeemed = await bondToken.redeemedAmount()
+
+    await bondToken.connect(alice).redeemFor(bob.address, redeemAmount)
+
+    expect(await usdcToken.balanceOf(bob.address)).to.equal(
+      usdcOfBob.add(redeemAmount),
       "After redeeming bond, user's underlying token balance should be correct",
     )
     expect(await usdcToken.balanceOf(bondToken.address)).to.equal(
@@ -280,6 +358,10 @@ describe('Bonds', function () {
     const DiscountBond = await ethers.getContractFactory('DiscountBond')
     const secondBondToken = DiscountBond.attach(bondTokenAddress)
 
+    expect(await bondFactory.isinBondMapping('US912828YW42')).to.eq(
+      bondTokenAddress,
+      'Should be able to get bond address by isin',
+    )
     expect(+(await bondFactory.getKindBondLength('Discount'))).to.eq(
       2,
       'After creating second bond, the kind length should be correct',
@@ -287,6 +369,10 @@ describe('Bonds', function () {
 
     await bondFactory.connect(admin).removeBond(secondBondToken.address)
 
+    expect(await bondFactory.isinBondMapping('US912828YW42')).to.eq(
+      ethers.constants.AddressZero,
+      "Can't get address by isin after removing bond",
+    )
     expect(+(await bondFactory.getKindBondLength('Discount'))).to.eq(
       1,
       'After removing, the kind length should be correct',

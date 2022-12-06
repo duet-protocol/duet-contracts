@@ -33,5 +33,10 @@
   "devDependencies": {
     "@private/shared": "workspace:*",
     "axios": "^0.27.2"
+  },
+  "dependencies": {
+    "@ethersproject/contracts": "^5.7.0",
+    "@ethersproject/solidity": "^5.7.0",
+    "@ethersproject/wallet": "^5.7.0"
   }
 }
