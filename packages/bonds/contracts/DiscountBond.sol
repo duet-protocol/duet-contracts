@@ -85,8 +85,8 @@ contract DiscountBond is ERC20Upgradeable, ReentrancyGuardUpgradeable, IBond {
     function getPrice() public view returns (IBondFactory.BondPrice memory price) {
         price = factory.getPrice(address(this));
         uint256 priceFactor = factory.priceFactor();
-        uint256 minPrice = 8 * (10**(priceFactor - 1));
-        uint256 maxPrice = 12 * (10**(priceFactor - 1));
+        uint256 minPrice = 8 * (priceFactor / 10);
+        uint256 maxPrice = 12 * (priceFactor / 10);
         require(
             price.price >= minPrice &&
                 price.price <= maxPrice &&
