@@ -32,14 +32,14 @@
     },
     {
       "address": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
-      "txHash": "0xd0dc0b177a74a9907631d9a0e05b3ccdc15e348bb9ec512e8065b0904f89bd9b",
+      "txHash": "0xc411c5e1a50663b02f2cbb0df5fd5e0cc646b86f4f34fd00bfdfda87f626c6c7",
       "kind": "transparent"
     }
   ],
   "impls": {
-    "b38452d1f2bafe4c97f4ad0a28d79775f520be58bf608f05f829bbf5bad999f1": {
+    "759f9913e0a0824b50b6ea2531473434c3710fc724adc7cf54791f328a1248f8": {
       "address": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
-      "txHash": "0x9b56a9b0976d5de8d87c921f32d2a15fac440c0731fe28e85a32418ab6375979",
+      "txHash": "0x92d2669119e31e003260b79a79eba8b9a53c3078e7f48870cd850981c860dcb7",
       "layout": {
         "storage": [
           {
@@ -116,20 +116,28 @@
             "src": "contracts/BondFactory.sol:30"
           },
           {
-            "label": "isinBondMapping",
+            "label": "bondIsins",
             "offset": 0,
             "slot": "7",
+            "type": "t_array(t_string_storage)dyn_storage",
+            "contract": "BondFactory",
+            "src": "contracts/BondFactory.sol:31"
+          },
+          {
+            "label": "isinBondMapping",
+            "offset": 0,
+            "slot": "8",
             "type": "t_mapping(t_string_memory_ptr,t_address)",
             "contract": "BondFactory",
-            "src": "contracts/BondFactory.sol:33"
+            "src": "contracts/BondFactory.sol:34"
           },
           {
             "label": "bondPrices",
             "offset": 0,
-            "slot": "8",
-            "type": "t_mapping(t_address,t_struct(BondPrice)6000_storage)",
+            "slot": "9",
+            "type": "t_mapping(t_address,t_struct(BondPrice)6328_storage)",
             "contract": "BondFactory",
-            "src": "contracts/BondFactory.sol:36"
+            "src": "contracts/BondFactory.sol:37"
           }
         ],
         "types": {
@@ -149,7 +157,7 @@
             "label": "bool",
             "numberOfBytes": "1"
           },
-          "t_mapping(t_address,t_struct(BondPrice)6000_storage)": {
+          "t_mapping(t_address,t_struct(BondPrice)6328_storage)": {
             "label": "mapping(address => struct IBondFactory.BondPrice)",
             "numberOfBytes": "32"
           },
@@ -169,7 +177,7 @@
             "label": "string",
             "numberOfBytes": "32"
           },
-          "t_struct(BondPrice)6000_storage": {
+          "t_struct(BondPrice)6328_storage": {
             "label": "struct IBondFactory.BondPrice",
             "members": [
               {
