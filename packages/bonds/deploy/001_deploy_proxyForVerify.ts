@@ -3,13 +3,14 @@ import { HardhatRuntimeEnvironment } from 'hardhat/types'
 // eslint-disable-next-line node/no-unpublished-import
 import { useLogger } from '../scripts/utils'
 import { HardhatDeployRuntimeEnvironment } from '../types/hardhat-deploy'
-import { advancedDeploy } from './.defines'
+import { advancedDeploy, useNetworkName } from './.defines'
+import config from '../config'
 
 const logger = useLogger(__filename)
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { deployments, getNamedAccounts } = hre as unknown as HardhatDeployRuntimeEnvironment
   const { deploy } = deployments
-
+  const network = useNetworkName()
   const { deployer } = await getNamedAccounts()
 
   await advancedDeploy(
@@ -23,7 +24,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
         from: deployer,
         contract: name,
         // dummy contracts
-        args: ['0x4F90C9D2ddb4D3569294A6011C87D06F66E277Dc', '0x4F90C9D2ddb4D3569294A6011C87D06F66E277Dc', '0x'],
+        args: [config.address.dummyImplementation[network], config.address.dummyImplementation[network], '0x'],
         log: true,
         autoMine: true, // speed up deployment on local network (ganache, hardhat), no effect on live networks
       })
