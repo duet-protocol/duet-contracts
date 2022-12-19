@@ -102,6 +102,26 @@ const config: HardhatUserConfig = {
         },
       },
     },
+    goerli: {
+      url: 'https://rpc.ankr.com/eth_goerli',
+      chainId: 5,
+      accounts: [process.env.KEY_BSC_MAINNET!],
+      verify: {
+        etherscan: {
+          apiKey: process.env.ETHERSCAN_API_KEY,
+        },
+      },
+    },
+    eth: {
+      url: 'https://rpc.ankr.com/eth',
+      chainId: 1,
+      accounts: [process.env.KEY_BSC_MAINNET!],
+      verify: {
+        etherscan: {
+          apiKey: process.env.ETHERSCAN_API_KEY,
+        },
+      },
+    },
   },
   paths: {
     sources: './contracts',
@@ -136,6 +156,8 @@ const config: HardhatUserConfig = {
     apiKey: {
       bsc: process.env.BSCSCAN_KEY!,
       bscTestnet: process.env.BSCSCAN_TEST_KEY!,
+      goerli: process.env.ETHERSCAN_API_KEY!,
+      eth: process.env.ETHERSCAN_API_KEY!,
       mainnet: process.env.ETHERSCAN_API_KEY!,
     },
     customChains: [],
