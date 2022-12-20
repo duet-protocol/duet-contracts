@@ -2,21 +2,18 @@
 pragma solidity 0.8.9;
 
 import "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/IERC20MetadataUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
-
 import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 import "./interfaces/IBond.sol";
 import "./interfaces/IBondFactory.sol";
 
 contract DiscountBond is ERC20Upgradeable, ReentrancyGuardUpgradeable, IBond {
-    using SafeERC20Upgradeable for IERC20Upgradeable;
+    using SafeERC20Upgradeable for IERC20MetadataUpgradeable;
     string public constant kind = "Discount";
-    uint256 public constant MIN_TRADING_AMOUNT = 1e12;
-
     IBondFactory public factory;
-    IERC20Upgradeable public underlyingToken;
+    IERC20MetadataUpgradeable public underlyingToken;
     uint256 public maturity;
     string public series;
     uint256 public inventoryAmount;
@@ -38,7 +35,7 @@ contract DiscountBond is ERC20Upgradeable, ReentrancyGuardUpgradeable, IBond {
         string memory symbol_,
         string memory series_,
         address factory_,
-        IERC20Upgradeable underlyingToken_,
+        IERC20MetadataUpgradeable underlyingToken_,
         uint256 maturity_,
         string memory isin_
     ) external initializer {
@@ -74,12 +71,20 @@ contract DiscountBond is ERC20Upgradeable, ReentrancyGuardUpgradeable, IBond {
         _;
     }
 
+    function decimals() public view virtual override(ERC20Upgradeable, IERC20MetadataUpgradeable) returns (uint8) {
+        return underlyingToken.decimals();
+    }
+
     /**
      * @dev grant specific amount of bond for user mint.
      */
     function grant(uint256 amount_) external onlyFactory {
         inventoryAmount += amount_;
         emit BondGranted(amount_, inventoryAmount);
+    }
+
+    function minTradingAmount() public view returns (uint256) {
+        return 10**(underlyingToken.decimals() - 4);
     }
 
     function getPrice() public view returns (IBondFactory.BondPrice memory price) {
@@ -119,7 +124,7 @@ contract DiscountBond is ERC20Upgradeable, ReentrancyGuardUpgradeable, IBond {
         tradingGuard
         returns (uint256 bondAmount)
     {
-        require(underlyingAmount_ >= MIN_TRADING_AMOUNT, "DiscountBond: AMOUNT_TOO_LOW");
+        require(underlyingAmount_ >= minTradingAmount(), "DiscountBond: AMOUNT_TOO_LOW");
         bondAmount = (underlyingAmount_ * factory.priceFactor()) / getPrice().ask;
         require(inventoryAmount >= bondAmount, "DiscountBond: INSUFFICIENT_LIQUIDITY");
     }
@@ -144,7 +149,7 @@ contract DiscountBond is ERC20Upgradeable, ReentrancyGuardUpgradeable, IBond {
         tradingGuard
         returns (uint256 underlyingAmount)
     {
-        require(bondAmount_ >= MIN_TRADING_AMOUNT, "DiscountBond: AMOUNT_TOO_LOW");
+        require(bondAmount_ >= minTradingAmount(), "DiscountBond: AMOUNT_TOO_LOW");
         require(inventoryAmount >= bondAmount_, "DiscountBond: INSUFFICIENT_LIQUIDITY");
         underlyingAmount = (bondAmount_ * getPrice().ask) / factory.priceFactor();
     }
@@ -170,7 +175,7 @@ contract DiscountBond is ERC20Upgradeable, ReentrancyGuardUpgradeable, IBond {
         tradingGuard
         returns (uint256 underlyingAmount)
     {
-        require(bondAmount_ >= MIN_TRADING_AMOUNT, "DiscountBond: AMOUNT_TOO_LOW");
+        require(bondAmount_ >= minTradingAmount(), "DiscountBond: AMOUNT_TOO_LOW");
         require(balanceOf(msg.sender) >= bondAmount_, "DiscountBond: EXCEEDS_BALANCE");
         underlyingAmount = (bondAmount_ * getPrice().bid) / factory.priceFactor();
         require(underlyingToken.balanceOf(address(this)) >= underlyingAmount, "DiscountBond: INSUFFICIENT_LIQUIDITY");
@@ -207,7 +212,7 @@ contract DiscountBond is ERC20Upgradeable, ReentrancyGuardUpgradeable, IBond {
     }
 
     function emergencyWithdraw(
-        IERC20Upgradeable token_,
+        IERC20MetadataUpgradeable token_,
         address to_,
         uint256 amount_
     ) external onlyFactory {
