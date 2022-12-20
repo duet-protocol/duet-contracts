@@ -1,16 +1,15 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity 0.8.9;
 
-import "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/IERC20MetadataUpgradeable.sol";
 
-interface IBond is IERC20Upgradeable {
+interface IBond is IERC20MetadataUpgradeable {
     function initialize(
         string memory name_,
         string memory symbol_,
         string memory series,
         address factory_,
-        IERC20Upgradeable underlyingToken_,
+        IERC20MetadataUpgradeable underlyingToken_,
         uint256 maturity_,
         string memory isin_
     ) external;
@@ -30,7 +29,7 @@ interface IBond is IERC20Upgradeable {
     function amountToUnderlying(uint256 bondAmount_) external view returns (uint256);
 
     function emergencyWithdraw(
-        IERC20Upgradeable token_,
+        IERC20MetadataUpgradeable token_,
         address to_,
         uint256 amount_
     ) external;

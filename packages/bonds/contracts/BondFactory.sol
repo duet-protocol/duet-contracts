@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity 0.8.9;
 
-import "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/IERC20MetadataUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 import "./interfaces/IBondFactory.sol";
@@ -71,7 +71,7 @@ contract BondFactory is IBondFactory, Initializable, Adminable, Keepable {
         BondPrice calldata initialPrice_,
         uint256 initialGrant_,
         string memory series_,
-        IERC20Upgradeable underlyingToken_,
+        IERC20MetadataUpgradeable underlyingToken_,
         uint256 maturity_,
         string memory isin_
     ) external onlyAdmin returns (address bondTokenAddress) {
@@ -215,7 +215,7 @@ contract BondFactory is IBondFactory, Initializable, Adminable, Keepable {
 
     function emergencyWithdraw(
         IBond bond_,
-        IERC20Upgradeable token_,
+        IERC20MetadataUpgradeable token_,
         uint256 amount_
     ) external onlyAdmin {
         bond_.emergencyWithdraw(token_, msg.sender, amount_);
