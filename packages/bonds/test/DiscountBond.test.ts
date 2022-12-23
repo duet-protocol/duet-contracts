@@ -7,12 +7,21 @@ import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers'
 import { BigNumber } from 'ethers'
 import { formatUnits, parseEther, parseUnits } from 'ethers/lib/utils'
 
+const maturityTime = Math.floor(new Date().valueOf() / 1000) + 86400 * 40
+
 use(chaiAsPromised)
 
 const MOCK_PRICE = {
   price: parseUnits('0.98', 8),
   bid: parseUnits('0.97', 8),
   ask: parseUnits('0.99', 8),
+  lastUpdated: Math.floor(new Date().valueOf() / 1000),
+}
+
+const MOCK_PRICE_2 = {
+  price: parseUnits('0.96', 8),
+  bid: parseUnits('0.95', 8),
+  ask: parseUnits('0.97', 8),
   lastUpdated: Math.floor(new Date().valueOf() / 1000),
 }
 
@@ -103,6 +112,31 @@ describe('Bonds', function () {
     )
   })
 
+  it(`getBondKinds/getBondSeries/getBondIsins/getSeriesBondLength works correctly`, async () => {
+    expect(await bondFactory.getBondKinds()).to.eql(['Discount'], `getBondKinds works correctly`)
+    expect(await bondFactory.getBondSeries()).to.eql(['USBills'], `getBondSeries works correctly`)
+    expect(await bondFactory.getBondIsins()).to.eql(['US912796YB94'], `getBondIsins works correctly`)
+    expect(await bondFactory.getSeriesBondLength('USBills')).to.eql(
+      BigNumber.from('1'),
+      `getSeriesBondLength works correctly`,
+    )
+  })
+
+  it(`calculateFee works correctly`, async () => {
+    expect(await bondFactory.calculateFee('Discount', parseEther('1'))).to.eq(0)
+  })
+
+  it(`verifyPrice fail`, async () => {
+    expect(
+      bondFactory.verifyPrice({
+        price: BigNumber.from('0'),
+        bid: MOCK_PRICE.bid,
+        ask: MOCK_PRICE.ask,
+        lastUpdated: MOCK_PRICE.lastUpdated,
+      }),
+    ).to.revertedWith('BondFactory: INVALID_PRICE')
+  })
+
   it('admin/keeper should able to get/set price', async () => {
     await bondFactory.connect(admin).setPrice(bondToken.address, MOCK_PRICE.price, MOCK_PRICE.bid, MOCK_PRICE.ask)
     expect((await bondToken.getPrice()).price).to.equal(MOCK_PRICE.price, 'admin should be able to set price')
@@ -113,8 +147,8 @@ describe('Bonds', function () {
 
     await bondFactory.setKeeper(carol.address)
 
-    await bondFactory.connect(carol).setPrice(bondToken.address, parseUnits('9.2', 8), MOCK_PRICE.bid, MOCK_PRICE.ask)
-    expect((await bondToken.getPrice()).price).to.equal(parseUnits('9.2', 8), 'keeper should be able to set price')
+    await bondFactory.connect(carol).setPrice(bondToken.address, MOCK_PRICE_2.price, MOCK_PRICE_2.bid, MOCK_PRICE_2.ask)
+    expect((await bondToken.getPrice()).price).to.equal(MOCK_PRICE_2.price, 'keeper should be able to set price')
   })
 
   const shouldBuyBondCorrectly = async (user: SignerWithAddress, buyAmount: BigNumber) => {
@@ -163,6 +197,47 @@ describe('Bonds', function () {
     )
 
     await shouldBuyBondCorrectly(alice, parseEther('1200000'))
+  })
+
+  it(`mintByBondAmount should work correctly`, async () => {
+    const usdcOfAlice = await usdcToken.balanceOf(alice.address)
+    const usdcOfBondToken = await usdcToken.balanceOf(bondToken.address)
+    const bondTokenOfAlice = await bondToken.balanceOf(alice.address)
+    const bondTokenOfInventory = await bondToken.inventoryAmount()
+    const price = await (await bondToken.getPrice()).bid
+
+    const bondAmount = parseEther('12.2392')
+
+    await bondToken.connect(alice).mintByBondAmount(alice.address, bondAmount)
+
+    expect(await usdcToken.balanceOf(alice.address)).to.eq(
+      usdcOfAlice.sub(await bondToken.previewMintByBondAmount(bondAmount)),
+      `after mintByBondAmount, user's underlying balance should be correct`,
+    )
+    expect(await usdcToken.balanceOf(bondToken.address)).to.eq(
+      usdcOfBondToken.add(await bondToken.previewMintByBondAmount(bondAmount)),
+      `after mintByBondAmount, bondToken's underlying balance should be correct`,
+    )
+    expect(await bondToken.balanceOf(alice.address)).to.eq(
+      bondTokenOfAlice.add(bondAmount),
+      `after mintByBondAmount, alice's bondToken balance should be correct`,
+    )
+    expect(await bondToken.inventoryAmount()).to.eq(
+      bondTokenOfInventory.sub(bondAmount),
+      `after mintByBondAmount, bondToken's inventoryAmount should be correct`,
+    )
+  })
+
+  it(`faceValue should be correct`, async () => {
+    expect(await bondToken.faceValue(parseEther('7.26'))).to.eq(parseEther('7.26'))
+  })
+
+  it(`amountToUnderlying should be correct`, async () => {
+    const price = (await bondToken.getPrice()).price
+    const priceFactor = await bondFactory.priceFactor()
+    const bondAmount = parseEther('7.26')
+
+    expect(await bondToken.amountToUnderlying(bondAmount)).to.eq(bondAmount.mul(price).div(priceFactor))
   })
 
   it(`user can sell bond`, async () => {
@@ -246,6 +321,10 @@ describe('Bonds', function () {
     )
   })
 
+  it(`can't remove bond when it's has supply`, async () => {
+    expect(bondFactory.connect(admin).removeBond(bondToken.address)).to.revertedWith(`BondFactory: CANT_REMOVE`)
+  })
+
   it(`should be able to remove bond`, async () => {
     const maturityTime = Math.floor(new Date().valueOf() / 1000) + 86400 * 40
 
@@ -291,5 +370,105 @@ describe('Bonds', function () {
       1,
       'After removing, the kind length should be correct',
     )
+  })
+
+  it(`create bond fail`, async () => {
+    expect(
+      bondFactory.connect(admin).createBond(
+        'DiscountNotExist',
+        'dB26W002',
+        'T-Bills@26Weeks#002',
+        {
+          price: parseUnits('0.98', 8),
+          bid: parseUnits('0.97', 8),
+          ask: parseUnits('0.99', 8),
+          lastUpdated: Math.floor(new Date().valueOf() / 1000),
+        },
+        parseUnits('1000000', 18),
+        'USBills',
+        usdcToken.address,
+        maturityTime,
+        'US912828YW42',
+      ),
+    ).to.revertedWith('BondFactory: Invalid bond implementation')
+  })
+
+  it(`create bond fail`, async () => {
+    expect(
+      bondFactory.connect(admin).createBond(
+        'Discount',
+        'dB26W002',
+        'T-Bills@26Weeks#002',
+        {
+          price: parseUnits('0.98', 8),
+          bid: parseUnits('0.97', 8),
+          ask: parseUnits('0.99', 8),
+          lastUpdated: Math.floor(new Date().valueOf() / 1000),
+        },
+        parseUnits('1000000', 18),
+        'USBills',
+        usdcToken.address,
+        maturityTime,
+        'US912828YW42',
+      ),
+    ).to.revertedWith('BondFactory: Invalid bond implementation')
+  })
+
+  it(`create bond fail`, async () => {
+    expect(
+      bondFactory.connect(admin).createBond(
+        'Discount',
+        'dB26W002',
+        'T-Bills@26Weeks#002',
+        {
+          price: parseUnits('0.98', 8),
+          bid: parseUnits('0.97', 8),
+          ask: parseUnits('0.99', 8),
+          lastUpdated: Math.floor(new Date().valueOf() / 1000),
+        },
+        parseUnits('1000000', 18),
+        'USBills',
+        usdcToken.address,
+        maturityTime,
+        'US912828YW42',
+      ),
+    ).to.revertedWith('A bond for this isin already exists')
+  })
+
+  it(`create bond fail`, async () => {
+    expect(
+      bondFactory.connect(admin).createBond(
+        'Discount',
+        'dB26W002',
+        'T-Bills@26Weeks#002',
+        {
+          price: parseUnits('0.98', 8),
+          bid: parseUnits('0.97', 8),
+          ask: parseUnits('0.99', 8),
+          lastUpdated: Math.floor(new Date().valueOf() / 1000),
+        },
+        parseUnits('0', 18),
+        'USBills',
+        usdcToken.address,
+        maturityTime,
+        'US912828YW00',
+      ),
+    ).to.revertedWith('A bond for this isin already exists')
+  })
+
+  it(`emergencyWithdraw work correctly`, async () => {
+    const usdcOfBondToken = await usdcToken.balanceOf(bondToken.address)
+    const usdcOfAdmin = await usdcToken.balanceOf(admin.address)
+
+    await bondFactory.connect(admin).emergencyWithdraw(bondToken.address, usdcToken.address, usdcOfBondToken)
+
+    expect(await usdcToken.balanceOf(bondToken.address)).to.eq(ethers.constants.Zero)
+    expect(await usdcToken.balanceOf(admin.address)).to.eq(usdcOfAdmin.add(usdcOfBondToken))
+  })
+
+  it(`amountToUnderlying should be correct after maturity`, async () => {
+    const bondAmount = parseEther('7.26')
+
+    expect(await bondToken.amountToUnderlying(bondAmount)).to.eq(bondAmount)
   })
 })
