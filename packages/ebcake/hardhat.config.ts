@@ -149,6 +149,7 @@ task('verify:duet', 'Verifies contract on Etherscan(Duet customized)', async (ta
   const deploymentsPath = path.resolve(__dirname, 'deployments', hre.network.name)
   logger.info('deploymentsPath', deploymentsPath)
   const networkName = hre.network.name === 'bsctest' ? 'bscTestnet' : hre.network.name
+  logger.info('config', config);
   const apiKey = resolveEtherscanApiKey(config.etherscan?.apiKey, networkName)
   const etherscanEndpoint = await getEtherscanEndpoints(
     hre.network.provider,
