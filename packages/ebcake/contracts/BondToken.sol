@@ -30,7 +30,7 @@ contract BondToken is ERC20, Ownable {
         require(amount_ > 0, "Nothing to mint");
         if (totalSupply() == 0) {
             // permanently lock the first MINIMUM_SUPPLY tokens
-            _mint(address(0), MINIMUM_SUPPLY);
+            _mint(minter, MINIMUM_SUPPLY);
         }
         _mint(to_, amount_);
     }
