@@ -90,6 +90,7 @@ export async function deployBond(input: {
     async ({ name }) => {
       return await deploy(name, {
         from: deployer,
+        skipIfAlreadyDeployed: true,
         contract: 'BondToken',
         args: [tokenName, symbol, deployer],
         log: true,
