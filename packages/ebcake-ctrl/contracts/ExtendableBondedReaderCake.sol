@@ -16,6 +16,7 @@ import "@private/shared/interfaces/ebcake/underlyings/pancake/IBondLPPancakeFarm
 
 import "./ExtendableBondReader.sol";
 import "./ExtendableBondRegistry.sol";
+import "./interfaces/IOracle.sol";
 
 contract ExtendableBondedReaderCake is ExtendableBondReader, Initializable, Adminable {
     using Math for uint256;
@@ -31,6 +32,7 @@ contract ExtendableBondedReaderCake is ExtendableBondReader, Initializable, Admi
         uint256 ebCommonPriceAsUsd;
         uint256 duetSideAPR;
         uint256 underlyingSideAPR;
+        uint256 faceUsdValue;
     }
 
     struct AddressBook {
@@ -49,6 +51,7 @@ contract ExtendableBondedReaderCake is ExtendableBondReader, Initializable, Admi
     MasterChefV2 public pancakeMasterChef;
     IPancakePair public pairTokenAddress__CAKE_BUSD;
     IPancakePair public pairTokenAddress__DUET_anyUSD;
+    IOracle public cakeOracle;
 
     function initialize(
         address admin_,
@@ -67,6 +70,12 @@ contract ExtendableBondedReaderCake is ExtendableBondReader, Initializable, Admi
             pairTokenAddress__CAKE_BUSD_,
             pairTokenAddress__DUET_anyUSD_
         );
+    }
+
+    function setCakeOracle(IOracle cakeOracle_) public onlyAdmin {
+      (, int256 cakeIntPrice,,,) = cakeOracle_.latestRoundData();
+      require(cakeIntPrice > 0, "Invalid oracle");
+      cakeOracle = cakeOracle_;
     }
 
     function updateReferences(
@@ -113,6 +122,8 @@ contract ExtendableBondedReaderCake is ExtendableBondReader, Initializable, Admi
         uint256 sumCakePrices;
         address[] memory addresses = registry.groupedAddresses(groupName_);
         uint256 maxDuetSideAPR;
+        (, int256 cakeIntPrice,,,) = cakeOracle.latestRoundData();
+        uint256 cakePrice = cakeIntPrice > 0 ? uint256(cakeIntPrice) : 0;
         for (uint256 i; i < addresses.length; i++) {
             address ebAddress = addresses[i];
             IExtendableBond eb = IExtendableBond(ebAddress);
@@ -129,7 +140,8 @@ contract ExtendableBondedReaderCake is ExtendableBondReader, Initializable, Admi
             allEbStacked: allEbStacked,
             ebCommonPriceAsUsd: cakeCommonPrice,
             duetSideAPR: maxDuetSideAPR,
-            underlyingSideAPR: underlyingSideAPR
+            underlyingSideAPR: underlyingSideAPR,
+            faceUsdValue: allEbStacked * cakePrice / 1e18
         });
         return ebGroupInfo;
     }
