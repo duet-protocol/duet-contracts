@@ -73,9 +73,9 @@ contract ExtendableBondedReaderCake is ExtendableBondReader, Initializable, Admi
     }
 
     function setCakeOracle(IOracle cakeOracle_) public onlyAdmin {
-      (, int256 cakeIntPrice,,,) = cakeOracle_.latestRoundData();
-      require(cakeIntPrice > 0, "Invalid oracle");
-      cakeOracle = cakeOracle_;
+        (, int256 cakeIntPrice, , , ) = cakeOracle_.latestRoundData();
+        require(cakeIntPrice > 0, "Invalid oracle");
+        cakeOracle = cakeOracle_;
     }
 
     function updateReferences(
@@ -122,7 +122,7 @@ contract ExtendableBondedReaderCake is ExtendableBondReader, Initializable, Admi
         uint256 sumCakePrices;
         address[] memory addresses = registry.groupedAddresses(groupName_);
         uint256 maxDuetSideAPR;
-        (, int256 cakeIntPrice,,,) = cakeOracle.latestRoundData();
+        (, int256 cakeIntPrice, , , ) = cakeOracle.latestRoundData();
         uint256 cakePrice = cakeIntPrice > 0 ? uint256(cakeIntPrice) : 0;
         for (uint256 i; i < addresses.length; i++) {
             address ebAddress = addresses[i];
@@ -141,7 +141,7 @@ contract ExtendableBondedReaderCake is ExtendableBondReader, Initializable, Admi
             ebCommonPriceAsUsd: cakeCommonPrice,
             duetSideAPR: maxDuetSideAPR,
             underlyingSideAPR: underlyingSideAPR,
-            faceUsdValue: allEbStacked * cakePrice / 1e18
+            faceUsdValue: (allEbStacked * cakePrice) / 1e18
         });
         return ebGroupInfo;
     }

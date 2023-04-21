@@ -4,3 +4,9 @@ yarn-error.log
 .DS_Store
 generated*
 .env
+packages/*/node_modules
+packages/*/artifacts
+packages/*/typechain
+packages/*/coverage
+packages/*/build
+packages/*/cache
