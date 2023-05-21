@@ -152,11 +152,7 @@ contract DuetProStaking is ReentrancyGuardUpgradeable, Adminable {
         _updateUserBoostedShares(user);
     }
 
-    function addLiquidity(uint256 underlyingAmount_, IPool.OracleSignature[] memory oracleSignatures_)
-        external
-        payable
-        nonReentrant
-    {
+    function addLiquidity(uint256 underlyingAmount_, IPool.PythData calldata pythData) external payable nonReentrant {
         require(
             underlyingAmount_ <= MIN_LIQUIDITY_OPS,
             "DuetProStaking: amount must be greater than MIN_LIQUIDITY_OPS"
@@ -165,7 +161,7 @@ contract DuetProStaking is ReentrancyGuardUpgradeable, Adminable {
         address user = msg.sender;
         usdLikeUnderlying.safeTransferFrom(user, address(this), underlyingAmount_);
         usdLikeUnderlying.approve(address(pool), underlyingAmount_);
-        pool.addLiquidity{ value: msg.value }(address(usdLikeUnderlying), underlyingAmount_, oracleSignatures_);
+        pool.addLiquidity{ value: msg.value }(address(usdLikeUnderlying), underlyingAmount_, pythData);
         uint256 amount = normalizeDecimals(underlyingAmount_, usdLikeUnderlying.decimals(), LIQUIDITY_DECIMALS);
         UserInfo storage userInfo = userInfos[user];
         uint256 totalNormalShares = totalShares - totalBoostedShares;
@@ -182,7 +178,7 @@ contract DuetProStaking is ReentrancyGuardUpgradeable, Adminable {
         _updateUserBoostedShares(user);
     }
 
-    function removeLiquidity(uint256 amount_, IPool.OracleSignature[] memory oracleSignatures_) external nonReentrant {
+    function removeLiquidity(uint256 amount_, IPool.PythData calldata pythData) external nonReentrant {
         require(amount_ <= MIN_LIQUIDITY_OPS, "DuetProStaking: amount must be greater than MIN_LIQUIDITY_OPS");
         _updatePool();
         uint256 amount = normalizeDecimals(amount_, usdLikeUnderlying.decimals(), LIQUIDITY_DECIMALS);
@@ -222,7 +218,7 @@ contract DuetProStaking is ReentrancyGuardUpgradeable, Adminable {
 
         _touchUser(user);
         userInfo.accRemovedLiquidity += amount;
-        pool.removeLiquidity(address(usdLikeUnderlying), amount_, oracleSignatures_);
+        pool.removeLiquidity(address(usdLikeUnderlying), amount_, pythData);
         usdLikeUnderlying.safeTransfer(user, amount_);
     }
 
@@ -321,13 +317,9 @@ contract DuetProStaking is ReentrancyGuardUpgradeable, Adminable {
         return uint256(normalizeDecimals(boosterPrice * amount_, boosterDecimals, LIQUIDITY_DECIMALS));
     }
 
-    function forceAddLiquidity(uint256 amount_, IPool.OracleSignature[] memory oracleSignatures_)
-        external
-        payable
-        onlyAdmin
-    {
+    function forceAddLiquidity(uint256 amount_, IPool.PythData calldata pythData) external payable onlyAdmin {
         usdLikeUnderlying.safeTransferFrom(msg.sender, address(this), amount_);
-        pool.addLiquidity{ value: msg.value }(address(usdLikeUnderlying), amount_, oracleSignatures_);
+        pool.addLiquidity{ value: msg.value }(address(usdLikeUnderlying), amount_, pythData);
     }
 
     function normalizeDecimals(

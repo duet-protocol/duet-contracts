@@ -12,8 +12,9 @@ enum Names {
   MockBoosterOracle = 'MockBoosterOracle',
 }
 
-const gasLimit = 6000000
+const gasLimit = 12000000
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
+const USDC_ADDRESS = '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8'
 
 const logger = useLogger(__filename)
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
@@ -87,7 +88,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
               args: [
                 config.address.DeriPool[networkName],
                 config.address.DeriLens[networkName],
-                mockDuet.address,
+                USDC_ADDRESS,
                 mockOracle.address,
                 deployer,
               ],

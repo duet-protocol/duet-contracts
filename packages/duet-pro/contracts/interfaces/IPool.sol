@@ -35,38 +35,42 @@ interface IPool {
         bytes32 s;
     }
 
+    struct PythData {
+        bytes[] vaas;
+        bytes32[] ids;
+    }
+
     function addLiquidity(
         address underlying,
         uint256 amount,
-        OracleSignature[] memory oracleSignatures
+        PythData calldata pythData
     ) external payable;
 
     function removeLiquidity(
         address underlying,
         uint256 amount,
-        OracleSignature[] memory oracleSignatures
+        PythData calldata pythData
     ) external;
 
     function addMargin(
         address underlying,
         uint256 amount,
-        OracleSignature[] memory oracleSignatures
+        PythData calldata pythData
     ) external payable;
 
     function removeMargin(
         address underlying,
         uint256 amount,
-        OracleSignature[] memory oracleSignatures
+        PythData calldata pythData
     ) external;
 
     function trade(
         string memory symbolName,
         int256 tradeVolume,
-        int256 priceLimit,
-        OracleSignature[] memory oracleSignatures
+        int256 priceLimit
     ) external;
 
-    function liquidate(uint256 pTokenId, OracleSignature[] memory oracleSignatures) external;
+    function liquidate(uint256 pTokenId, PythData calldata pythData) external;
 
     struct LpInfo {
         address vault;
