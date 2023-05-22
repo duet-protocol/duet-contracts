@@ -24,6 +24,7 @@
     "hardhat": "npx hardhat",
     "hint": "npx hardhat check",
     "test": "REPORT_GAS=true npx hardhat test",
+    "test:arbitrum": "REPORT_GAS=true npx hardhat test --network arbitrum",
     "test:node": "npx hardhat node",
     "test:watch": "npx hardhat watch test",
     "test:coverage": "npx hardhat coverage",

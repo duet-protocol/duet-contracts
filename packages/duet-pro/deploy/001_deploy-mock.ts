@@ -10,6 +10,7 @@ enum Names {
   MockDuet = 'MockDuet',
   DuetProStaking = 'DuetProStaking',
   MockBoosterOracle = 'MockBoosterOracle',
+  BoosterOracle = 'BoosterOracle',
 }
 
 const gasLimit = 12000000
@@ -45,17 +46,17 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     },
   )
 
-  const mockOracle = await advancedDeploy(
+  const boosterOracle = await advancedDeploy(
     {
       hre,
       logger,
       proxied: false,
-      name: Names.MockBoosterOracle,
+      name: Names.BoosterOracle,
     },
     async ({ name }) => {
       return await deploy(name, {
         from: deployer,
-        contract: 'MockBoosterOracle',
+        contract: 'BoosterOracle',
         args: [],
         log: true,
         autoMine: true, // speed up deployment on local network (ganache, hardhat), no effect on live networks
@@ -89,7 +90,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
                 config.address.DeriPool[networkName],
                 config.address.DeriLens[networkName],
                 USDC_ADDRESS,
-                mockOracle.address,
+                boosterOracle.address,
                 deployer,
               ],
             },

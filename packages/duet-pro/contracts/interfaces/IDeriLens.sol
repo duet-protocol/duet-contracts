@@ -141,10 +141,10 @@ interface IDeriLens {
 
     function getPoolInfo(address pool_) external view returns (PoolInfo memory info);
 
-    function getSymbolsInfo(address pool_, PriceAndVolatility[] memory pvs)
-        external
-        view
-        returns (SymbolInfo[] memory infos);
+    function getSymbolsInfo(
+        address pool_,
+        PriceAndVolatility[] memory pvs
+    ) external view returns (SymbolInfo[] memory infos);
 
     function getTdInfo(address pool_, address account_) external view returns (TdInfo memory info);
 
