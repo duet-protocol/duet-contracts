@@ -1,12 +1,10 @@
 import { DeployFunction } from 'hardhat-deploy/types'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
-import config from '../config'
 import { useLogger } from '@private/shared/scripts/utils'
-import { HardhatDeployRuntimeEnvironment } from '../types/hardhat-deploy'
-import { useNetworkName, advancedDeploy } from '@private/shared/scripts/deploy-utils'
-import { parseEther } from 'ethers/lib/utils'
+// import { HardhatDeployRuntimeEnvironment } from '@private/shared/types/hardhat-deploy'
+import { advancedDeploy } from '@private/shared/scripts/deploy-utils'
 
-enum Names {
+export enum Names {
   SingleBondFactory = 'SingleBondFactory',
 }
 
@@ -14,7 +12,7 @@ const gasLimit = 6000000
 
 const logger = useLogger(__filename)
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
-  const { deployments, getNamedAccounts } = hre as unknown as HardhatDeployRuntimeEnvironment
+  const { deployments, getNamedAccounts } = hre
   const { deploy, get, read, execute } = deployments
 
   const { deployer } = await getNamedAccounts()
