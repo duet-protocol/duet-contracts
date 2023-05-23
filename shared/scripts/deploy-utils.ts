@@ -26,10 +26,7 @@ export async function writeExtraMeta(name: string, meta?: { class?: string; inst
   )
 }
 
-export async function isProxiedContractDeployable(
-  hre: HardhatRuntimeEnvironment | HardhatDeployRuntimeEnvironment,
-  name: string,
-) {
+export async function isProxiedContractDeployable(hre: HardhatRuntimeEnvironment, name: string) {
   const { deployments } = hre as unknown as HardhatDeployRuntimeEnvironment
   const { all, get } = deployments
   const { deployer } = await getNamedAccounts()
