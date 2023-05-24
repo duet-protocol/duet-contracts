@@ -31,6 +31,7 @@
     "pre-commit": "pnpm run prettier"
   },
   "devDependencies": {
+    "@nomicfoundation/hardhat-network-helpers": "^1.0.8",
     "@private/shared": "workspace:*",
     "axios": "^0.27.2"
   }

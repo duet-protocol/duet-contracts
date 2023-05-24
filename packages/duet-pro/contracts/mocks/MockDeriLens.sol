@@ -80,8 +80,8 @@ contract MockDeriLensAndPool {
             return value_;
         }
         if (targetDecimals_ > sourceDecimals_) {
-            return value_ * 10 ** (targetDecimals_ - sourceDecimals_);
+            return value_ * 10**(targetDecimals_ - sourceDecimals_);
         }
-        return value_ / 10 ** (sourceDecimals_ - targetDecimals_);
+        return value_ / 10**(sourceDecimals_ - targetDecimals_);
     }
 }

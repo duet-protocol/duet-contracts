@@ -18,7 +18,7 @@ contract BoosterOracle {
 
         (uint160 sqrtPrice, , , , , , ) = pool.slot0();
 
-        uint256 price = (uint256(sqrtPrice) ** 2 * (10 ** 20)) / (2 ** (96 * 2));
+        uint256 price = (uint256(sqrtPrice)**2 * (10**20)) / (2**(96 * 2));
 
         return price;
     }

@@ -259,6 +259,9 @@ importers:
 
   packages/bond-farming-v2:
     devDependencies:
+      '@nomicfoundation/hardhat-network-helpers':
+        specifier: ^1.0.8
+        version: 1.0.8(hardhat@2.14.0)
       '@private/shared':
         specifier: workspace:*
         version: link:../../shared
@@ -2957,6 +2960,15 @@ packages:
       - supports-color
       - utf-8-validate
 
+  /@nomicfoundation/hardhat-network-helpers@1.0.8(hardhat@2.14.0):
+    resolution: {integrity: sha512-MNqQbzUJZnCMIYvlniC3U+kcavz/PhhQSsY90tbEtUyMj/IQqsLwIRZa4ctjABh3Bz0KCh9OXUZ7Yk/d9hr45Q==}
+    peerDependencies:
+      hardhat: ^2.9.5
+    dependencies:
+      ethereumjs-util: 7.1.5
+      hardhat: 2.14.0(ts-node@10.8.1)(typescript@4.7.3)
+    dev: true
+
   /@nomicfoundation/solidity-analyzer-darwin-arm64@0.0.3:
     resolution: {integrity: sha512-W+bIiNiZmiy+MTYFZn3nwjyPUO6wfWJ0lnXx2zZrM8xExKObMrhCh50yy8pQING24mHfpPFCn89wEB/iG7vZDw==}
     engines: {node: '>= 10'}
@@ -3749,12 +3761,12 @@ packages:
   /@types/bn.js@4.11.6:
     resolution: {integrity: sha512-pqr857jrp2kPuO9uRjZ3PwnJTjoQy+fcdxvBTvHm6dkmEL9q+hDD/2j/0ELOBPtPnS8LjCX0gI9nbl8lVkadpg==}
     dependencies:
-      '@types/node': 17.0.42
+      '@types/node': 16.11.39
 
   /@types/bn.js@5.1.0:
     resolution: {integrity: sha512-QSSVYj7pYFN49kW77o2s9xTCwZ8F2xLbjLLSEVh8D2F4JUhZtPAGOFLTD+ffqksBx/u4cE/KImFjyhqCjn/LIA==}
     dependencies:
-      '@types/node': 17.0.42
+      '@types/node': 16.11.39
 
   /@types/chai-as-promised@7.1.5:
     resolution: {integrity: sha512-jStwss93SITGBwt/niYrkf2C+/1KTeZCZl1LaeezTlqppAKeoQC7jxyqYuP72sxBGKCIbw7oHgbYssIRzT5FCQ==}
@@ -3769,12 +3781,12 @@ packages:
   /@types/concat-stream@1.6.1:
     resolution: {integrity: sha512-eHE4cQPoj6ngxBZMvVf6Hw7Mh4jMW4U9lpGmS5GBPB9RYxlFg+CHaVN7ErNY4W9XfLIEn20b4VDYaIrbq0q4uA==}
     dependencies:
-      '@types/node': 17.0.42
+      '@types/node': 16.11.39
 
   /@types/form-data@0.0.33:
     resolution: {integrity: sha512-8BSvG1kGm83cyJITQMZSulnl6QV8jqAGreJsc5tPu1Jq0vTSOiY/k24Wx82JRpWwZSqrala6sd5rWi6aNXvqcw==}
     dependencies:
-      '@types/node': 17.0.42
+      '@types/node': 16.11.39
 
   /@types/fs-extra@9.0.13:
     resolution: {integrity: sha512-nEnwB++1u5lVDM2UI4c1+5R+FYaKfaAzS4OococimjVm3nQw3TuzH5UNsocrcTBbhnerblyHj4A49qXbIiZdpA==}
@@ -3800,7 +3812,7 @@ packages:
   /@types/keyv@3.1.4:
     resolution: {integrity: sha512-BQ5aZNSCpj7D6K2ksrRCTmKRLEpnPvWDiLPfoGyhZ++8YtiK9d/3DBKPJgry359X/P1PfruyYwvnvwFjuEiEIg==}
     dependencies:
-      '@types/node': 17.0.42
+      '@types/node': 16.11.39
     dev: true
 
   /@types/level-errors@3.0.0:
@@ -3812,7 +3824,7 @@ packages:
     dependencies:
       '@types/abstract-leveldown': 7.2.0
       '@types/level-errors': 3.0.0
-      '@types/node': 17.0.42
+      '@types/node': 16.11.39
     dev: false
 
   /@types/lodash@4.14.182:
@@ -3862,7 +3874,7 @@ packages:
   /@types/pbkdf2@3.1.0:
     resolution: {integrity: sha512-Cf63Rv7jCQ0LaL8tNXmEyqTHuIJxRdlS5vMh1mj5voN4+QFhVZnlZruezqpWYDiJ8UTzhP0VmeLXCmBk66YrMQ==}
     dependencies:
-      '@types/node': 17.0.42
+      '@types/node': 16.11.39
 
   /@types/prettier@2.6.3:
     resolution: {integrity: sha512-ymZk3LEC/fsut+/Q5qejp6R9O1rMxz3XaRHDV6kX8MrGAhOSPqVARbDi+EZvInBpw+BnCX3TD240byVkOfQsHg==}
@@ -3874,25 +3886,25 @@ packages:
   /@types/readable-stream@2.3.15:
     resolution: {integrity: sha512-oM5JSKQCcICF1wvGgmecmHldZ48OZamtMxcGGVICOJA8o8cahXC1zEVAif8iwoc5j8etxFaRFnf095+CDsuoFQ==}
     dependencies:
-      '@types/node': 17.0.42
+      '@types/node': 16.11.39
       safe-buffer: 5.1.2
 
   /@types/resolve@0.0.8:
     resolution: {integrity: sha512-auApPaJf3NPfe18hSoJkp8EbZzer2ISk7o8mCC3M9he/a04+gbMF97NkpD2S8riMGvm4BMRI59/SZQSaLTKpsQ==}
     dependencies:
-      '@types/node': 17.0.42
+      '@types/node': 16.11.39
     dev: true
 
   /@types/responselike@1.0.0:
     resolution: {integrity: sha512-85Y2BjiufFzaMIlvJDvTTB8Fxl2xfLo4HgmHzVBz08w4wDePCTjYw66PdrolO0kzli3yam/YCgRufyo1DdQVTA==}
     dependencies:
-      '@types/node': 17.0.42
+      '@types/node': 16.11.39
     dev: true
 
   /@types/secp256k1@4.0.3:
     resolution: {integrity: sha512-Da66lEIFeIz9ltsdMZcpQvmrmmoqrfju8pm1BH8WbYjZSwUgCwXLb9C+9XYogwBITnbsSaMdVPb2ekf7TV+03w==}
     dependencies:
-      '@types/node': 17.0.42
+      '@types/node': 16.11.39
 
   /@types/sinon-chai@3.2.8:
     resolution: {integrity: sha512-d4ImIQbT/rKMG8+AXpmcan5T2/PNeSjrYhvkwet6z0p8kzYtfgA32xzOBlbU0yqJfq+/0Ml805iFoODO0LP5/g==}
@@ -7194,7 +7206,7 @@ packages:
       '@types/bn.js': 4.11.6
       bn.js: 4.12.0
       create-hash: 1.2.0
-      elliptic: 6.5.4
+      elliptic: registry.npmmirror.com/elliptic@6.5.4
       ethereum-cryptography: 0.1.3
       ethjs-util: 0.1.6
       rlp: 2.2.7
@@ -14106,7 +14118,7 @@ packages:
     dependencies:
       '@ethereumjs/common': registry.npmmirror.com/@ethereumjs/common@2.6.4
       '@ethereumjs/tx': registry.npmmirror.com/@ethereumjs/tx@3.5.2
-      ethereumjs-util: registry.npmmirror.com/ethereumjs-util@7.1.5
+      ethereumjs-util: 7.1.5
       merkle-patricia-tree: registry.npmmirror.com/merkle-patricia-tree@4.2.4
 
   registry.npmmirror.com/@ethereumjs/blockchain@5.5.3:
@@ -14118,7 +14130,7 @@ packages:
       '@ethereumjs/common': registry.npmmirror.com/@ethereumjs/common@2.6.4
       '@ethereumjs/ethash': registry.npmmirror.com/@ethereumjs/ethash@1.1.0
       debug: registry.npmmirror.com/debug@4.3.4
-      ethereumjs-util: registry.npmmirror.com/ethereumjs-util@7.1.5
+      ethereumjs-util: 7.1.5
       level-mem: registry.npmmirror.com/level-mem@5.0.1
       lru-cache: registry.npmmirror.com/lru-cache@5.1.1
       semaphore-async-await: registry.npmmirror.com/semaphore-async-await@1.5.1
@@ -14131,7 +14143,7 @@ packages:
     version: 2.6.4
     dependencies:
       crc-32: registry.npmmirror.com/crc-32@1.2.2
-      ethereumjs-util: registry.npmmirror.com/ethereumjs-util@7.1.5
+      ethereumjs-util: 7.1.5
 
   registry.npmmirror.com/@ethereumjs/ethash@1.1.0:
     resolution: {integrity: sha512-/U7UOKW6BzpA+Vt+kISAoeDie1vAvY4Zy2KF5JJb+So7+1yKmJeJEHOGSnQIj330e9Zyl3L5Nae6VZyh2TJnAA==, registry: https://registry.npmjs.org/, tarball: https://registry.npmmirror.com/@ethereumjs/ethash/-/ethash-1.1.0.tgz}
@@ -14150,7 +14162,7 @@ packages:
     version: 3.5.2
     dependencies:
       '@ethereumjs/common': registry.npmmirror.com/@ethereumjs/common@2.6.4
-      ethereumjs-util: registry.npmmirror.com/ethereumjs-util@7.1.5
+      ethereumjs-util: 7.1.5
 
   registry.npmmirror.com/@ethereumjs/vm@5.9.2:
     resolution: {integrity: sha512-6zvH7iuMI7+74aGak6j9+GDYpV2T08vy2FL4iSK1PId7lNyjFELCAzDCSTQcVoyPoRMkZvRHy79W+djwvguMCA==, registry: https://registry.npmjs.org/, tarball: https://registry.npmmirror.com/@ethereumjs/vm/-/vm-5.9.2.tgz}
@@ -14164,7 +14176,7 @@ packages:
       async-eventemitter: registry.npmmirror.com/async-eventemitter@0.2.4
       core-js-pure: registry.npmmirror.com/core-js-pure@3.23.0
       debug: registry.npmmirror.com/debug@4.3.4
-      ethereumjs-util: registry.npmmirror.com/ethereumjs-util@7.1.5
+      ethereumjs-util: 7.1.5
       functional-red-black-tree: registry.npmmirror.com/functional-red-black-tree@1.0.1
       mcl-wasm: registry.npmmirror.com/mcl-wasm@0.7.9
       merkle-patricia-tree: registry.npmmirror.com/merkle-patricia-tree@4.2.4
@@ -14582,7 +14594,7 @@ packages:
     engines: {node: '>=12.0.0'}
     dependencies:
       ethereumjs-abi: registry.npmmirror.com/ethereumjs-abi@0.6.8
-      ethereumjs-util: registry.npmmirror.com/ethereumjs-util@6.2.1
+      ethereumjs-util: 6.2.1
       ethjs-util: registry.npmmirror.com/ethjs-util@0.1.6
       tweetnacl: registry.npmmirror.com/tweetnacl@1.0.3
       tweetnacl-util: registry.npmmirror.com/tweetnacl-util@0.15.1
@@ -14682,7 +14694,7 @@ packages:
       chalk: registry.npmmirror.com/chalk@4.1.2
       compare-versions: registry.npmmirror.com/compare-versions@4.1.3
       debug: registry.npmmirror.com/debug@4.3.4
-      ethereumjs-util: registry.npmmirror.com/ethereumjs-util@7.1.5
+      ethereumjs-util: 7.1.5
       proper-lockfile: registry.npmmirror.com/proper-lockfile@4.1.2
       solidity-ast: registry.npmmirror.com/solidity-ast@0.4.34
     transitivePeerDependencies:
@@ -14862,7 +14874,7 @@ packages:
     name: '@types/bn.js'
     version: 4.11.6
     dependencies:
-      '@types/node': 17.0.42
+      '@types/node': 16.11.39
     dev: true
 
   registry.npmmirror.com/@types/bn.js@5.1.0:
@@ -14877,7 +14889,7 @@ packages:
     name: '@types/keyv'
     version: 3.1.4
     dependencies:
-      '@types/node': 17.0.42
+      '@types/node': 16.11.39
     dev: true
     optional: true
 
@@ -14893,7 +14905,7 @@ packages:
     dependencies:
       '@types/abstract-leveldown': registry.npmmirror.com/@types/abstract-leveldown@7.2.0
       '@types/level-errors': registry.npmmirror.com/@types/level-errors@3.0.0
-      '@types/node': 17.0.42
+      '@types/node': 16.11.39
 
   registry.npmmirror.com/@types/lru-cache@5.1.1:
     resolution: {integrity: sha512-ssE3Vlrys7sdIzs5LOxCzTVMsU7i9oa/IaW92wF32JFb3CVczqOkru2xspuKczHEbG3nvmPY7IFqVmGGHdNbYw==, registry: https://registry.npmjs.org/, tarball: https://registry.npmmirror.com/@types/lru-cache/-/lru-cache-5.1.1.tgz}
@@ -14905,7 +14917,7 @@ packages:
     name: '@types/mkdirp'
     version: 0.5.2
     dependencies:
-      '@types/node': 17.0.42
+      '@types/node': 16.11.39
     dev: true
 
   registry.npmmirror.com/@types/node-fetch@2.6.1:
@@ -14913,7 +14925,7 @@ packages:
     name: '@types/node-fetch'
     version: 2.6.1
     dependencies:
-      '@types/node': 17.0.42
+      '@types/node': 16.11.39
       form-data: 3.0.1
     dev: true
 
@@ -14922,7 +14934,7 @@ packages:
     name: '@types/pbkdf2'
     version: 3.1.0
     dependencies:
-      '@types/node': 17.0.42
+      '@types/node': 16.11.39
 
   registry.npmmirror.com/@types/prettier@2.6.3:
     resolution: {integrity: sha512-ymZk3LEC/fsut+/Q5qejp6R9O1rMxz3XaRHDV6kX8MrGAhOSPqVARbDi+EZvInBpw+BnCX3TD240byVkOfQsHg==, registry: https://registry.npmjs.org/, tarball: https://registry.npmmirror.com/@types/prettier/-/prettier-2.6.3.tgz}
@@ -14935,7 +14947,7 @@ packages:
     name: '@types/resolve'
     version: 0.0.8
     dependencies:
-      '@types/node': 17.0.42
+      '@types/node': 16.11.39
     dev: true
 
   registry.npmmirror.com/@types/responselike@1.0.0:
@@ -14943,7 +14955,7 @@ packages:
     name: '@types/responselike'
     version: 1.0.0
     dependencies:
-      '@types/node': 17.0.42
+      '@types/node': 16.11.39
     dev: true
     optional: true
 
@@ -14952,7 +14964,7 @@ packages:
     name: '@types/secp256k1'
     version: 4.0.3
     dependencies:
-      '@types/node': 17.0.42
+      '@types/node': 16.11.39
 
   registry.npmmirror.com/@types/sinon-chai@3.2.8:
     resolution: {integrity: sha512-d4ImIQbT/rKMG8+AXpmcan5T2/PNeSjrYhvkwet6z0p8kzYtfgA32xzOBlbU0yqJfq+/0Ml805iFoODO0LP5/g==, registry: https://registry.npmjs.org/, tarball: https://registry.npmmirror.com/@types/sinon-chai/-/sinon-chai-3.2.8.tgz}
@@ -17430,7 +17442,7 @@ packages:
     version: 0.6.8
     dependencies:
       bn.js: registry.npmmirror.com/bn.js@4.12.0
-      ethereumjs-util: registry.npmmirror.com/ethereumjs-util@6.2.1
+      ethereumjs-util: 6.2.1
 
   registry.npmmirror.com/ethereumjs-account@2.0.5:
     resolution: {integrity: sha512-bgDojnXGjhMwo6eXQC0bY6UK2liSFUSMwwylOmQvZbSl/D7NXQ3+vrGO46ZeOgjGfxXmgIeVNDIiHw7fNZM4VA==, registry: https://registry.npmjs.org/, tarball: https://registry.npmmirror.com/ethereumjs-account/-/ethereumjs-account-2.0.5.tgz}
@@ -17523,19 +17535,6 @@ packages:
       ethereumjs-common: registry.npmmirror.com/ethereumjs-common@1.5.0
       ethereumjs-util: 6.2.1
     dev: true
-
-  registry.npmmirror.com/ethereumjs-util@6.2.1:
-    resolution: {integrity: sha512-W2Ktez4L01Vexijrm5EB6w7dg4n/TgpoYU4avuT5T3Vmnw/eCRtiBrJfQYS/DCSvDIOLn2k57GcHdeBcgVxAqw==, registry: https://registry.npmjs.org/, tarball: https://registry.npmmirror.com/ethereumjs-util/-/ethereumjs-util-6.2.1.tgz}
-    name: ethereumjs-util
-    version: 6.2.1
-    dependencies:
-      '@types/bn.js': 4.11.6
-      bn.js: 4.12.0
-      create-hash: registry.npmmirror.com/create-hash@1.2.0
-      elliptic: registry.npmmirror.com/elliptic@6.5.4
-      ethereum-cryptography: 0.1.3
-      ethjs-util: 0.1.6
-      rlp: registry.npmmirror.com/rlp@2.2.7
 
   registry.npmmirror.com/ethereumjs-util@7.1.5:
     resolution: {integrity: sha512-SDl5kKrQAudFBUe5OJM9Ac6WmMyYmXX/6sTmLZ3ffG2eY6ZIGBes3pEDxNN6V72WyOw4CPD5RomKdsa8DAAwLg==, registry: https://registry.npmjs.org/, tarball: https://registry.npmmirror.com/ethereumjs-util/-/ethereumjs-util-7.1.5.tgz}
@@ -19639,7 +19638,7 @@ packages:
     version: 4.2.4
     dependencies:
       '@types/levelup': registry.npmmirror.com/@types/levelup@4.3.3
-      ethereumjs-util: registry.npmmirror.com/ethereumjs-util@7.1.5
+      ethereumjs-util: 7.1.5
       level-mem: registry.npmmirror.com/level-mem@5.0.1
       level-ws: registry.npmmirror.com/level-ws@2.0.0
       readable-stream: registry.npmmirror.com/readable-stream@3.6.0
@@ -20620,8 +20619,8 @@ packages:
     engines: {node: '>= 6'}
     dependencies:
       inherits: 2.0.4
-      string_decoder: registry.npmmirror.com/string_decoder@1.3.0
-      util-deprecate: registry.npmmirror.com/util-deprecate@1.0.2
+      string_decoder: 1.3.0
+      util-deprecate: 1.0.2
 
   registry.npmmirror.com/readdirp@3.6.0:
     resolution: {integrity: sha512-hOS089on8RduqdbhvQ5Z37A0ESjsqz6qnRcffsMU3495FuTdqSm+7bhJ29JvIOsBDEEnan5DPu9t3To9VRlMzA==, registry: https://registry.npmjs.org/, tarball: https://registry.npmmirror.com/readdirp/-/readdirp-3.6.0.tgz}
@@ -21310,13 +21309,6 @@ packages:
       es-abstract: registry.npmmirror.com/es-abstract@1.20.1
     dev: true
 
-  registry.npmmirror.com/string_decoder@1.3.0:
-    resolution: {integrity: sha512-hkRX8U1WjJFd8LsDJ2yQ/wWWxaopEsABU1XfkM8A+j0+85JAGppt16cr1Whg6KIbb4okU6Mql6BOj+uup/wKeA==, registry: https://registry.npmjs.org/, tarball: https://registry.npmmirror.com/string_decoder/-/string_decoder-1.3.0.tgz}
-    name: string_decoder
-    version: 1.3.0
-    dependencies:
-      safe-buffer: 5.2.1
-
   registry.npmmirror.com/strip-hex-prefix@1.0.0:
     resolution: {integrity: sha512-q8d4ue7JGEiVcypji1bALTos+0pWtyGlivAWyPuTkHzuTCJqrK9sWxYQZUq6Nq3cuyv3bm734IhHvHtGGURU6A==, registry: https://registry.npmjs.org/, tarball: https://registry.npmmirror.com/strip-hex-prefix/-/strip-hex-prefix-1.0.0.tgz}
     name: strip-hex-prefix
@@ -21891,11 +21883,6 @@ packages:
     version: 3.0.0
     dev: true
 
-  registry.npmmirror.com/util-deprecate@1.0.2:
-    resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==, registry: https://registry.npmjs.org/, tarball: https://registry.npmmirror.com/util-deprecate/-/util-deprecate-1.0.2.tgz}
-    name: util-deprecate
-    version: 1.0.2
-
   registry.npmmirror.com/util.promisify@1.1.1:
     resolution: {integrity: sha512-/s3UsZUrIfa6xDhr7zZhnE9SLQ5RIXyYfiVnMMyMDzOc8WhWN4Nbh36H842OyurKbCDAesZOJaVyvmSl6fhGQw==, registry: https://registry.npmjs.org/, tarball: https://registry.npmmirror.com/util.promisify/-/util.promisify-1.1.1.tgz}
     name: util.promisify
@@ -22428,7 +22415,7 @@ packages:
     dependencies:
       bn.js: registry.npmmirror.com/bn.js@4.12.0
       ethereum-bloom-filters: registry.npmmirror.com/ethereum-bloom-filters@1.0.10
-      ethereumjs-util: registry.npmmirror.com/ethereumjs-util@7.1.5
+      ethereumjs-util: 7.1.5
       ethjs-unit: registry.npmmirror.com/ethjs-unit@0.1.6
       number-to-bn: registry.npmmirror.com/number-to-bn@1.7.0
       randombytes: registry.npmmirror.com/randombytes@2.1.0
