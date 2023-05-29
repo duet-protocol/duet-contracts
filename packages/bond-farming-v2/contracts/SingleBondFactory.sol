@@ -60,7 +60,9 @@ contract SingleBondFactory is Adminable, Initializable {
         address to_,
         uint256 amount_
     ) external onlyAdmin {
+        address epochAddress = getEpochAddressBySeqNumber(seqNumber);
         underlying.safeTransferFrom(msg.sender, address(this), amount_);
-        SingleBond(getEpochAddressBySeqNumber(seqNumber)).mint(to_, amount_);
+        underlying.approve(epochAddress, amount_);
+        SingleBond(epochAddress).mint(to_, amount_);
     }
 }
