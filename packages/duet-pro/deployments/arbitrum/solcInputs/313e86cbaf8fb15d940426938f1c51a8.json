@@ -1,0 +1,46 @@
+{
+  "language": "Solidity",
+  "sources": {
+    "contracts/BoosterOracle.sol": {
+      "content": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.17;\n\nimport \"./interfaces/IUniswapV3Pool.sol\";\nimport \"./interfaces/IUniswapV3Factory.sol\";\n\ncontract BoosterOracle {\n    address private constant FACTORY_ADDRESS = 0x1F98431c8aD98523631AE4a59f267346ea31F984; // Uniswap V3 Factory address on the Arbitrum network\n    address private constant USDC_ADDRESS = 0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8; // USDC address on the Arbitrum network\n    address private constant DUET_TOKEN_ADDRESS = 0x4d13a9b2E1C6784c6290350d34645DDc7e765808; // USDC address on the Arbitrum network\n\n    uint24 public constant FEE = 10000;\n\n    function getPrice(address token0) public view returns (uint256) {\n        IUniswapV3Factory factory = IUniswapV3Factory(FACTORY_ADDRESS);\n        address poolAddress = factory.getPool(DUET_TOKEN_ADDRESS, USDC_ADDRESS, FEE);\n\n        IUniswapV3Pool pool = IUniswapV3Pool(poolAddress);\n\n        (uint160 sqrtPrice, , , , , , ) = pool.slot0();\n\n        uint256 price = (uint256(sqrtPrice) ** 2 * (10 ** 20)) / (2 ** (96 * 2));\n\n        return price;\n    }\n}\n"
+    },
+    "contracts/interfaces/IUniswapV3Factory.sol": {
+      "content": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.17;\n\ninterface IUniswapV3Factory {\n    function getPool(address, address, uint24) external view returns (address);\n}\n"
+    },
+    "contracts/interfaces/IUniswapV3Pool.sol": {
+      "content": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.17;\n\ninterface IUniswapV3Pool {\n    function slot0() external view returns (uint160, int24, uint16, uint16, uint16, uint8, bool);\n}\n"
+    }
+  },
+  "settings": {
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "outputSelection": {
+      "*": {
+        "*": [
+          "abi",
+          "evm.bytecode",
+          "evm.deployedBytecode",
+          "evm.methodIdentifiers",
+          "metadata",
+          "storageLayout",
+          "devdoc",
+          "userdoc",
+          "evm.gasEstimates"
+        ],
+        "": [
+          "ast"
+        ]
+      }
+    },
+    "metadata": {
+      "useLiteralContent": true
+    },
+    "libraries": {
+      "": {
+        "__CACHE_BREAKER__": "0x00000000d41867734bbee4c6863d9255b2b06ac1"
+      }
+    }
+  }
+}

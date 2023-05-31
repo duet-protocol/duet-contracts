@@ -7,12 +7,13 @@ import "./interfaces/IUniswapV3Factory.sol";
 contract BoosterOracle {
     address private constant FACTORY_ADDRESS = 0x1F98431c8aD98523631AE4a59f267346ea31F984; // Uniswap V3 Factory address on the Arbitrum network
     address private constant USDC_ADDRESS = 0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8; // USDC address on the Arbitrum network
+    address private constant DUET_TOKEN_ADDRESS = 0x4d13a9b2E1C6784c6290350d34645DDc7e765808; // USDC address on the Arbitrum network
 
     uint24 public constant FEE = 10000;
 
     function getPrice(address token0) public view returns (uint256) {
         IUniswapV3Factory factory = IUniswapV3Factory(FACTORY_ADDRESS);
-        address poolAddress = factory.getPool(token0, USDC_ADDRESS, FEE);
+        address poolAddress = factory.getPool(DUET_TOKEN_ADDRESS, USDC_ADDRESS, FEE);
 
         IUniswapV3Pool pool = IUniswapV3Pool(poolAddress);
 

@@ -153,16 +153,13 @@ contract DuetProStaking is ReentrancyGuardUpgradeable, Adminable {
     }
 
     function addLiquidity(uint256 underlyingAmount_, IPool.PythData calldata pythData) external payable nonReentrant {
-        require(
-            underlyingAmount_ <= MIN_LIQUIDITY_OPS,
-            "DuetProStaking: amount must be greater than MIN_LIQUIDITY_OPS"
-        );
+        uint256 amount = normalizeDecimals(underlyingAmount_, usdLikeUnderlying.decimals(), LIQUIDITY_DECIMALS);
+        require(amount >= MIN_LIQUIDITY_OPS, "DuetProStaking: amount must be greater than MIN_LIQUIDITY_OPS");
         _updatePool();
         address user = msg.sender;
         usdLikeUnderlying.safeTransferFrom(user, address(this), underlyingAmount_);
         usdLikeUnderlying.approve(address(pool), underlyingAmount_);
         pool.addLiquidity{ value: msg.value }(address(usdLikeUnderlying), underlyingAmount_, pythData);
-        uint256 amount = normalizeDecimals(underlyingAmount_, usdLikeUnderlying.decimals(), LIQUIDITY_DECIMALS);
         UserInfo storage userInfo = userInfos[user];
         uint256 totalNormalShares = totalShares - totalBoostedShares;
 
@@ -178,10 +175,10 @@ contract DuetProStaking is ReentrancyGuardUpgradeable, Adminable {
         _updateUserBoostedShares(user);
     }
 
-    function removeLiquidity(uint256 amount_, IPool.PythData calldata pythData) external nonReentrant {
-        require(amount_ <= MIN_LIQUIDITY_OPS, "DuetProStaking: amount must be greater than MIN_LIQUIDITY_OPS");
-        _updatePool();
+    function removeLiquidity(uint256 amount_, IPool.PythData calldata pythData) external payable nonReentrant {
         uint256 amount = normalizeDecimals(amount_, usdLikeUnderlying.decimals(), LIQUIDITY_DECIMALS);
+        require(amount >= MIN_LIQUIDITY_OPS, "DuetProStaking: amount must be greater than MIN_LIQUIDITY_OPS");
+        _updatePool();
         address user = msg.sender;
         UserInfo storage userInfo = userInfos[user];
         (uint256 userNormalLiquidity, uint256 userBoostedLiquidity) = sharesToLiquidity(
@@ -218,7 +215,7 @@ contract DuetProStaking is ReentrancyGuardUpgradeable, Adminable {
 
         _touchUser(user);
         userInfo.accRemovedLiquidity += amount;
-        pool.removeLiquidity(address(usdLikeUnderlying), amount_, pythData);
+        pool.removeLiquidity{ value: msg.value }(address(usdLikeUnderlying), amount_, pythData);
         usdLikeUnderlying.safeTransfer(user, amount_);
     }
 
@@ -294,9 +291,9 @@ contract DuetProStaking is ReentrancyGuardUpgradeable, Adminable {
     }
 
     function _updatePool() internal {
+        (lastNormalLiquidity, lastBoostedLiquidity) = calcPool();
         lastActionTime = block.timestamp;
         lastActionBlock = block.number;
-        (lastNormalLiquidity, lastBoostedLiquidity) = calcPool();
     }
 
     function getRemoteInfo() public view returns (IDeriLens.LpInfo memory lpInfo) {

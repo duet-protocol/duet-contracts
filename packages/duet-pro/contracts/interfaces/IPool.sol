@@ -42,7 +42,7 @@ interface IPool {
 
     function addLiquidity(address underlying, uint256 amount, PythData calldata pythData) external payable;
 
-    function removeLiquidity(address underlying, uint256 amount, PythData calldata pythData) external;
+    function removeLiquidity(address underlying, uint256 amount, PythData calldata pythData) external payable;
 
     function addMargin(address underlying, uint256 amount, PythData calldata pythData) external payable;
 
