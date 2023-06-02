@@ -17,8 +17,8 @@ contract DuetProStaking is ReentrancyGuardUpgradeable, Adminable {
     uint256 public constant PRECISION = 1e12;
     uint256 public constant LIQUIDITY_DECIMALS = 18;
     uint256 public constant PRICE_DECIMALS = 8;
-    uint256 public constant MIN_BOOSTER_TOKENS = 10 ** 18;
-    uint256 public constant MIN_LIQUIDITY_OPS = 10 ** 18;
+    uint256 public constant MIN_BOOSTER_TOKENS = 10**18;
+    uint256 public constant MIN_LIQUIDITY_OPS = 10**18;
 
     IPool public pool;
     IDeriLens public deriLens;
@@ -219,10 +219,11 @@ contract DuetProStaking is ReentrancyGuardUpgradeable, Adminable {
         usdLikeUnderlying.safeTransfer(user, amount_);
     }
 
-    function sharesToLiquidity(
-        uint256 shares_,
-        uint256 boostedShares_
-    ) public view returns (uint256 normalLiquidity, uint256 boostedLiquidity) {
+    function sharesToLiquidity(uint256 shares_, uint256 boostedShares_)
+        public
+        view
+        returns (uint256 normalLiquidity, uint256 boostedLiquidity)
+    {
         (uint256 totalNormalLiquidity, uint256 totalBoostedLiquidity) = calcPool();
         uint256 normalShares = shares_ - boostedShares_;
         uint256 totalNormalShares = totalShares - totalBoostedShares;
@@ -240,9 +241,15 @@ contract DuetProStaking is ReentrancyGuardUpgradeable, Adminable {
         return totalShares > 0 ? (amount_ * totalShares) / (normalLiquidity + boostedLiquidity) : amount_;
     }
 
-    function getUserInfo(
-        address user_
-    ) external view returns (UserInfo memory info, uint256 normalLiquidity, uint256 boostedLiquidity) {
+    function getUserInfo(address user_)
+        external
+        view
+        returns (
+            UserInfo memory info,
+            uint256 normalLiquidity,
+            uint256 boostedLiquidity
+        )
+    {
         (normalLiquidity, boostedLiquidity) = sharesToLiquidity(
             userInfos[user_].shares,
             userInfos[user_].boostedShares
@@ -258,7 +265,7 @@ contract DuetProStaking is ReentrancyGuardUpgradeable, Adminable {
         if (lpInfo.liquidity == 0) {
             return (0, 0);
         }
-        int256 liquidityDelta = lpInfo.liquidity - int256(lastNormalLiquidity);
+        int256 liquidityDelta = lpInfo.liquidity - int256(lastNormalLiquidity + lastBoostedLiquidity);
         if (totalShares == 0) {
             return (0, 0);
         }
@@ -267,7 +274,7 @@ contract DuetProStaking is ReentrancyGuardUpgradeable, Adminable {
             return (lastNormalLiquidity, lastBoostedLiquidity);
         }
 
-        uint256 uintLiquidityDelta = uint256(liquidityDelta);
+        uint256 uintLiquidityDelta = uint256(liquidityDelta > 0 ? liquidityDelta : 0 - liquidityDelta);
         // no boost when pnl is negative
         if (liquidityDelta <= 0) {
             uint256 boostedPnl = (uintLiquidityDelta * totalBoostedShares * PRECISION) / totalShares / PRECISION;
@@ -321,9 +328,9 @@ contract DuetProStaking is ReentrancyGuardUpgradeable, Adminable {
             return value_;
         }
         if (targetDecimals_ > sourceDecimals_) {
-            return value_ * 10 ** (targetDecimals_ - sourceDecimals_);
+            return value_ * 10**(targetDecimals_ - sourceDecimals_);
         }
-        return value_ / 10 ** (sourceDecimals_ - targetDecimals_);
+        return value_ / 10**(sourceDecimals_ - targetDecimals_);
     }
 
     /**
@@ -331,14 +338,15 @@ contract DuetProStaking is ReentrancyGuardUpgradeable, Adminable {
      * @param booster_ The address of the booster token.
      * @param normalizedAmount_ Amount with liquidity decimals.
      */
-    function _getBoosterValue(
-        IERC20MetadataUpgradeable booster_,
-        uint256 normalizedAmount_
-    ) internal view returns (uint256 boosterValue) {
+    function _getBoosterValue(IERC20MetadataUpgradeable booster_, uint256 normalizedAmount_)
+        internal
+        view
+        returns (uint256 boosterValue)
+    {
         uint256 boosterPrice = boosterOracle.getPrice(address(booster_));
         return
             normalizeDecimals(
-                (boosterPrice * normalizedAmount_) / (10 ** LIQUIDITY_DECIMALS),
+                (boosterPrice * normalizedAmount_) / (10**LIQUIDITY_DECIMALS),
                 PRICE_DECIMALS,
                 LIQUIDITY_DECIMALS
             );
