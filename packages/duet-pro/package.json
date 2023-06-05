@@ -36,5 +36,8 @@
   "devDependencies": {
     "@private/shared": "workspace:*",
     "axios": "^0.27.2"
+  },
+  "dependencies": {
+    "@arbitrum/nitro-contracts": "^1.0.2"
   }
 }

@@ -24,6 +24,7 @@ describe('DuetProStaking', function () {
 
   let usdc: MockERC20
   let boosterOracle: MockBoosterOracle
+  const mockPythData = { vaas: [], ids: [] }
   beforeEach(async () => {
     ;[minter, bob, carol, david, erin, frank, ...accounts] = await ethers.getSigners()
     lensPool = await (await ethers.getContractFactory('MockDeriLensAndPool')).connect(minter).deploy()
@@ -225,7 +226,7 @@ describe('DuetProStaking', function () {
 
     // bob add liquidity
     await usdc.connect(bob).approve(staking.address, addAmount)
-    await staking.connect(bob).addLiquidity(addAmount, [])
+    await staking.connect(bob).addLiquidity(addAmount, mockPythData)
     const bobInfo1 = await staking.connect(bob).getUserInfo(bob.address)
     expect(bobInfo1.info.shares).to.equal(addAmount1e18)
     expect(bobInfo1.info.boostedShares).to.equal(0)
@@ -237,7 +238,7 @@ describe('DuetProStaking', function () {
 
     // bob add liquidity again
     await usdc.connect(bob).approve(staking.address, addAmount)
-    await staking.connect(bob).addLiquidity(addAmount, [])
+    await staking.connect(bob).addLiquidity(addAmount, mockPythData)
     const bobInfo2 = await staking.connect(bob).getUserInfo(bob.address)
     expect(bobInfo2[0].shares).to.equal(addAmount1e18.mul(2))
     expect(bobInfo2[0].boostedShares).to.equal(0)
@@ -248,7 +249,7 @@ describe('DuetProStaking', function () {
 
     // carol add liquidity
     await usdc.connect(carol).approve(staking.address, addAmount)
-    await staking.connect(carol).addLiquidity(addAmount, [])
+    await staking.connect(carol).addLiquidity(addAmount, mockPythData)
     const carolInfo = await staking.connect(carol).getUserInfo(carol.address)
     expect(carolInfo[0].shares).to.equal(addAmount1e18)
     expect(carolInfo[0].boostedShares).to.equal(0)
@@ -284,7 +285,7 @@ describe('DuetProStaking', function () {
 
     // bob add liquidity
     await usdc.connect(bob).approve(staking.address, addAmount)
-    await staking.connect(bob).addLiquidity(addAmount, [])
+    await staking.connect(bob).addLiquidity(addAmount, mockPythData)
     const bobInfo1 = await staking.connect(bob).getUserInfo(bob.address)
     expect(bobInfo1.info.shares).to.equal(addAmount1e18)
     expect(bobInfo1.info.boostedShares).to.equal(0)
@@ -300,7 +301,7 @@ describe('DuetProStaking', function () {
 
     // bob add liquidity again
     await usdc.connect(bob).approve(staking.address, addAmount)
-    await staking.connect(bob).addLiquidity(addAmount, [])
+    await staking.connect(bob).addLiquidity(addAmount, mockPythData)
 
     const bobInfo3 = await staking.connect(bob).getUserInfo(bob.address)
     expect(bobInfo3.info.shares).to.equal(parseEther('200'))
@@ -311,7 +312,7 @@ describe('DuetProStaking', function () {
     expect(await staking.totalShares()).equal(parseEther('200'))
     // bob add 200 liquidity again
     await usdc.connect(bob).approve(staking.address, addAmount.mul(2))
-    await staking.connect(bob).addLiquidity(addAmount.mul(2), [])
+    await staking.connect(bob).addLiquidity(addAmount.mul(2), mockPythData)
 
     const bobInfo4 = await staking.connect(bob).getUserInfo(bob.address)
     logger.info('bobInfo4', parseOjWithBigNumber(bobInfo4))
@@ -323,7 +324,7 @@ describe('DuetProStaking', function () {
     expect(await staking.totalShares()).equal(parseEther('400'))
 
     // bob remove 200 liquidity
-    await staking.connect(bob).removeLiquidity(addAmount.mul(2), [])
+    await staking.connect(bob).removeLiquidity(addAmount.mul(2), mockPythData)
 
     const bobInfo5 = await staking.connect(bob).getUserInfo(bob.address)
 

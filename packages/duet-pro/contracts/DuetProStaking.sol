@@ -11,14 +11,15 @@ import { Adminable } from "@private/shared/libs/Adminable.sol";
 import { DuetMath } from "@private/shared/libs/DuetMath.sol";
 import "hardhat/console.sol";
 import { IBoosterOracle } from "./interfaces/IBoosterOracle.sol";
+import { ArbSys } from "@arbitrum/nitro-contracts/src/precompiles/ArbSys.sol";
 
 contract DuetProStaking is ReentrancyGuardUpgradeable, Adminable {
     using SafeERC20Upgradeable for IERC20MetadataUpgradeable;
     uint256 public constant PRECISION = 1e12;
     uint256 public constant LIQUIDITY_DECIMALS = 18;
     uint256 public constant PRICE_DECIMALS = 8;
-    uint256 public constant MIN_BOOSTER_TOKENS = 10**18;
-    uint256 public constant MIN_LIQUIDITY_OPS = 10**18;
+    uint256 public constant MIN_BOOSTER_TOKENS = 10 ** 18;
+    uint256 public constant MIN_LIQUIDITY_OPS = 10 ** 18;
 
     IPool public pool;
     IDeriLens public deriLens;
@@ -219,11 +220,10 @@ contract DuetProStaking is ReentrancyGuardUpgradeable, Adminable {
         usdLikeUnderlying.safeTransfer(user, amount_);
     }
 
-    function sharesToLiquidity(uint256 shares_, uint256 boostedShares_)
-        public
-        view
-        returns (uint256 normalLiquidity, uint256 boostedLiquidity)
-    {
+    function sharesToLiquidity(
+        uint256 shares_,
+        uint256 boostedShares_
+    ) public view returns (uint256 normalLiquidity, uint256 boostedLiquidity) {
         (uint256 totalNormalLiquidity, uint256 totalBoostedLiquidity) = calcPool();
         uint256 normalShares = shares_ - boostedShares_;
         uint256 totalNormalShares = totalShares - totalBoostedShares;
@@ -241,15 +241,9 @@ contract DuetProStaking is ReentrancyGuardUpgradeable, Adminable {
         return totalShares > 0 ? (amount_ * totalShares) / (normalLiquidity + boostedLiquidity) : amount_;
     }
 
-    function getUserInfo(address user_)
-        external
-        view
-        returns (
-            UserInfo memory info,
-            uint256 normalLiquidity,
-            uint256 boostedLiquidity
-        )
-    {
+    function getUserInfo(
+        address user_
+    ) external view returns (UserInfo memory info, uint256 normalLiquidity, uint256 boostedLiquidity) {
         (normalLiquidity, boostedLiquidity) = sharesToLiquidity(
             userInfos[user_].shares,
             userInfos[user_].boostedShares
@@ -258,7 +252,7 @@ contract DuetProStaking is ReentrancyGuardUpgradeable, Adminable {
     }
 
     function calcPool() public view returns (uint256 normalLiquidity, uint256 boostedLiquidity) {
-        if (lastActionBlock == block.number) {
+        if (lastActionBlock == blockNumber()) {
             return (lastNormalLiquidity, lastBoostedLiquidity);
         }
         IDeriLens.LpInfo memory lpInfo = getRemoteInfo();
@@ -300,7 +294,7 @@ contract DuetProStaking is ReentrancyGuardUpgradeable, Adminable {
     function _updatePool() internal {
         (lastNormalLiquidity, lastBoostedLiquidity) = calcPool();
         lastActionTime = block.timestamp;
-        lastActionBlock = block.number;
+        lastActionBlock = blockNumber();
     }
 
     function getRemoteInfo() public view returns (IDeriLens.LpInfo memory lpInfo) {
@@ -328,9 +322,9 @@ contract DuetProStaking is ReentrancyGuardUpgradeable, Adminable {
             return value_;
         }
         if (targetDecimals_ > sourceDecimals_) {
-            return value_ * 10**(targetDecimals_ - sourceDecimals_);
+            return value_ * 10 ** (targetDecimals_ - sourceDecimals_);
         }
-        return value_ / 10**(sourceDecimals_ - targetDecimals_);
+        return value_ / 10 ** (sourceDecimals_ - targetDecimals_);
     }
 
     /**
@@ -338,22 +332,21 @@ contract DuetProStaking is ReentrancyGuardUpgradeable, Adminable {
      * @param booster_ The address of the booster token.
      * @param normalizedAmount_ Amount with liquidity decimals.
      */
-    function _getBoosterValue(IERC20MetadataUpgradeable booster_, uint256 normalizedAmount_)
-        internal
-        view
-        returns (uint256 boosterValue)
-    {
+    function _getBoosterValue(
+        IERC20MetadataUpgradeable booster_,
+        uint256 normalizedAmount_
+    ) internal view returns (uint256 boosterValue) {
         uint256 boosterPrice = boosterOracle.getPrice(address(booster_));
         return
             normalizeDecimals(
-                (boosterPrice * normalizedAmount_) / (10**LIQUIDITY_DECIMALS),
+                (boosterPrice * normalizedAmount_) / (10 ** LIQUIDITY_DECIMALS),
                 PRICE_DECIMALS,
                 LIQUIDITY_DECIMALS
             );
     }
 
     function _touchUser(address user_) internal {
-        userInfos[user_].lastActionBlock = block.number;
+        userInfos[user_].lastActionBlock = blockNumber();
         userInfos[user_].lastActionTime = block.timestamp;
     }
 
@@ -364,8 +357,8 @@ contract DuetProStaking is ReentrancyGuardUpgradeable, Adminable {
      */
     function _updateUserBoostedShares(address user_) internal {
         UserInfo storage userInfo = userInfos[user_];
-        require(lastActionBlock == block.number, "DuetProStaking: update pool first");
-        require(userInfo.lastActionBlock == block.number, "DuetProStaking: update user shares first");
+        require(lastActionBlock == blockNumber(), "DuetProStaking: update pool first");
+        require(userInfo.lastActionBlock == blockNumber(), "DuetProStaking: update user shares first");
         if (userInfo.shares == 0) {
             userInfo.boostedShares = 0;
             return;
@@ -438,5 +431,13 @@ contract DuetProStaking is ReentrancyGuardUpgradeable, Adminable {
 
         lastBoostedLiquidity += missingBoostedLiquidity;
         lastNormalLiquidity -= missingBoostedLiquidity;
+    }
+
+    function chainId() public view returns (uint256) {
+        return block.chainid;
+    }
+
+    function blockNumber() public view returns (uint256) {
+        return ArbSys(address(100)).arbBlockNumber();
     }
 }

@@ -49,17 +49,13 @@ contract MockDeriLensAndPool {
     function addLiquidity(
         IERC20Metadata underlying,
         uint256 amount,
-        IPool.OracleSignature[] memory oracleSignatures
+        IPool.PythData calldata pythData
     ) external payable {
         liquidity += int256(normalizeDecimals(amount, underlying.decimals(), 18));
         underlying.transferFrom(msg.sender, address(this), amount);
     }
 
-    function removeLiquidity(
-        IERC20Metadata underlying,
-        uint256 amount,
-        IPool.OracleSignature[] memory oracleSignatures
-    ) external {
+    function removeLiquidity(IERC20Metadata underlying, uint256 amount, IPool.PythData calldata pythData) external {
         int256 normalizedAmount = int256(normalizeDecimals(amount, underlying.decimals(), 18));
         if (normalizedAmount > liquidity) {
             liquidity = 0;
