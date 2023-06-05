@@ -25,8 +25,9 @@ import { getEtherscanEndpoints } from '@nomiclabs/hardhat-etherscan/dist/src/net
 import { chainConfig } from '@nomiclabs/hardhat-etherscan/dist/src/ChainConfig'
 import _ from 'lodash'
 import { readFile } from 'fs/promises'
-
 dotenv.config()
+import * as tdly from '@tenderly/hardhat-tenderly'
+tdly.setup()
 
 const logger = useLogger(__filename)
 // https://hardhat.org/guides/create-task.html

@@ -59,7 +59,10 @@ contract DuetProStaking is ReentrancyGuardUpgradeable, Adminable {
     event RemoveSupportedBoosterToken(address indexed user, address token);
 
     constructor() {
-        _disableInitializers();
+        // 30097 is the chain id of hardhat in hardhat.config.ts
+        if (block.chainid != 30097) {
+            _disableInitializers();
+        }
     }
 
     function initialize(
@@ -206,8 +209,8 @@ contract DuetProStaking is ReentrancyGuardUpgradeable, Adminable {
                 userBoostedLiquidity
             );
         }
-        userInfo.shares -= normalSharesToRemove + boostedSharesToRemove;
-        totalShares -= normalSharesToRemove + boostedSharesToRemove;
+        userInfo.shares -= (normalSharesToRemove + boostedSharesToRemove);
+        totalShares -= (normalSharesToRemove + boostedSharesToRemove);
         lastNormalLiquidity -= normalLiquidityToRemove;
 
         userInfo.boostedShares -= boostedSharesToRemove;
@@ -398,36 +401,33 @@ contract DuetProStaking is ReentrancyGuardUpgradeable, Adminable {
 
             return;
         }
-        console.log("userInfo.stakedBoosterValue", userInfo.stakedBoosterValue);
-        console.log("userBoostedLiquidity", userBoostedLiquidity);
+        if (userNormalLiquidity == 0) {
+            return;
+        }
+
         uint256 missingBoostedLiquidity = userInfo.stakedBoosterValue - userBoostedLiquidity;
-        console.log("missingBoostedLiquidity", missingBoostedLiquidity);
         missingBoostedLiquidity = missingBoostedLiquidity >= userNormalLiquidity
             ? userNormalLiquidity
             : missingBoostedLiquidity;
-        uint256 missingBoostedShares = userInfo.boostedShares > 0
-            ? DuetMath.mulDiv(userInfo.boostedShares, missingBoostedLiquidity, lastBoostedLiquidity)
-            : totalBoostedShares > 0
-            ? DuetMath.mulDiv(missingBoostedLiquidity, lastBoostedLiquidity, totalBoostedShares)
+
+        uint256 missingBoostedShares = totalBoostedShares > 0
+            ? DuetMath.mulDiv(totalBoostedShares, missingBoostedLiquidity, lastBoostedLiquidity)
             : missingBoostedLiquidity;
-        console.log("userNormalShares", userNormalShares);
-        console.log("missingBoostedLiquidity", missingBoostedLiquidity);
-        console.log("userNormalLiquidity", userNormalLiquidity);
-        uint256 exchangedNormalShares = userNormalShares > 0
+        if (missingBoostedShares == 0) {
+            return;
+        }
+
+        uint256 exchangedNormalShares = userNormalShares > 0 && missingBoostedShares > 0
             ? DuetMath.mulDiv(userNormalShares, missingBoostedLiquidity, userNormalLiquidity)
             : 0;
-        uint256 sharesDelta = missingBoostedShares >= exchangedNormalShares
-            ? missingBoostedShares - exchangedNormalShares
-            : exchangedNormalShares - missingBoostedShares;
-        console.log("missingBoostedShares", missingBoostedShares);
-
-        console.log("missingBoostedLiquidity", missingBoostedLiquidity);
-        console.log("exchangedNormalShares", exchangedNormalShares);
 
         userInfo.boostedShares += missingBoostedShares;
-        userInfo.shares -= sharesDelta;
+        userInfo.shares -= exchangedNormalShares;
+        userInfo.shares += missingBoostedShares;
+
         totalBoostedShares += missingBoostedShares;
-        totalShares -= sharesDelta;
+        totalShares -= exchangedNormalShares;
+        totalShares += missingBoostedShares;
 
         lastBoostedLiquidity += missingBoostedLiquidity;
         lastNormalLiquidity -= missingBoostedLiquidity;
@@ -438,6 +438,21 @@ contract DuetProStaking is ReentrancyGuardUpgradeable, Adminable {
     }
 
     function blockNumber() public view returns (uint256) {
-        return ArbSys(address(100)).arbBlockNumber();
+        // 42170 421611 421613
+        if (
+            // arbitrum one
+            block.chainid == 42161 ||
+            // arbitrum xDai
+            block.chainid == 200 ||
+            // arbitrum nova
+            block.chainid == 42170 ||
+            // arbitrum rinkeby
+            block.chainid == 421611 ||
+            // arbitrum Goerli
+            block.chainid == 421613
+        ) {
+            return ArbSys(address(100)).arbBlockNumber();
+        }
+        return block.number;
     }
 }
