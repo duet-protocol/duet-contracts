@@ -3,7 +3,7 @@ import { ethers, tenderly } from 'hardhat'
 
 async function main() {
   await tenderly.verify({
-    address: '0xaf0a7ae147e9bbdb42670c9d3bdc45d8b431567f',
+    address: require('../deployments/arbitrum/DuetProStaking_Implementation.json').address,
     name: 'DuetProStaking',
   })
 }

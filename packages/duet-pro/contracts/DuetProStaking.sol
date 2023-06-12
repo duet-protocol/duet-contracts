@@ -12,6 +12,7 @@ import { DuetMath } from "@private/shared/libs/DuetMath.sol";
 import "hardhat/console.sol";
 import { IBoosterOracle } from "./interfaces/IBoosterOracle.sol";
 import { ArbSys } from "@arbitrum/nitro-contracts/src/precompiles/ArbSys.sol";
+import { IVault } from "./interfaces/IVault.sol";
 
 contract DuetProStaking is ReentrancyGuardUpgradeable, Adminable {
     using SafeERC20Upgradeable for IERC20MetadataUpgradeable;
@@ -168,7 +169,7 @@ contract DuetProStaking is ReentrancyGuardUpgradeable, Adminable {
         uint256 totalNormalShares = totalShares - totalBoostedShares;
 
         uint256 addNormalShares = totalNormalShares > 0
-            ? DuetMath.mulDiv(amount, totalNormalShares, lastNormalLiquidity)
+            ? DuetMath.mulDiv(totalNormalShares, amount, lastNormalLiquidity)
             : amount;
         // Add to normal liquidity first, calc boosted shares post liquidity added, see _updateUserBoostedShares
         lastNormalLiquidity += amount;
@@ -179,20 +180,35 @@ contract DuetProStaking is ReentrancyGuardUpgradeable, Adminable {
         _updateUserBoostedShares(user);
     }
 
-    function removeLiquidity(uint256 amount_, IPool.PythData calldata pythData) external payable nonReentrant {
+    function removeLiquidity(
+        uint256 amount_,
+        IPool.PythData calldata pythData
+    )
+        external
+        payable
+        nonReentrant
+        returns (
+            uint256 userNormalLiquidity,
+            uint256 userBoostedLiquidity,
+            uint256 normalSharesToRemove,
+            uint256 userNormalShares,
+            uint256 normalLiquidityToRemove
+        )
+    {
         uint256 amount = normalizeDecimals(amount_, usdLikeUnderlying.decimals(), LIQUIDITY_DECIMALS);
-        require(amount >= MIN_LIQUIDITY_OPS, "DuetProStaking: amount must be greater than MIN_LIQUIDITY_OPS");
         _updatePool();
         address user = msg.sender;
         UserInfo storage userInfo = userInfos[user];
-        (uint256 userNormalLiquidity, uint256 userBoostedLiquidity) = sharesToLiquidity(
-            userInfo.shares,
-            userInfo.boostedShares
-        );
-        require(amount <= userNormalLiquidity + userBoostedLiquidity, "DuetProStaking: insufficient liquidity");
-        uint256 userNormalShares = userInfo.shares - userInfo.boostedShares;
-        uint256 normalSharesToRemove;
-        uint256 normalLiquidityToRemove;
+        (userNormalLiquidity, userBoostedLiquidity) = sharesToLiquidity(userInfo.shares, userInfo.boostedShares);
+        uint256 userTotalLiquidity = userNormalLiquidity + userBoostedLiquidity;
+        if (
+            amount >= userTotalLiquidity ||
+            userTotalLiquidity <= MIN_LIQUIDITY_OPS ||
+            userTotalLiquidity - amount <= MIN_LIQUIDITY_OPS
+        ) {
+            amount = userTotalLiquidity;
+        }
+        userNormalShares = userInfo.shares - userInfo.boostedShares;
         uint256 boostedSharesToRemove;
         uint256 boostedLiquidityToRemove;
         if (amount <= userNormalLiquidity) {
@@ -219,8 +235,9 @@ contract DuetProStaking is ReentrancyGuardUpgradeable, Adminable {
 
         _touchUser(user);
         userInfo.accRemovedLiquidity += amount;
-        pool.removeLiquidity{ value: msg.value }(address(usdLikeUnderlying), amount_, pythData);
-        usdLikeUnderlying.safeTransfer(user, amount_);
+        uint256 usdLikeAmount = normalizeDecimals(amount, LIQUIDITY_DECIMALS, usdLikeUnderlying.decimals());
+        pool.removeLiquidity{ value: msg.value }(address(usdLikeUnderlying), usdLikeAmount, pythData);
+        usdLikeUnderlying.safeTransfer(user, usdLikeAmount);
     }
 
     function sharesToLiquidity(
@@ -230,8 +247,6 @@ contract DuetProStaking is ReentrancyGuardUpgradeable, Adminable {
         (uint256 totalNormalLiquidity, uint256 totalBoostedLiquidity) = calcPool();
         uint256 normalShares = shares_ - boostedShares_;
         uint256 totalNormalShares = totalShares - totalBoostedShares;
-        console.log("sharesToLiquidity.normalShares", normalShares);
-        console.log("sharesToLiquidity.totalNormalShares", totalNormalShares);
 
         return (
             normalShares > 0 ? DuetMath.mulDiv(totalNormalLiquidity, normalShares, totalNormalShares) : 0,
@@ -258,23 +273,39 @@ contract DuetProStaking is ReentrancyGuardUpgradeable, Adminable {
         if (lastActionBlock == blockNumber()) {
             return (lastNormalLiquidity, lastBoostedLiquidity);
         }
-        IDeriLens.LpInfo memory lpInfo = getRemoteInfo();
-        if (lpInfo.liquidity == 0) {
-            return (0, 0);
-        }
-        int256 liquidityDelta = lpInfo.liquidity - int256(lastNormalLiquidity + lastBoostedLiquidity);
         if (totalShares == 0) {
             return (0, 0);
         }
+        IDeriLens.LpInfo memory lpInfo = getRemoteInfo();
+
+        int256 intBalanceB0 = lpInfo.amountB0;
+        if (lpInfo.vaultLiquidity > 0 && lpInfo.markets.length > 0) {
+            require(
+                lpInfo.markets[0].underlying == address(usdLikeUnderlying),
+                "DuetProStaking: calc pool error, market underlying mismatch"
+            );
+            intBalanceB0 += int256(lpInfo.markets[0].vTokenBalance);
+        }
+        require(intBalanceB0 > 0, "DuetProStaking: calc pool error, negative balanceB0");
+        uint256 balanceB0 = uint256(intBalanceB0);
+
+        if (balanceB0 == 0) {
+            return (0, 0);
+        }
+        int256 liquidityDelta = int256(balanceB0) - int256(lastNormalLiquidity + lastBoostedLiquidity);
 
         if (liquidityDelta == 0) {
             return (lastNormalLiquidity, lastBoostedLiquidity);
         }
 
         uint256 uintLiquidityDelta = uint256(liquidityDelta > 0 ? liquidityDelta : 0 - liquidityDelta);
-        // no boost when pnl is negative
-        if (liquidityDelta <= 0) {
-            uint256 boostedPnl = (uintLiquidityDelta * totalBoostedShares * PRECISION) / totalShares / PRECISION;
+        if (liquidityDelta < 0) {
+            // no boost when pnl is negative
+            uint256 boostedPnl = DuetMath.mulDiv(
+                uintLiquidityDelta,
+                lastBoostedLiquidity,
+                lastNormalLiquidity + lastBoostedLiquidity
+            );
             uint256 normalPnl = uintLiquidityDelta - boostedPnl;
             // To simplify subsequent calculations, negative numbers are not allowed in liquidity.
             // As an extreme case, when it occurs, the development team intervenes to handle it.
@@ -284,12 +315,12 @@ contract DuetProStaking is ReentrancyGuardUpgradeable, Adminable {
             return (lastNormalLiquidity - normalPnl, lastBoostedLiquidity - boostedPnl);
         }
 
-        uint256 normalShares = totalShares - totalBoostedShares;
-        // boostedShares can boost 2x
-        uint256 totalSharesWithBoosted = normalShares + (totalBoostedShares * 2);
-        uint256 boostedPnl = (uintLiquidityDelta * PRECISION * totalBoostedShares * 2) /
-            totalSharesWithBoosted /
-            PRECISION;
+        uint256 boostedPnl = DuetMath.mulDiv(
+            uintLiquidityDelta,
+            // boostedShares can boost 2x
+            lastBoostedLiquidity * 2,
+            lastBoostedLiquidity * 2 + lastNormalLiquidity
+        );
         uint256 normalPnl = uintLiquidityDelta - boostedPnl;
         return (lastNormalLiquidity + normalPnl, lastBoostedLiquidity + boostedPnl);
     }
@@ -311,8 +342,9 @@ contract DuetProStaking is ReentrancyGuardUpgradeable, Adminable {
         return uint256(normalizeDecimals(boosterPrice * amount_, boosterDecimals, LIQUIDITY_DECIMALS));
     }
 
-    function forceAddLiquidity(uint256 amount_, IPool.PythData calldata pythData) external payable onlyAdmin {
+    function forceAddLiquidity(uint256 amount_, IPool.PythData calldata pythData) external payable {
         usdLikeUnderlying.safeTransferFrom(msg.sender, address(this), amount_);
+        usdLikeUnderlying.approve(address(pool), amount_);
         pool.addLiquidity{ value: msg.value }(address(usdLikeUnderlying), amount_, pythData);
     }
 

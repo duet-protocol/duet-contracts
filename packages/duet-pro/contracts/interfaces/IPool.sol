@@ -60,4 +60,6 @@ interface IPool {
     }
 
     function lpInfos(uint256) external view returns (LpInfo memory);
+
+    function marketB0() external view returns (address);
 }

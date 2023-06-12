@@ -12,3 +12,4 @@ artifacts
 # node
 node_modules/
 *.log
+data/

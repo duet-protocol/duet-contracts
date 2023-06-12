@@ -28,24 +28,6 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   }
   const { deployer } = await getNamedAccounts()
 
-  const mockDuet = await advancedDeploy(
-    {
-      hre,
-      logger,
-      proxied: false,
-      name: Names.MockDuet,
-    },
-    async ({ name }) => {
-      return await deploy(name, {
-        from: deployer,
-        contract: 'MockERC20',
-        args: ['MockDuet', 'MockDUET', parseEther('100000'), 18],
-        log: true,
-        autoMine: true, // speed up deployment on local network (ganache, hardhat), no effect on live networks
-      })
-    },
-  )
-
   const boosterOracle = await advancedDeploy(
     {
       hre,

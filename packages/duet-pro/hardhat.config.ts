@@ -25,9 +25,11 @@ import { getEtherscanEndpoints } from '@nomiclabs/hardhat-etherscan/dist/src/net
 import { chainConfig } from '@nomiclabs/hardhat-etherscan/dist/src/ChainConfig'
 import _ from 'lodash'
 import { readFile } from 'fs/promises'
+
 dotenv.config()
 import * as tdly from '@tenderly/hardhat-tenderly'
-tdly.setup()
+
+tdly.setup({ automaticVerifications: true })
 
 const logger = useLogger(__filename)
 // https://hardhat.org/guides/create-task.html
@@ -45,6 +47,7 @@ const config: HardhatUserConfig = {
   solidity: {
     version: '0.8.17',
     settings: {
+      viaIR: true,
       optimizer: {
         enabled: true,
       },
@@ -103,7 +106,7 @@ const config: HardhatUserConfig = {
       },
     },
     arbitrum: {
-      url: 'https://arbitrum.api.onfinality.io/public',
+      url: 'https://1rpc.io/arb',
       chainId: 42161,
       accounts: [process.env.KEY_BSC_MAINNET!],
       // for hardhat-eploy
