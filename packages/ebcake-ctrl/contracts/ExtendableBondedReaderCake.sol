@@ -113,11 +113,9 @@ contract ExtendableBondedReaderCake is ExtendableBondReader, Initializable, Admi
 
     // -------------
 
-    function extendableBondGroupInfo(string calldata groupName_)
-        external
-        view
-        returns (ExtendableBondGroupInfo memory)
-    {
+    function extendableBondGroupInfo(
+        string calldata groupName_
+    ) external view returns (ExtendableBondGroupInfo memory) {
         uint256 allEbStacked;
         uint256 sumCakePrices;
         address[] memory addresses = registry.groupedAddresses(groupName_);
@@ -190,12 +188,9 @@ contract ExtendableBondedReaderCake is ExtendableBondReader, Initializable, Admi
         return cakeReserve / ebCakeReserve;
     }
 
-    function _getLpStackedReserves(IExtendableBond eb_)
-        internal
-        view
-        override
-        returns (uint256 cakeReserve, uint256 ebCakeReserve)
-    {
+    function _getLpStackedReserves(
+        IExtendableBond eb_
+    ) internal view override returns (uint256 cakeReserve, uint256 ebCakeReserve) {
         IBondLPPancakeFarmingPool pool = IBondLPPancakeFarmingPool(eb_.bondLPFarmingPool());
         IPancakePair cakeWithEbCakeLpPairToken = IPancakePair(pool.lpToken());
 

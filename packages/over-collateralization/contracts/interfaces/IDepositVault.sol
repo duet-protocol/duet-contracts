@@ -6,23 +6,11 @@ interface IDepositVault {
 
     function deposit(address dtoken, uint256 amount) external;
 
-    function depositTo(
-        address dtoken,
-        address to,
-        uint256 amount
-    ) external;
+    function depositTo(address dtoken, address to, uint256 amount) external;
 
-    function syncDeposit(
-        address dtoken,
-        uint256 amount,
-        address user
-    ) external;
+    function syncDeposit(address dtoken, uint256 amount, address user) external;
 
     function withdraw(uint256 amount, bool unpack) external;
 
-    function withdrawTo(
-        address to,
-        uint256 amount,
-        bool unpack
-    ) external;
+    function withdrawTo(address to, uint256 amount, bool unpack) external;
 }

@@ -12,7 +12,9 @@ interface ICakePool {
 
     function getPricePerFullShare() external view returns (uint256);
 
-    function userInfo(address user)
+    function userInfo(
+        address user
+    )
         external
         view
         returns (

@@ -13,11 +13,7 @@ contract ApyHelper {
     IUSDOracle public usdOracle;
     address public cake;
 
-    constructor(
-        IMasterChef _chef,
-        IUSDOracle _usdOracle,
-        address _cake
-    ) {
+    constructor(IMasterChef _chef, IUSDOracle _usdOracle, address _cake) {
         masterChef = _chef;
         usdOracle = _usdOracle;
         cake = _cake;
@@ -28,30 +24,27 @@ contract ApyHelper {
         address token0 = IPair(lpToken).token0();
         address token1 = IPair(lpToken).token1();
         (uint112 reserve0, uint112 reserve1, ) = IPair(lpToken).getReserves();
-        uint256 amount0 = (uint256(reserve0) * 10**18) / lpSupply;
-        uint256 amount1 = (uint256(reserve1) * 10**18) / lpSupply;
+        uint256 amount0 = (uint256(reserve0) * 10 ** 18) / lpSupply;
+        uint256 amount1 = (uint256(reserve1) * 10 ** 18) / lpSupply;
 
         uint256 price0 = usdOracle.getPrice(token0);
         uint256 price1 = usdOracle.getPrice(token1);
 
         uint256 decimal0 = IERC20Metadata(token0).decimals();
-        uint256 decimal0Scale = 10**decimal0;
+        uint256 decimal0Scale = 10 ** decimal0;
 
         uint256 decimal1 = IERC20Metadata(token1).decimals();
-        uint256 decimal1Scale = 10**decimal1;
+        uint256 decimal1Scale = 10 ** decimal1;
 
         return ((amount0 * price0) / decimal0Scale) + ((amount1 * price1) / decimal1Scale);
     }
 
-    function lpApyInfo(uint256 pid)
+    function lpApyInfo(
+        uint256 pid
+    )
         public
         view
-        returns (
-            uint256 takingTokenPrice,
-            uint256 rewardTokenPrice,
-            uint256 totalStaked,
-            uint256 tokenPerBlock
-        )
+        returns (uint256 takingTokenPrice, uint256 rewardTokenPrice, uint256 totalStaked, uint256 tokenPerBlock)
     {
         (address lpToken, uint256 allocPoint, , ) = masterChef.poolInfo(pid);
 

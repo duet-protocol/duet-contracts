@@ -19,25 +19,21 @@ interface IDODOV2 {
 
     function getVaultReserve() external view returns (uint256 baseReserve, uint256 quoteReserve);
 
-    function querySellQuote(address trader, uint256 payQuoteAmount)
+    function querySellQuote(
+        address trader,
+        uint256 payQuoteAmount
+    )
         external
         view
-        returns (
-            uint256 receiveBaseAmount,
-            uint256 mtFee,
-            PMMPricing.RState newRState,
-            uint256 newQuoteTarget
-        );
+        returns (uint256 receiveBaseAmount, uint256 mtFee, PMMPricing.RState newRState, uint256 newQuoteTarget);
 
-    function querySellBase(address trader, uint256 payBaseAmount)
+    function querySellBase(
+        address trader,
+        uint256 payBaseAmount
+    )
         external
         view
-        returns (
-            uint256 receiveQuoteAmount,
-            uint256 mtFee,
-            PMMPricing.RState newRState,
-            uint256 newBaseTarget
-        );
+        returns (uint256 receiveQuoteAmount, uint256 mtFee, PMMPricing.RState newRState, uint256 newBaseTarget);
 
     function _BASE_TOKEN_() external view returns (address);
 
@@ -46,22 +42,14 @@ interface IDODOV2 {
     function getPMMStateForCall()
         external
         view
-        returns (
-            uint256 i,
-            uint256 K,
-            uint256 B,
-            uint256 Q,
-            uint256 B0,
-            uint256 Q0,
-            uint256 R
-        );
+        returns (uint256 i, uint256 K, uint256 B, uint256 Q, uint256 B0, uint256 Q0, uint256 R);
 
     function getUserFeeRate(address user) external view returns (uint256 lpFeeRate, uint256 mtFeeRate);
 
-    function getDODOPoolBidirection(address token0, address token1)
-        external
-        view
-        returns (address[] memory, address[] memory);
+    function getDODOPoolBidirection(
+        address token0,
+        address token1
+    ) external view returns (address[] memory, address[] memory);
 
     //========== DODOVendingMachine ========
 
@@ -74,13 +62,7 @@ interface IDODOV2 {
         bool isOpenTWAP
     ) external returns (address newVendingMachine);
 
-    function buyShares(address to)
-        external
-        returns (
-            uint256,
-            uint256,
-            uint256
-        );
+    function buyShares(address to) external returns (uint256, uint256, uint256);
 
     //========== DODOPrivatePool ===========
 

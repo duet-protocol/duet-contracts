@@ -7,11 +7,7 @@ interface IVault {
 
     function isDuetVault() external view returns (bool);
 
-    function liquidate(
-        address liquidator,
-        address borrower,
-        bytes calldata data
-    ) external;
+    function liquidate(address liquidator, address borrower, bytes calldata data) external;
 
     function userValue(address user, bool dp) external view returns (uint256);
 

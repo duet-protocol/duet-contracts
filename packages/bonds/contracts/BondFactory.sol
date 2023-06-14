@@ -119,11 +119,7 @@ contract BondFactory is IBondFactory, Initializable, Adminable, Keepable {
         return seriesBondsMapping[series_].length;
     }
 
-    function setBondImplementation(
-        string calldata kind_,
-        address impl_,
-        bool upgradeDeployed_
-    ) external onlyAdmin {
+    function setBondImplementation(string calldata kind_, address impl_, bool upgradeDeployed_) external onlyAdmin {
         if (bondImplementations[kind_] == address(0)) {
             bondKinds.push(kind_);
         }
@@ -137,12 +133,7 @@ contract BondFactory is IBondFactory, Initializable, Adminable, Keepable {
         }
     }
 
-    function setPrice(
-        address bondToken_,
-        uint256 price,
-        uint256 bid,
-        uint256 ask
-    ) public onlyAdminOrKeeper {
+    function setPrice(address bondToken_, uint256 price, uint256 bid, uint256 ask) public onlyAdminOrKeeper {
         emit PriceUpdated(bondToken_, price, bondPrices[bondToken_].price);
         bondPrices[bondToken_] = BondPrice({ price: price, bid: bid, ask: ask, lastUpdated: block.timestamp });
         verifyPrice(bondPrices[bondToken_]);
@@ -159,7 +150,7 @@ contract BondFactory is IBondFactory, Initializable, Adminable, Keepable {
     }
 
     function priceFactor() public view returns (uint256) {
-        return 10**priceDecimals();
+        return 10 ** priceDecimals();
     }
 
     function underlyingOut(address bondToken_, uint256 amount_) external onlyAdmin {
@@ -213,11 +204,7 @@ contract BondFactory is IBondFactory, Initializable, Adminable, Keepable {
         emit BondRemoved(bondTokenAddress);
     }
 
-    function emergencyWithdraw(
-        IBond bond_,
-        IERC20MetadataUpgradeable token_,
-        uint256 amount_
-    ) external onlyAdmin {
+    function emergencyWithdraw(IBond bond_, IERC20MetadataUpgradeable token_, uint256 amount_) external onlyAdmin {
         bond_.emergencyWithdraw(token_, msg.sender, amount_);
     }
 

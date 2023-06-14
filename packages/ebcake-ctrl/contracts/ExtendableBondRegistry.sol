@@ -59,11 +59,10 @@ contract ExtendableBondRegistry is Initializable, Adminable {
         emit GroupDestroyed(groupName_);
     }
 
-    function appendGroupItem(string calldata groupName_, address itemAddress_)
-        external
-        onlyAdmin
-        onlyGroupNameRegistered(groupName_)
-    {
+    function appendGroupItem(
+        string calldata groupName_,
+        address itemAddress_
+    ) external onlyAdmin onlyGroupNameRegistered(groupName_) {
         address[] storage group = groupedExtendableBonds[groupName_];
         for (uint256 i; i < group.length; i++) {
             if (group[i] == itemAddress_) revert("Duplicate address in group");
@@ -72,11 +71,10 @@ contract ExtendableBondRegistry is Initializable, Adminable {
         emit GroupItemAppended(groupName_, itemAddress_);
     }
 
-    function removeGroupItem(string calldata groupName_, address itemAddress_)
-        external
-        onlyAdmin
-        onlyGroupNameRegistered(groupName_)
-    {
+    function removeGroupItem(
+        string calldata groupName_,
+        address itemAddress_
+    ) external onlyAdmin onlyGroupNameRegistered(groupName_) {
         address[] storage group = groupedExtendableBonds[groupName_];
         if (group.length == 0) return;
         for (uint256 i = group.length - 1; i >= 0; i--) {

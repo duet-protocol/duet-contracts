@@ -53,11 +53,9 @@ abstract contract ExtendableBondReader {
 
     // -------------
 
-    function extendableBondPackagePublicInfo(IExtendableBond eb_)
-        external
-        view
-        returns (ExtendableBondPackagePublicInfo memory)
-    {
+    function extendableBondPackagePublicInfo(
+        IExtendableBond eb_
+    ) external view returns (ExtendableBondPackagePublicInfo memory) {
         IBondFarmingPool bondFarmingPool = IBondFarmingPool(eb_.bondFarmingPool());
         IBondLPFarmingPool bondLPFarmingPool = IBondLPFarmingPool(eb_.bondLPFarmingPool());
         (
@@ -94,11 +92,9 @@ abstract contract ExtendableBondReader {
         return packageInfo;
     }
 
-    function extendableBondSingleStakePackageUserInfo(IExtendableBond eb_)
-        external
-        view
-        returns (ExtendableBondSingleStakePackageUserInfo memory)
-    {
+    function extendableBondSingleStakePackageUserInfo(
+        IExtendableBond eb_
+    ) external view returns (ExtendableBondSingleStakePackageUserInfo memory) {
         address user = msg.sender;
         require(user != address(0), "Invalid sender address");
 
@@ -118,11 +114,9 @@ abstract contract ExtendableBondReader {
         return packageInfo;
     }
 
-    function extendableBondLpStakePackageUserInfo(IExtendableBond eb_)
-        external
-        view
-        returns (ExtendableBondLpStakePackageUserInfo memory)
-    {
+    function extendableBondLpStakePackageUserInfo(
+        IExtendableBond eb_
+    ) external view returns (ExtendableBondLpStakePackageUserInfo memory) {
         address user = msg.sender;
         require(user != address(0), "Invalid sender address");
 
@@ -227,11 +221,10 @@ abstract contract ExtendableBondReader {
         }
     }
 
-    function _getLpStakeDetail(IExtendableBond eb_, uint256 lpStaked)
-        internal
-        view
-        returns (uint256 lpStake_underlyingStaked, uint256 lpStake_bondStaked)
-    {
+    function _getLpStakeDetail(
+        IExtendableBond eb_,
+        uint256 lpStaked
+    ) internal view returns (uint256 lpStake_underlyingStaked, uint256 lpStake_bondStaked) {
         uint256 lpStackTotalSupply = _getLpStackedTotalSupply(eb_);
 
         (uint256 lpStake_underlyingReserve, uint256 lpStake_bondReserve) = _getLpStackedReserves(eb_);

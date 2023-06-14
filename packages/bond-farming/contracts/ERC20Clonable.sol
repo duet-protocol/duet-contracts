@@ -13,11 +13,7 @@ contract ERC20Clonable {
     event Approval(address indexed owner, address indexed spender, uint256 wad);
     event Transfer(address indexed src, address indexed dst, uint256 wad);
 
-    function initialize(
-        string memory _name,
-        string memory _symbol,
-        uint8 _decimals
-    ) public {
+    function initialize(string memory _name, string memory _symbol, uint8 _decimals) public {
         require(_totalSupply == 0 && decimals == 0, "erc20 inited");
         require(_decimals > 0, "invalid decimals");
 
@@ -59,11 +55,7 @@ contract ERC20Clonable {
         return _transfer(msg.sender, dst, wad);
     }
 
-    function transferFrom(
-        address src,
-        address dst,
-        uint256 wad
-    ) public virtual returns (bool) {
+    function transferFrom(address src, address dst, uint256 wad) public virtual returns (bool) {
         uint256 allowed = _allowance[src][msg.sender];
         if (src != msg.sender && allowed != type(uint256).max) {
             require(allowed >= wad, "ERC20: Insufficient approval");
@@ -73,11 +65,7 @@ contract ERC20Clonable {
         return _transfer(src, dst, wad);
     }
 
-    function _transfer(
-        address src,
-        address dst,
-        uint256 wad
-    ) internal virtual returns (bool) {
+    function _transfer(address src, address dst, uint256 wad) internal virtual returns (bool) {
         require(_balanceOf[src] >= wad, "ERC20: Insufficient balance");
         _balanceOf[src] = _balanceOf[src] - wad;
         _balanceOf[dst] = _balanceOf[dst] + wad;
@@ -87,11 +75,7 @@ contract ERC20Clonable {
         return true;
     }
 
-    function _approve(
-        address owner,
-        address spender,
-        uint256 wad
-    ) internal virtual returns (bool) {
+    function _approve(address owner, address spender, uint256 wad) internal virtual returns (bool) {
         _allowance[owner][spender] = wad;
         emit Approval(owner, spender, wad);
         return true;

@@ -6,11 +6,7 @@ interface IDusdMinter {
 
     function stableToken() external view returns (address);
 
-    function mineDusd(
-        uint256 amount,
-        uint256 minDusd,
-        address to
-    ) external returns (uint256 amountOut);
+    function mineDusd(uint256 amount, uint256 minDusd, address to) external returns (uint256 amountOut);
 
     function calcInputFee(uint256 amountOut) external view returns (uint256 amountIn, uint256 fee);
 

@@ -16,24 +16,16 @@ contract MintVault is TokenRecipient, MintVaultBase {
 
     constructor() initializer {}
 
-    function initialize(
-        address _controller,
-        address _feeConf,
-        address _underlying
-    ) external initializer {
+    function initialize(address _controller, address _feeConf, address _underlying) external initializer {
         super.init(_controller, _feeConf, _underlying);
-        decimalScale = 10**IERC20Metadata(_underlying).decimals();
+        decimalScale = 10 ** IERC20Metadata(_underlying).decimals();
     }
 
     function underlyingTransferIn(address sender, uint256 amount) internal virtual override {
         IERC20Upgradeable(underlying).safeTransferFrom(sender, address(this), amount);
     }
 
-    function underlyingTransferOut(
-        address receipt,
-        uint256 amount,
-        bool
-    ) internal virtual override {
+    function underlyingTransferOut(address receipt, uint256 amount, bool) internal virtual override {
         //  skip transfer to myself
         if (receipt == address(this)) {
             return;
@@ -57,11 +49,7 @@ contract MintVault is TokenRecipient, MintVaultBase {
         _borrow(msg.sender, amount);
     }
 
-    function tokensReceived(
-        address from,
-        uint256 amount,
-        bytes calldata exData
-    ) external override returns (bool) {
+    function tokensReceived(address from, uint256 amount, bytes calldata exData) external override returns (bool) {
         require(msg.sender == underlying, "INVALID_CALLER");
 
         uint256 repays = _repayFor(from, from, amount, true);
@@ -80,11 +68,7 @@ contract MintVault is TokenRecipient, MintVaultBase {
         _repayFor(msg.sender, to, amount, false);
     }
 
-    function liquidate(
-        address liquidator,
-        address borrower,
-        bytes calldata data
-    ) external {
+    function liquidate(address liquidator, address borrower, bytes calldata data) external {
         _liquidate(liquidator, borrower, data);
     }
 

@@ -80,11 +80,7 @@ contract SingleBond is Ownable, CloneFactory {
     }
 
     //renewal bond will start at next phase
-    function renewal(
-        uint256 _phasenum,
-        uint256 _principal,
-        uint256 _interestone
-    ) external onlyOwner {
+    function renewal(uint256 _phasenum, uint256 _principal, uint256 _interestone) external onlyOwner {
         uint256 needcreate = 0;
         uint256 newstart = end;
         uint256 renewphase = (block.timestamp - start) / duration + 1;
@@ -132,11 +128,7 @@ contract SingleBond is Ownable, CloneFactory {
         phasenum = phasenum + needcreate;
     }
 
-    function renewSingleEpoch(
-        uint256 id,
-        uint256 amount,
-        address to
-    ) external onlyOwner {
+    function renewSingleEpoch(uint256 id, uint256 amount, address to) external onlyOwner {
         require(epoches[id] != address(0), "unavailable epoch");
         Epoch ep = Epoch(epoches[id]);
         require(block.timestamp < ep.end(), "Epoch end");
@@ -160,11 +152,7 @@ contract SingleBond is Ownable, CloneFactory {
         }
     }
 
-    function redeem(
-        address[] memory epochs,
-        uint256[] memory amounts,
-        address to
-    ) external {
+    function redeem(address[] memory epochs, uint256[] memory amounts, address to) external {
         require(epochs.length == amounts.length, "mismatch length");
         address user = msg.sender;
 
@@ -175,11 +163,7 @@ contract SingleBond is Ownable, CloneFactory {
         }
     }
 
-    function redeemOrTransfer(
-        address[] memory epochs,
-        uint256[] memory amounts,
-        address to
-    ) external {
+    function redeemOrTransfer(address[] memory epochs, uint256[] memory amounts, address to) external {
         require(epochs.length == amounts.length, "mismatch length");
         address user = msg.sender;
 
@@ -193,11 +177,7 @@ contract SingleBond is Ownable, CloneFactory {
         }
     }
 
-    function multiTransfer(
-        address[] memory epochs,
-        uint256[] memory amounts,
-        address to
-    ) external {
+    function multiTransfer(address[] memory epochs, uint256[] memory amounts, address to) external {
         require(epochs.length == amounts.length, "mismatch length");
         address user = msg.sender;
         for (uint256 i = 0; i < epochs.length; i++) {

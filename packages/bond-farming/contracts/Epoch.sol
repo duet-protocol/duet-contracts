@@ -34,20 +34,12 @@ contract Epoch is ERC20Clonable {
         _mint(to, _amount);
     }
 
-    function multiTransfer(
-        address user,
-        address to,
-        uint256 amount
-    ) external returns (bool) {
+    function multiTransfer(address user, address to, uint256 amount) external returns (bool) {
         require(msg.sender == bond, "only call by bond");
         return _transfer(user, to, amount);
     }
 
-    function redeem(
-        address user,
-        address to,
-        uint256 amount
-    ) external {
+    function redeem(address user, address to, uint256 amount) external {
         require(msg.sender == bond, "only call by bond");
         doRedeem(user, to, amount);
     }
@@ -56,11 +48,7 @@ contract Epoch is ERC20Clonable {
         doRedeem(msg.sender, to, amount);
     }
 
-    function doRedeem(
-        address user,
-        address to,
-        uint256 amount
-    ) internal {
+    function doRedeem(address user, address to, uint256 amount) internal {
         IERC20 token = IERC20(underlying);
         require(block.timestamp > end, "Epoch: not end");
         require(token.balanceOf(address(this)) >= amount, "Epoch: need more underlying token");

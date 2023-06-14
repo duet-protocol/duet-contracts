@@ -24,13 +24,7 @@ contract BondReader {
     IFarming private farming;
     IController private controller;
 
-    constructor(
-        address _controller,
-        address _bond,
-        address _farming,
-        address _duet,
-        address _router
-    ) {
+    constructor(address _controller, address _bond, address _farming, address _duet, address _router) {
         controller = IController(_controller);
         bond = ISingleBond(_bond);
         farming = IFarming(_farming);
@@ -59,22 +53,18 @@ contract BondReader {
 
         try router.getAmountsOut(1e18, paths) returns (uint256[] memory amounts) {
             p = amounts[1];
-        } catch (
-            bytes memory /*lowLevelData*/
-        ) {
+        } catch (bytes memory /*lowLevelData*/) {
             p = 1e18;
         }
     }
 
-    function poolPendingAward(address pool, address user)
+    function poolPendingAward(
+        address pool,
+        address user
+    )
         external
         view
-        returns (
-            address[] memory epochs,
-            uint256[] memory awards,
-            uint256[] memory ends,
-            string[] memory symbols
-        )
+        returns (address[] memory epochs, uint256[] memory awards, uint256[] memory ends, string[] memory symbols)
     {
         IPool p = IPool(pool);
         (epochs, awards) = p.pending(user);
@@ -88,7 +78,9 @@ contract BondReader {
         }
     }
 
-    function myBonds(address user)
+    function myBonds(
+        address user
+    )
         external
         view
         returns (
@@ -119,20 +111,17 @@ contract BondReader {
 
             try router.getAmountsOut(1e18, paths) returns (uint256[] memory amounts) {
                 prices[i] = amounts[1];
-            } catch (
-                bytes memory /*lowLevelData*/
-            ) {
+            } catch (bytes memory /*lowLevelData*/) {
                 prices[i] = 1e18;
             }
         }
     }
 
     //
-    function bondsPerBlock(address poolAddr, uint256 blockSecs)
-        external
-        view
-        returns (address[] memory epochs, uint256[] memory awards)
-    {
+    function bondsPerBlock(
+        address poolAddr,
+        uint256 blockSecs
+    ) external view returns (address[] memory epochs, uint256[] memory awards) {
         IPool pool = IPool(poolAddr);
         epochs = pool.getEpoches();
 
@@ -152,12 +141,7 @@ contract BondReader {
     )
         external
         view
-        returns (
-            address[] memory epochs,
-            uint256[] memory rewards,
-            uint256[] memory values,
-            uint256[] memory endValues
-        )
+        returns (address[] memory epochs, uint256[] memory rewards, uint256[] memory values, uint256[] memory endValues)
     {
         address poolAddr = farming.assetPool(dyToken);
         if (poolAddr == address(0)) {

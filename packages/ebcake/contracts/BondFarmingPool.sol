@@ -44,11 +44,7 @@ contract BondFarmingPool is PausableUpgradeable, ReentrancyGuardUpgradeable, IBo
     event Unstaked(address indexed user, uint256 amount);
     event SiblingPoolUpdated(address indexed previousPool, address indexed newPool);
 
-    function initialize(
-        IERC20Upgradeable bondToken_,
-        IExtendableBond bond_,
-        address admin_
-    ) public initializer {
+    function initialize(IERC20Upgradeable bondToken_, IExtendableBond bond_, address admin_) public initializer {
         __ReentrancyGuard_init();
         __Pausable_init();
         _setAdmin(admin_);

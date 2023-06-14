@@ -32,17 +32,13 @@ contract MockAggregatorV3 is AggregatorV3Interface, Adminable, Initializable {
     // getRoundData and latestRoundData should both raise "No data present"
     // if they do not have data to report, instead of returning unset values
     // which could be misinterpreted as actual reported values.
-    function getRoundData(uint80 _roundId)
+    function getRoundData(
+        uint80 _roundId
+    )
         external
         view
         override
-        returns (
-            uint80 roundId,
-            int256 answer,
-            uint256 startedAt,
-            uint256 updatedAt,
-            uint80 answeredInRound
-        )
+        returns (uint80 roundId, int256 answer, uint256 startedAt, uint256 updatedAt, uint80 answeredInRound)
     {
         return (10, price, 10, 10, 10);
     }
@@ -51,13 +47,7 @@ contract MockAggregatorV3 is AggregatorV3Interface, Adminable, Initializable {
         external
         view
         override
-        returns (
-            uint80 roundId,
-            int256 answer,
-            uint256 startedAt,
-            uint256 updatedAt,
-            uint80 answeredInRound
-        )
+        returns (uint80 roundId, int256 answer, uint256 startedAt, uint256 updatedAt, uint80 answeredInRound)
     {
         return (10, price, 10, 20, 20);
     }

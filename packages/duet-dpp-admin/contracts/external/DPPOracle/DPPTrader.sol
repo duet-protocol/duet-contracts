@@ -166,15 +166,13 @@ contract DPPTrader is DPPVault {
 
     // ============ Query Functions ============
 
-    function querySellBase(address trader, uint256 payBaseAmount)
+    function querySellBase(
+        address trader,
+        uint256 payBaseAmount
+    )
         public
         view
-        returns (
-            uint256 receiveQuoteAmount,
-            uint256 mtFee,
-            PMMPricing.RState newRState,
-            uint256 newBaseTarget
-        )
+        returns (uint256 receiveQuoteAmount, uint256 mtFee, PMMPricing.RState newRState, uint256 newBaseTarget)
     {
         PMMPricing.PMMState memory state = getPMMState();
         (receiveQuoteAmount, newRState) = PMMPricing.sellBaseToken(state, payBaseAmount);
@@ -186,15 +184,13 @@ contract DPPTrader is DPPVault {
         newBaseTarget = state.B0;
     }
 
-    function querySellQuote(address trader, uint256 payQuoteAmount)
+    function querySellQuote(
+        address trader,
+        uint256 payQuoteAmount
+    )
         public
         view
-        returns (
-            uint256 receiveBaseAmount,
-            uint256 mtFee,
-            PMMPricing.RState newRState,
-            uint256 newQuoteTarget
-        )
+        returns (uint256 receiveBaseAmount, uint256 mtFee, PMMPricing.RState newRState, uint256 newQuoteTarget)
     {
         PMMPricing.PMMState memory state = getPMMState();
         (receiveBaseAmount, newRState) = PMMPricing.sellQuoteToken(state, payQuoteAmount);

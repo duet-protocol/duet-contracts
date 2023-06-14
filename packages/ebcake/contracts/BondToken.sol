@@ -6,18 +6,14 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 contract BondToken is ERC20, Ownable {
     address public minter;
-    uint256 public constant MINIMUM_SUPPLY = 10**3;
+    uint256 public constant MINIMUM_SUPPLY = 10 ** 3;
 
     modifier onlyMinter() {
         require(minter == msg.sender, "Minter only");
         _;
     }
 
-    constructor(
-        string memory name_,
-        string memory symbol_,
-        address minter_
-    ) ERC20(name_, symbol_) Ownable() {
+    constructor(string memory name_, string memory symbol_, address minter_) ERC20(name_, symbol_) Ownable() {
         minter = minter_;
     }
 

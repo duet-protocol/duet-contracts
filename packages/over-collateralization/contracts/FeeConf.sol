@@ -30,11 +30,7 @@ contract FeeConf is Constants, Ownable {
         // setConfig("liq_fee", receiver, 100);  // 0%
     }
 
-    function setConfig(
-        bytes32 _key,
-        address _receiver,
-        uint16 _rate
-    ) public onlyOwner {
+    function setConfig(bytes32 _key, address _receiver, uint16 _rate) public onlyOwner {
         require(_receiver != address(0), "INVALID_RECEIVE");
         ReceiverRate storage conf = configs[_key];
         conf.receiver = _receiver;

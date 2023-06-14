@@ -14,7 +14,7 @@ import "./interfaces/IDYToken.sol";
 import "./interfaces/IController.sol";
 
 abstract contract DYTokenBase is IDYToken, ERC20, ERC20Permit, Ownable {
-    uint256 public constant MINIMUM_SUPPLY = 10**3;
+    uint256 public constant MINIMUM_SUPPLY = 10 ** 3;
     using Address for address;
 
     address public immutable override underlying;
@@ -34,11 +34,7 @@ abstract contract DYTokenBase is IDYToken, ERC20, ERC20Permit, Ownable {
         controller = _controller;
     }
 
-    function _beforeTokenTransfer(
-        address from,
-        address to,
-        uint256 amount
-    ) internal virtual override {}
+    function _beforeTokenTransfer(address from, address to, uint256 amount) internal virtual override {}
 
     function decimals() public view virtual override returns (uint8) {
         return dec;
@@ -48,11 +44,7 @@ abstract contract DYTokenBase is IDYToken, ERC20, ERC20Permit, Ownable {
         _burn(msg.sender, amount);
     }
 
-    function send(
-        address recipient,
-        uint256 amount,
-        bytes calldata exData
-    ) external returns (bool) {
+    function send(address recipient, uint256 amount, bytes calldata exData) external returns (bool) {
         _transfer(msg.sender, recipient, amount);
 
         if (recipient.isContract()) {
@@ -104,11 +96,7 @@ abstract contract DYTokenBase is IDYToken, ERC20, ERC20Permit, Ownable {
         }
     }
 
-    function depositTo(
-        address _to,
-        uint256 _amount,
-        address _toVault
-    ) public virtual;
+    function depositTo(address _to, uint256 _amount, address _toVault) public virtual;
 
     // for native coin
     function depositCoin(address _to, address _toVault) public payable virtual {}
@@ -119,11 +107,7 @@ abstract contract DYTokenBase is IDYToken, ERC20, ERC20Permit, Ownable {
     }
 
     // withdraw underlying asset, brun dyTokens
-    function withdraw(
-        address _to,
-        uint256 _shares,
-        bool needETH
-    ) public virtual;
+    function withdraw(address _to, uint256 _shares, bool needETH) public virtual;
 
     function withdrawAll() external {
         withdraw(msg.sender, balanceOf(msg.sender), true);

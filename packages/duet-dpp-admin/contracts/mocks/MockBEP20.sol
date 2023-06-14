@@ -12,11 +12,7 @@ contract MockBEP20 is ERC20, Ownable {
         _;
     }
 
-    constructor(
-        string memory name_,
-        string memory symbol_,
-        address minter_
-    ) ERC20(name_, symbol_) Ownable() {
+    constructor(string memory name_, string memory symbol_, address minter_) ERC20(name_, symbol_) Ownable() {
         minter = minter_;
     }
 

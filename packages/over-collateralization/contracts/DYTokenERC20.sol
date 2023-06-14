@@ -24,11 +24,7 @@ contract DYTokenERC20 is DYTokenBase {
         depositTo(msg.sender, _amount, _toVault);
     }
 
-    function depositTo(
-        address _to,
-        uint256 _amount,
-        address _toVault
-    ) public override {
+    function depositTo(address _to, uint256 _amount, address _toVault) public override {
         uint256 total = underlyingTotal();
         IERC20 underlyingToken = IERC20(underlying);
 
@@ -61,11 +57,7 @@ contract DYTokenERC20 is DYTokenBase {
         earn();
     }
 
-    function withdraw(
-        address _to,
-        uint256 _shares,
-        bool
-    ) public override {
+    function withdraw(address _to, uint256 _shares, bool) public override {
         require(_shares > 0, "shares need > 0");
         require(totalSupply() > 0, "no deposit");
 

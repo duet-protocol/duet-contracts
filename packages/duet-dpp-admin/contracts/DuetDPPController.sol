@@ -47,12 +47,7 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
 
     receive() external payable {}
 
-    function init(
-        address admin,
-        address dppAddress,
-        address dppAdminAddress,
-        address weth
-    ) external notInitialized {
+    function init(address admin, address dppAddress, address dppAdminAddress, address weth) external notInitialized {
         // 改init
         _WETH_ = weth;
         _DPP_ADDRESS_ = dppAddress;
@@ -183,11 +178,7 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
         payable
         nonReentrant
         judgeExpired(deadLine)
-        returns (
-            uint256 shares,
-            uint256 baseAdjustedInAmount,
-            uint256 quoteAdjustedInAmount
-        )
+        returns (uint256 shares, uint256 baseAdjustedInAmount, uint256 quoteAdjustedInAmount)
     {
         // oracle check
         address _O_ = IDPPOracle(_DPP_ADDRESS_)._O_();
@@ -246,11 +237,7 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
         external
         nonReentrant
         judgeExpired(deadLine)
-        returns (
-            uint256 shares,
-            uint256 baseOutAmount,
-            uint256 quoteOutAmount
-        )
+        returns (uint256 shares, uint256 baseOutAmount, uint256 quoteOutAmount)
     {
         // oracle check
         address _O_ = IDPPOracle(_DPP_ADDRESS_)._O_();
@@ -315,29 +302,23 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
     }
 
     /// @notice enter baseInAmount cal outAmount, when initialize, just support query quoteInAmount
-    function recommendQuoteInAmount(uint256 baseInAmount_)
-        external
-        view
-        returns (uint256 baseAdjustedInAmount, uint256 quoteAdjustedInAmount)
-    {
+    function recommendQuoteInAmount(
+        uint256 baseInAmount_
+    ) external view returns (uint256 baseAdjustedInAmount, uint256 quoteAdjustedInAmount) {
         return _adjustedAddLiquidityInAmount(baseInAmount_, 0, 0);
     }
 
     /// @notice enter quoteInAmount cal outBaseAmount, when initialize, this function will return 0, just support recommendQuoteInAmount
-    function recommendBaseInAmount(uint256 quoteInAmount_)
-        external
-        view
-        returns (uint256 baseAdjustedInAmount, uint256 quoteAdjustedInAmount)
-    {
+    function recommendBaseInAmount(
+        uint256 quoteInAmount_
+    ) external view returns (uint256 baseAdjustedInAmount, uint256 quoteAdjustedInAmount) {
         return _adjustedAddLiquidityInAmount(0, quoteInAmount_, 1);
     }
 
     /// @notice enter lp amount  cal baseAmount and quoteAmount
-    function recommendBaseAndQuote(uint256 shareAmount_)
-        external
-        view
-        returns (uint256 baseAmount, uint256 quoteAmount)
-    {
+    function recommendBaseAndQuote(
+        uint256 shareAmount_
+    ) external view returns (uint256 baseAmount, uint256 quoteAmount) {
         (uint256 baseBalance, uint256 quoteBalance) = IDODOV2(_DPP_ADDRESS_).getVaultReserve();
         uint256 totalShares = totalSupply;
 
@@ -353,13 +334,7 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
         _I_ = IDODOV2(_DPP_ADDRESS_)._I_();
     }
 
-    function _deposit(
-        address from,
-        address to,
-        address token,
-        uint256 amount,
-        bool isETH
-    ) internal {
+    function _deposit(address from, address to, address token, uint256 amount, bool isETH) internal {
         if (isETH) {
             if (amount > 0) {
                 require(msg.value >= amount, "ETH_VALUE_WRONG");
@@ -374,12 +349,7 @@ contract DuetDppController is Adminable, DuetDppLpFunding {
         }
     }
 
-    function _withdraw(
-        address payable to,
-        address token,
-        uint256 amount,
-        bool isETH
-    ) internal {
+    function _withdraw(address payable to, address token, uint256 amount, bool isETH) internal {
         if (isETH) {
             if (amount > 0) {
                 IWETH(_WETH_).withdraw(amount);

@@ -161,11 +161,7 @@ contract MultiRewardsMasterChef is ReentrancyGuard, Initializable, IMultiRewards
     }
 
     // Update the given pool's RewardToken allocation point. Can only be called by the owner.
-    function set(
-        uint256 _pid,
-        uint256 _allocPoint,
-        bool _withUpdate
-    ) public onlyAdmin {
+    function set(uint256 _pid, uint256 _allocPoint, bool _withUpdate) public onlyAdmin {
         if (_withUpdate) {
             massUpdatePools();
         }
@@ -269,11 +265,7 @@ contract MultiRewardsMasterChef is ReentrancyGuard, Initializable, IMultiRewards
         return rewardSpecs.length;
     }
 
-    function getUserClaimedRewards(
-        uint256 pid_,
-        address user_,
-        uint256 rewardId_
-    ) public view returns (uint256) {
+    function getUserClaimedRewards(uint256 pid_, address user_, uint256 rewardId_) public view returns (uint256) {
         return userInfo[pid_][user_].claimedRewards[rewardId_];
     }
 
@@ -281,11 +273,7 @@ contract MultiRewardsMasterChef is ReentrancyGuard, Initializable, IMultiRewards
         return userInfo[pid_][user_].amount;
     }
 
-    function getUserRewardDebt(
-        uint256 pid_,
-        address user_,
-        uint256 rewardId_
-    ) public view returns (uint256) {
+    function getUserRewardDebt(uint256 pid_, address user_, uint256 rewardId_) public view returns (uint256) {
         return userInfo[pid_][user_].rewardDebt[rewardId_];
     }
 
@@ -307,11 +295,7 @@ contract MultiRewardsMasterChef is ReentrancyGuard, Initializable, IMultiRewards
     }
 
     // Return reward multiplier over the given _from to _to block.
-    function getMultiplier(
-        uint256 _from,
-        uint256 _to,
-        uint256 rewardId
-    ) public view returns (uint256) {
+    function getMultiplier(uint256 _from, uint256 _to, uint256 rewardId) public view returns (uint256) {
         RewardSpec storage rewardSpec = rewardSpecs[rewardId];
         if (_to < rewardSpec.startedAtBlock) {
             return 0;
@@ -396,20 +380,12 @@ contract MultiRewardsMasterChef is ReentrancyGuard, Initializable, IMultiRewards
         _depositOperation(_pid, _amount, msg.sender);
     }
 
-    function depositForUser(
-        uint256 _pid,
-        uint256 _amount,
-        address user_
-    ) public {
+    function depositForUser(uint256 _pid, uint256 _amount, address user_) public {
         _depositOperation(_pid, _amount, user_);
     }
 
     // Deposit LP tokens to MasterChef for RewardToken allocation.
-    function _depositOperation(
-        uint256 _pid,
-        uint256 _amount,
-        address _user
-    ) internal nonReentrant {
+    function _depositOperation(uint256 _pid, uint256 _amount, address _user) internal nonReentrant {
         PoolInfo storage pool = poolInfo[_pid];
         if (pool.proxyFarmer != address(0)) {
             require(msg.sender == pool.proxyFarmer, "Only proxy farmer");
@@ -447,20 +423,12 @@ contract MultiRewardsMasterChef is ReentrancyGuard, Initializable, IMultiRewards
         _withdrawOperation(_pid, _amount, msg.sender);
     }
 
-    function withdrawForUser(
-        uint256 _pid,
-        uint256 _amount,
-        address user_
-    ) public {
+    function withdrawForUser(uint256 _pid, uint256 _amount, address user_) public {
         _withdrawOperation(_pid, _amount, user_);
     }
 
     // Withdraw LP tokens from MasterChef.
-    function _withdrawOperation(
-        uint256 _pid,
-        uint256 _amount,
-        address _user
-    ) internal nonReentrant {
+    function _withdrawOperation(uint256 _pid, uint256 _amount, address _user) internal nonReentrant {
         PoolInfo storage pool = poolInfo[_pid];
         UserInfo storage user = userInfo[_pid][_user];
         require(user.amount >= _amount, "withdraw: Insufficient balance");

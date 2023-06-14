@@ -30,11 +30,7 @@ contract INonERC20 {
         return true;
     }
 
-    function transferFrom(
-        address sender,
-        address recipient,
-        uint256 amount
-    ) public {
+    function transferFrom(address sender, address recipient, uint256 amount) public {
         _transfer(sender, recipient, amount);
         _approve(sender, msg.sender, _allowances[sender][msg.sender] - amount);
     }
@@ -49,11 +45,7 @@ contract INonERC20 {
         return true;
     }
 
-    function _transfer(
-        address sender,
-        address recipient,
-        uint256 amount
-    ) internal {
+    function _transfer(address sender, address recipient, uint256 amount) internal {
         require(sender != address(0), "ERC20: transfer from the zero address");
         require(recipient != address(0), "ERC20: transfer to the zero address");
 
@@ -81,11 +73,7 @@ contract INonERC20 {
         emit Transfer(account, address(0), value);
     }
 
-    function _approve(
-        address owner,
-        address spender,
-        uint256 value
-    ) internal {
+    function _approve(address owner, address spender, uint256 value) internal {
         require(owner != address(0), "ERC20: approve from the zero address");
         require(spender != address(0), "ERC20: approve to the zero address");
 
@@ -107,7 +95,7 @@ contract USDC is INonERC20 {
     constructor(string memory _n, string memory _s) {
         _name = _n;
         _symbol = _s;
-        _mint(msg.sender, 70000000000 * 10**18);
+        _mint(msg.sender, 70000000000 * 10 ** 18);
     }
 
     function name() public view returns (string memory) {

@@ -49,7 +49,7 @@ contract DPPVault is DPPStorage {
     // ============ TWAP UPDATE ===========
 
     function _twapUpdate() internal {
-        uint32 blockTimestamp = uint32(block.timestamp % 2**32);
+        uint32 blockTimestamp = uint32(block.timestamp % 2 ** 32);
         uint32 timeElapsed = blockTimestamp - _BLOCK_TIMESTAMP_LAST_;
         if (timeElapsed > 0 && _BASE_RESERVE_ != 0 && _QUOTE_RESERVE_ != 0) {
             _BASE_PRICE_CUMULATIVE_LAST_ += getMidPrice() * timeElapsed;
@@ -156,11 +156,7 @@ contract DPPVault is DPPStorage {
         }
     }
 
-    function retrieve(
-        address to,
-        address token,
-        uint256 amount
-    ) external preventReentrant onlyOwner {
+    function retrieve(address to, address token, uint256 amount) external preventReentrant onlyOwner {
         require(token != address(_BASE_TOKEN_) && token != address(_QUOTE_TOKEN_), "USE_RESET");
         IERC20(token).safeTransfer(to, amount);
     }

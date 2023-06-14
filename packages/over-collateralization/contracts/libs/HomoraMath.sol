@@ -8,11 +8,11 @@ library HomoraMath {
     }
 
     function fmul(uint256 lhs, uint256 rhs) internal pure returns (uint256) {
-        return (lhs * rhs) / (2**112);
+        return (lhs * rhs) / (2 ** 112);
     }
 
     function fdiv(uint256 lhs, uint256 rhs) internal pure returns (uint256) {
-        return (lhs * (2**112)) / rhs;
+        return (lhs * (2 ** 112)) / rhs;
     }
 
     // implementation from https://github.com/Uniswap/uniswap-lib/commit/99f3f28770640ba1bb1ff460ac7c5292fb8291a0

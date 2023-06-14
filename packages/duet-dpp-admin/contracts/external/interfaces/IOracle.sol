@@ -8,15 +8,9 @@
 pragma solidity 0.8.9;
 
 interface IOracle {
-    function getPrice(address base)
-        external
-        view
-        returns (
-            uint256 latestPrice,
-            bool isValid,
-            bool isStale,
-            uint256 timestamp
-        );
+    function getPrice(
+        address base
+    ) external view returns (uint256 latestPrice, bool isValid, bool isStale, uint256 timestamp);
 
     function prices(address base) external view returns (uint256);
 

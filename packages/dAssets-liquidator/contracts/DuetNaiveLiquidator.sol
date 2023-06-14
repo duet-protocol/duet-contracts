@@ -50,11 +50,7 @@ contract DuetNaiveLiquidator is ILiquidateCallee, Adminable, Initializable {
         IERC20Upgradeable(underlying_).safeApprove(msg.sender, amount_);
     }
 
-    function transferTokenByAmount(
-        IERC20Upgradeable token_,
-        address to_,
-        uint256 amount_
-    ) public onlyAdmin {
+    function transferTokenByAmount(IERC20Upgradeable token_, address to_, uint256 amount_) public onlyAdmin {
         token_.safeTransfer(to_, amount_);
     }
 
@@ -76,11 +72,7 @@ contract DuetNaiveLiquidator is ILiquidateCallee, Adminable, Initializable {
         }
     }
 
-    function approveTokenByAmount(
-        IERC20Upgradeable token_,
-        address spender_,
-        uint256 amount_
-    ) public onlyAdmin {
+    function approveTokenByAmount(IERC20Upgradeable token_, address spender_, uint256 amount_) public onlyAdmin {
         token_.safeApprove(spender_, amount_);
     }
 

@@ -27,27 +27,19 @@ contract SingleFarmingVault is DepositVaultBase {
 
     constructor() initializer {}
 
-    function initialize(
-        address _controller,
-        address _feeConf,
-        address _underlying
-    ) external initializer {
+    function initialize(address _controller, address _feeConf, address _underlying) external initializer {
         DepositVaultBase.init(_controller, _feeConf, _underlying);
         underlyingToken = IDYToken(_underlying).underlying();
 
         uint256 decimal = IERC20Metadata(underlyingToken).decimals();
-        underlyingScale = 10**decimal;
+        underlyingScale = 10 ** decimal;
     }
 
     function underlyingTransferIn(address sender, uint256 amount) internal virtual override {
         IERC20Upgradeable(underlying).safeTransferFrom(sender, address(this), amount);
     }
 
-    function underlyingTransferOut(
-        address receipt,
-        uint256 amount,
-        bool
-    ) internal virtual override {
+    function underlyingTransferOut(address receipt, uint256 amount, bool) internal virtual override {
         //  skip transfer to myself
         if (receipt == address(this)) {
             return;
@@ -63,22 +55,14 @@ contract SingleFarmingVault is DepositVaultBase {
         _deposit(msg.sender, amount);
     }
 
-    function depositTo(
-        address dytoken,
-        address to,
-        uint256 amount
-    ) external {
+    function depositTo(address dytoken, address to, uint256 amount) external {
         require(dytoken == address(underlying), "TOKEN_UNMATCH");
         underlyingTransferIn(msg.sender, amount);
         _deposit(to, amount);
     }
 
     // call from dToken
-    function syncDeposit(
-        address dytoken,
-        uint256 amount,
-        address user
-    ) external virtual override {
+    function syncDeposit(address dytoken, uint256 amount, address user) external virtual override {
         address vault = IController(controller).dyTokenVaults(dytoken);
         require(msg.sender == underlying && dytoken == address(underlying), "TOKEN_UNMATCH");
         require(vault == address(this), "VAULT_UNMATCH");
@@ -89,20 +73,11 @@ contract SingleFarmingVault is DepositVaultBase {
         _withdraw(msg.sender, amount, unpack);
     }
 
-    function withdrawTo(
-        address to,
-        uint256 amount,
-        bool unpack
-    ) external {
+    function withdrawTo(address to, uint256 amount, bool unpack) external {
         _withdraw(to, amount, unpack);
     }
 
-    function withdrawCall(
-        address to,
-        uint256 amount,
-        bool unpack,
-        bytes calldata data
-    ) external {
+    function withdrawCall(address to, uint256 amount, bool unpack, bytes calldata data) external {
         uint256 actualAmount = _withdraw(to, amount, unpack);
         if (data.length > 0) {
             address asset = unpack ? underlyingToken : underlying;
@@ -110,11 +85,7 @@ contract SingleFarmingVault is DepositVaultBase {
         }
     }
 
-    function liquidate(
-        address liquidator,
-        address borrower,
-        bytes calldata data
-    ) external override {
+    function liquidate(address liquidator, address borrower, bytes calldata data) external override {
         _liquidate(liquidator, borrower, data);
     }
 

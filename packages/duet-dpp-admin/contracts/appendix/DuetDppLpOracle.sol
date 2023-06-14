@@ -25,11 +25,7 @@ contract DuetDppLpOracle is IUSDOracle, Initializable, Adminable {
 
     constructor() initializer {}
 
-    function initialize(
-        address admin_,
-        address usdLikeToken_,
-        IDodoOracle dodoOracle_
-    ) external initializer {
+    function initialize(address admin_, address usdLikeToken_, IDodoOracle dodoOracle_) external initializer {
         _setAdmin(admin_);
         usdLikeToken = usdLikeToken_;
         dodoOracle = dodoOracle_;
@@ -54,7 +50,7 @@ contract DuetDppLpOracle is IUSDOracle, Initializable, Adminable {
         require(curCtrl.quoteToken == usdLikeToken, "DuetDppLpOracle: Invalid LP Token");
 
         (uint256 baseTokenAmount, uint256 quoteTokenAmount) = curCtrl.controller.recommendBaseAndQuote(
-            10**IERC20Metadata(address(curCtrl.controller)).decimals()
+            10 ** IERC20Metadata(address(curCtrl.controller)).decimals()
         );
 
         // 1e18
@@ -91,11 +87,11 @@ contract DuetDppLpOracle is IUSDOracle, Initializable, Adminable {
         uint256 targetDecimal_
     ) public pure returns (uint256) {
         if (sourceDecimal_ > targetDecimal_) {
-            return value_ / (10**(sourceDecimal_ - targetDecimal_));
+            return value_ / (10 ** (sourceDecimal_ - targetDecimal_));
         }
 
         if (sourceDecimal_ < targetDecimal_) {
-            return value_ * (10**(targetDecimal_ - sourceDecimal_));
+            return value_ * (10 ** (targetDecimal_ - sourceDecimal_));
         }
         return value_;
     }

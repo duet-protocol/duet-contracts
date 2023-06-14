@@ -28,12 +28,7 @@ contract DuetZap is OwnableUpgradeable {
     address public minter;
 
     /* ========== INITIALIZER ========== */
-    function initialize(
-        address _controller,
-        address _factory,
-        address _router,
-        address _wbnb
-    ) external initializer {
+    function initialize(address _controller, address _factory, address _router, address _wbnb) external initializer {
         __Ownable_init();
         require(owner() != address(0), "Zap: owner must be set");
         controller = IController(_controller);
@@ -55,12 +50,7 @@ contract DuetZap is OwnableUpgradeable {
         minter = _minter;
     }
 
-    function tokenToLp(
-        address _token,
-        uint256 amount,
-        address _lp,
-        bool needDeposit
-    ) external {
+    function tokenToLp(address _token, uint256 amount, address _lp, bool needDeposit) external {
         address receiver = msg.sender;
         if (needDeposit) {
             receiver = address(this);
@@ -156,11 +146,10 @@ contract DuetZap is OwnableUpgradeable {
         }
     }
 
-    function coinToTokenbyPath(bool needDeposit, address[] memory pathArr)
-        external
-        payable
-        returns (uint256 amountOut)
-    {
+    function coinToTokenbyPath(
+        bool needDeposit,
+        address[] memory pathArr
+    ) external payable returns (uint256 amountOut) {
         require(pathArr.length > 1, "Wrong Path: length of pathArr should exceed 1");
         address _from = pathArr[0];
         require(_from == wbnb, "Wrong Path: First item of PathArr should be WBNB!");
@@ -236,11 +225,7 @@ contract DuetZap is OwnableUpgradeable {
     }
 
     /* ========== Private Functions ========== */
-    function deposit(
-        address token,
-        uint256 amount,
-        address toUser
-    ) private {
+    function deposit(address token, uint256 amount, address toUser) private {
         address dytoken = controller.dyTokens(token);
         require(dytoken != address(0), "NO_DYTOKEN");
         address vault = controller.dyTokenVaults(dytoken);
@@ -250,11 +235,7 @@ contract DuetZap is OwnableUpgradeable {
         IDYToken(dytoken).depositTo(toUser, amount, vault);
     }
 
-    function _approveTokenIfNeeded(
-        address token,
-        address spender,
-        uint256 amount
-    ) private {
+    function _approveTokenIfNeeded(address token, address spender, uint256 amount) private {
         uint256 allowed = IERC20Upgradeable(token).allowance(address(this), spender);
         if (allowed == 0) {
             IERC20Upgradeable(token).safeApprove(spender, type(uint256).max);
@@ -321,12 +302,7 @@ contract DuetZap is OwnableUpgradeable {
         }
     }
 
-    function _swapBNBForToken(
-        address token,
-        uint256 value,
-        address receiver,
-        bool byBNB
-    ) private returns (uint256) {
+    function _swapBNBForToken(address token, uint256 value, address receiver, bool byBNB) private returns (uint256) {
         address[] memory path;
 
         if (routePairAddresses[token] != address(0)) {
@@ -352,12 +328,7 @@ contract DuetZap is OwnableUpgradeable {
         return amounts[amounts.length - 1];
     }
 
-    function _swapTokenForBNB(
-        address token,
-        uint256 amount,
-        address receiver,
-        bool byBNB
-    ) private returns (uint256) {
+    function _swapTokenForBNB(address token, uint256 amount, address receiver, bool byBNB) private returns (uint256) {
         address[] memory path;
         if (routePairAddresses[token] != address(0)) {
             path = new address[](3);
@@ -427,12 +398,7 @@ contract DuetZap is OwnableUpgradeable {
         return amountOutL2 > amountOutL3 ? pathL2 : pathL3;
     }
 
-    function _swap(
-        address _from,
-        uint256 amount,
-        address _to,
-        address receiver
-    ) private returns (uint256) {
+    function _swap(address _from, uint256 amount, address _to, address receiver) private returns (uint256) {
         if (minter != address(0) && IDusdMinter(minter).stableToken() == _from && IDusdMinter(minter).dusd() == _to) {
             uint256 output = _mineDusd(_from, amount);
             return output;

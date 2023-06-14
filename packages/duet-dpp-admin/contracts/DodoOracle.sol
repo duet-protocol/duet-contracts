@@ -45,8 +45,8 @@ contract DodoOracle is Adminable, Initializable, IDodoOracle {
             return price;
         }
         if (targetDecimals > 8) {
-            return price * 10**(targetDecimals - 8);
+            return price * 10 ** (targetDecimals - 8);
         }
-        return price / (10**(8 - targetDecimals));
+        return price / (10 ** (8 - targetDecimals));
     }
 }

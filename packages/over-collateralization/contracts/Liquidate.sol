@@ -188,11 +188,7 @@ contract Liquidate is ILiquidateCallee, OwnableUpgradeable {
         require(success, "safeTransferETH: ETH transfer failed");
     }
 
-    function approveTokenIfNeeded(
-        address token,
-        address spender,
-        uint256 amount
-    ) private {
+    function approveTokenIfNeeded(address token, address spender, uint256 amount) private {
         uint256 allowed = IERC20Upgradeable(token).allowance(address(this), spender);
         if (allowed == 0) {
             IERC20Upgradeable(token).safeApprove(spender, type(uint256).max);

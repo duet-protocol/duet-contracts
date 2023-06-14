@@ -24,12 +24,7 @@ abstract contract DYTokenBaseUpgradeable is IDYToken, ERC20PermitUpgradeable, Ow
 
     constructor() {}
 
-    function init(
-        address _underlying,
-        string memory _symbol,
-        uint8 _dec,
-        address _controller
-    ) internal {
+    function init(address _underlying, string memory _symbol, uint8 _dec, address _controller) internal {
         __Context_init_unchained();
         __Ownable_init_unchained();
         __ERC20_init("DYToken", string(abi.encodePacked("DY-", _symbol)));
@@ -40,11 +35,7 @@ abstract contract DYTokenBaseUpgradeable is IDYToken, ERC20PermitUpgradeable, Ow
         controller = _controller;
     }
 
-    function _beforeTokenTransfer(
-        address from,
-        address to,
-        uint256 amount
-    ) internal virtual override {}
+    function _beforeTokenTransfer(address from, address to, uint256 amount) internal virtual override {}
 
     function decimals() public view virtual override returns (uint8) {
         return dec;
@@ -54,11 +45,7 @@ abstract contract DYTokenBaseUpgradeable is IDYToken, ERC20PermitUpgradeable, Ow
         _burn(msg.sender, amount);
     }
 
-    function send(
-        address recipient,
-        uint256 amount,
-        bytes calldata exData
-    ) external returns (bool) {
+    function send(address recipient, uint256 amount, bytes calldata exData) external returns (bool) {
         _transfer(msg.sender, recipient, amount);
 
         if (recipient.isContract()) {
@@ -92,11 +79,7 @@ abstract contract DYTokenBaseUpgradeable is IDYToken, ERC20PermitUpgradeable, Ow
         }
     }
 
-    function depositTo(
-        address _to,
-        uint256 _amount,
-        address _toVault
-    ) public virtual;
+    function depositTo(address _to, uint256 _amount, address _toVault) public virtual;
 
     // for native coin
     function depositCoin(address _to, address _toVault) public payable virtual {}
@@ -107,11 +90,7 @@ abstract contract DYTokenBaseUpgradeable is IDYToken, ERC20PermitUpgradeable, Ow
     }
 
     // withdraw underlying asset, brun dyTokens
-    function withdraw(
-        address _to,
-        uint256 _shares,
-        bool needETH
-    ) public virtual;
+    function withdraw(address _to, uint256 _shares, bool needETH) public virtual;
 
     function withdrawAll() external virtual {
         withdraw(msg.sender, balanceOf(msg.sender), true);

@@ -10,11 +10,7 @@ library UniversalERC20 {
 
     IERC20 private constant ETH_ADDRESS = IERC20(0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE);
 
-    function universalTransfer(
-        IERC20 token,
-        address payable to,
-        uint256 amount
-    ) internal {
+    function universalTransfer(IERC20 token, address payable to, uint256 amount) internal {
         if (amount > 0) {
             if (isETH(token)) {
                 to.transfer(amount);
@@ -24,11 +20,7 @@ library UniversalERC20 {
         }
     }
 
-    function universalApproveMax(
-        IERC20 token,
-        address to,
-        uint256 amount
-    ) internal {
+    function universalApproveMax(IERC20 token, address to, uint256 amount) internal {
         uint256 allowance = token.allowance(address(this), to);
         if (allowance < amount) {
             if (allowance > 0) {

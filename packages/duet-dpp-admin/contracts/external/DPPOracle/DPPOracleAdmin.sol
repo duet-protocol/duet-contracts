@@ -29,12 +29,7 @@ contract DPPOracleAdmin is InitializableOwnable {
         _;
     }
 
-    function init(
-        address owner,
-        address dpp,
-        address operator,
-        address dodoApproveProxy
-    ) external {
+    function init(address owner, address dpp, address operator, address dodoApproveProxy) external {
         initOwner(owner);
         _DPP_ = dpp;
         _OPERATOR_ = operator;
@@ -53,11 +48,7 @@ contract DPPOracleAdmin is InitializableOwnable {
         _OPERATOR_ = newOperator;
     }
 
-    function retrieve(
-        address payable to,
-        address token,
-        uint256 amount
-    ) external notFreezed onlyOwner {
+    function retrieve(address payable to, address token, uint256 amount) external notFreezed onlyOwner {
         IDPPOracle(_DPP_).retrieve(to, token, amount);
     }
 

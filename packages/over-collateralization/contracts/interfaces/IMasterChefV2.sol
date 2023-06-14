@@ -10,7 +10,9 @@ interface IMasterChefV2 {
 
     function lpToken(uint256 pid) external view returns (address);
 
-    function poolInfo(uint256 pid)
+    function poolInfo(
+        uint256 pid
+    )
         external
         view
         returns (
@@ -21,14 +23,10 @@ interface IMasterChefV2 {
             bool isRegular
         );
 
-    function userInfo(uint256 pid, address user)
-        external
-        view
-        returns (
-            uint256 amount,
-            uint256 rewardDebt,
-            uint256 boostMultiplier
-        );
+    function userInfo(
+        uint256 pid,
+        address user
+    ) external view returns (uint256 amount, uint256 rewardDebt, uint256 boostMultiplier);
 
     // View function to see pending SUSHIs on frontend.
     function pendingCake(uint256 _pid, address _user) external view returns (uint256);

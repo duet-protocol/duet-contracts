@@ -75,12 +75,7 @@ contract SingleBondsFactory is Ownable {
         bondAddr.renewal(_phasenum, _principal, _interestone);
     }
 
-    function renewSingleEpoch(
-        SingleBond bondAddr,
-        uint256 id,
-        uint256 amount,
-        address to
-    ) external onlyOwner {
+    function renewSingleEpoch(SingleBond bondAddr, uint256 id, uint256 amount, address to) external onlyOwner {
         IERC20 token = IERC20(bondAddr.rewardtoken());
         token.safeTransferFrom(msg.sender, address(this), amount);
         token.safeIncreaseAllowance(address(bondAddr), amount);

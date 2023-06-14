@@ -2,21 +2,12 @@ pragma solidity 0.8.9;
 pragma experimental ABIEncoderV2;
 
 interface IDPPOracleAdmin {
-    function init(
-        address owner,
-        address dpp,
-        address operator,
-        address dodoApproveProxy
-    ) external;
+    function init(address owner, address dpp, address operator, address dodoApproveProxy) external;
 
     //=========== admin ==========
     function ratioSync() external;
 
-    function retrieve(
-        address payable to,
-        address token,
-        uint256 amount
-    ) external;
+    function retrieve(address payable to, address token, uint256 amount) external;
 
     function reset(
         address assetTo,
@@ -37,11 +28,7 @@ interface IDPPOracleAdmin {
         uint256 minQuoteReserve
     ) external returns (bool);
 
-    function tunePrice(
-        uint256 newI,
-        uint256 minBaseReserve,
-        uint256 minQuoteReserve
-    ) external returns (bool);
+    function tunePrice(uint256 newI, uint256 minBaseReserve, uint256 minQuoteReserve) external returns (bool);
 
     function changeOracle(address newOracle) external;
 

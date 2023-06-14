@@ -38,11 +38,7 @@ contract dWTI is ERC20, ERC20Permit, Ownable {
         _burn(msg.sender, amount);
     }
 
-    function send(
-        address recipient,
-        uint256 amount,
-        bytes calldata exData
-    ) external returns (bool) {
+    function send(address recipient, uint256 amount, bytes calldata exData) external returns (bool) {
         _transfer(msg.sender, recipient, amount);
 
         if (recipient.isContract()) {

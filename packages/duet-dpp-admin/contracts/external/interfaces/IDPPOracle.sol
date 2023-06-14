@@ -28,11 +28,7 @@ interface IDPPOracle {
     //=========== admin ==========
     function ratioSync() external;
 
-    function retrieve(
-        address payable to,
-        address token,
-        uint256 amount
-    ) external;
+    function retrieve(address payable to, address token, uint256 amount) external;
 
     function reset(
         address assetTo,
@@ -53,11 +49,7 @@ interface IDPPOracle {
         uint256 minQuoteReserve
     ) external returns (bool);
 
-    function tunePrice(
-        uint256 newI,
-        uint256 minBaseReserve,
-        uint256 minQuoteReserve
-    ) external returns (bool);
+    function tunePrice(uint256 newI, uint256 minBaseReserve, uint256 minQuoteReserve) external returns (bool);
 
     function changeOracle(address newOracle) external;
 

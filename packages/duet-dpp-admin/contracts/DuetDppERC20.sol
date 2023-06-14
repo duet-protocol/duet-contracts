@@ -56,11 +56,7 @@ contract DuetDppERC20 is DuetDppStorage {
      * @param to address The address which you want to transfer to
      * @param amount uint256 the amount of tokens to be transferred
      */
-    function transferFrom(
-        address from,
-        address to,
-        uint256 amount
-    ) public returns (bool) {
+    function transferFrom(address from, address to, uint256 amount) public returns (bool) {
         require(amount <= _SHARES_[from], "BALANCE_NOT_ENOUGH");
         require(amount <= _ALLOWED_[from][msg.sender], "ALLOWANCE_NOT_ENOUGH");
 
@@ -124,11 +120,7 @@ contract DuetDppERC20 is DuetDppStorage {
         return true;
     }
 
-    function _approve(
-        address owner,
-        address spender,
-        uint256 amount
-    ) private {
+    function _approve(address owner, address spender, uint256 amount) private {
         _ALLOWED_[owner][spender] = amount;
         emit Approval(owner, spender, amount);
     }

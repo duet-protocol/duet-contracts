@@ -38,12 +38,7 @@ contract DuetUSDMinerPair is Ownable, TokenRecipient {
         unlocked = 1;
     }
 
-    constructor(
-        address _stableToken,
-        IUSDOracle _stableOracle,
-        address _dusd,
-        address _feeTo
-    ) {
+    constructor(address _stableToken, IUSDOracle _stableOracle, address _dusd, address _feeTo) {
         require(IERC20Metadata(_stableToken).decimals() == 18, "not support stable token");
         stableToken = _stableToken;
         stableOracle = _stableOracle;
@@ -86,11 +81,7 @@ contract DuetUSDMinerPair is Ownable, TokenRecipient {
     //   mine(amount, minDusd, to);
     // }
 
-    function mineDusd(
-        uint256 amount,
-        uint256 minDusd,
-        address to
-    ) public lock returns (uint256 amountOut) {
+    function mineDusd(uint256 amount, uint256 minDusd, address to) public lock returns (uint256 amountOut) {
         require(amount > 0, "invalid amount");
         require(stableOracle.getPrice(stableToken) > VALID_STABLE_PRICE, "stable token value too low");
         uint256 fee = 0;
@@ -134,11 +125,7 @@ contract DuetUSDMinerPair is Ownable, TokenRecipient {
         }
     }
 
-    function tokensReceived(
-        address from,
-        uint256 amount,
-        bytes calldata exData
-    ) external override returns (bool) {
+    function tokensReceived(address from, uint256 amount, bytes calldata exData) external override returns (bool) {
         require(msg.sender == dusd, "must call from dusd");
         if (exData.length > 0) {
             doBurnDusd(amount, bytesToUint(exData), from);
@@ -162,20 +149,12 @@ contract DuetUSDMinerPair is Ownable, TokenRecipient {
         amountOut = burnDusd(amount, minStable, to);
     }
 
-    function burnDusd(
-        uint256 amount,
-        uint256 minStable,
-        address to
-    ) public returns (uint256 amountOut) {
+    function burnDusd(uint256 amount, uint256 minStable, address to) public returns (uint256 amountOut) {
         TransferHelper.safeTransferFrom(dusd, msg.sender, address(this), amount);
         amountOut = doBurnDusd(amount, minStable, to);
     }
 
-    function doBurnDusd(
-        uint256 amount,
-        uint256 minStable,
-        address to
-    ) internal lock returns (uint256 amountOut) {
+    function doBurnDusd(uint256 amount, uint256 minStable, address to) internal lock returns (uint256 amountOut) {
         require(amount > 0, "invalid amount");
         uint256 fee = 0;
         (amountOut, fee) = calcOutputFee(amount);
@@ -203,7 +182,7 @@ contract DuetUSDMinerPair is Ownable, TokenRecipient {
     function bytesToUint(bytes calldata b) internal pure returns (uint256) {
         uint256 number;
         for (uint256 i = 0; i < b.length; i++) {
-            number = number + uint8(b[i]) * (2**(8 * (b.length - (i + 1))));
+            number = number + uint8(b[i]) * (2 ** (8 * (b.length - (i + 1))));
         }
         return number;
     }

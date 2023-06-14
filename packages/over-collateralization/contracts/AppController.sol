@@ -133,11 +133,7 @@ contract AppController is Constants, IController, OwnableUpgradeable {
 
     // set or update strategy
     // stype: 1: pancakeswap
-    function setStrategy(
-        address _underlying,
-        address _strategy,
-        uint256 stype
-    ) external onlyOwner {
+    function setStrategy(address _underlying, address _strategy, uint256 stype) external onlyOwner {
         require(_strategy != address(0), "Strategies Disabled");
 
         address _current = strategies[_underlying];
@@ -198,32 +194,16 @@ contract AppController is Constants, IController, OwnableUpgradeable {
         emit ValueConfChanged(_underlying, _oracle, _discount, _premium);
     }
 
-    function getValueConfs(address token0, address token1)
-        external
-        view
-        returns (
-            address oracle0,
-            uint16 dr0,
-            uint16 pr0,
-            address oracle1,
-            uint16 dr1,
-            uint16 pr1
-        )
-    {
+    function getValueConfs(
+        address token0,
+        address token1
+    ) external view returns (address oracle0, uint16 dr0, uint16 pr0, address oracle1, uint16 dr1, uint16 pr1) {
         (oracle0, dr0, pr0) = getValueConf(token0);
         (oracle1, dr1, pr1) = getValueConf(token1);
     }
 
     // get DiscountRate and PremiumRate
-    function getValueConf(address _underlying)
-        public
-        view
-        returns (
-            address oracle,
-            uint16 dr,
-            uint16 pr
-        )
-    {
+    function getValueConf(address _underlying) public view returns (address oracle, uint16 dr, uint16 pr) {
         ValueConf memory conf = valueConfs[_underlying];
         oracle = conf.oracle;
         dr = conf.dr;
@@ -231,11 +211,7 @@ contract AppController is Constants, IController, OwnableUpgradeable {
     }
 
     // vtype 1 : for deposit vault 2: for mint vault
-    function setVault(
-        address _dyToken,
-        address _vault,
-        uint256 vtype
-    ) external onlyOwnerOrFactory {
+    function setVault(address _dyToken, address _vault, uint256 vtype) external onlyOwnerOrFactory {
         require(IVault(_vault).isDuetVault(), "INVALIE_VALUT");
         address old = dyTokenVaults[_dyToken];
         dyTokenVaults[_dyToken] = _vault;
@@ -334,12 +310,10 @@ contract AppController is Constants, IController, OwnableUpgradeable {
      * @param  _user depositors
      * @param _dp  discount or premium
      */
-    function userValues(address _user, bool _dp)
-        public
-        view
-        override
-        returns (uint256 totalDepositValue, uint256 totalBorrowValue)
-    {
+    function userValues(
+        address _user,
+        bool _dp
+    ) public view override returns (uint256 totalDepositValue, uint256 totalBorrowValue) {
         totalDepositValue = accValidVaultVaule(_user, _dp);
         totalBorrowValue = accVaultVaule(_user, userJoinedBorrowVaults[_user], _dp);
     }
@@ -349,11 +323,10 @@ contract AppController is Constants, IController, OwnableUpgradeable {
      * @param  _user depositors
      * @param _dp  discount or premium
      */
-    function userTotalValues(address _user, bool _dp)
-        public
-        view
-        returns (uint256 totalDepositValue, uint256 totalBorrowValue)
-    {
+    function userTotalValues(
+        address _user,
+        bool _dp
+    ) public view returns (uint256 totalDepositValue, uint256 totalBorrowValue) {
         totalDepositValue = accVaultVaule(_user, userJoinedDepositVaults[_user], _dp);
         totalBorrowValue = accVaultVaule(_user, userJoinedBorrowVaults[_user], _dp);
     }
@@ -511,11 +484,7 @@ contract AppController is Constants, IController, OwnableUpgradeable {
      * @param _vault address of deposit market
      * param  _amount deposit amount
      */
-    function beforeDeposit(
-        address,
-        address _vault,
-        uint256
-    ) external view {
+    function beforeDeposit(address, address _vault, uint256) external view {
         VaultState memory state = vaultStates[_vault];
         require(
             globalState.enabled && globalState.enableDeposit && state.enabled && state.enableDeposit,
@@ -529,11 +498,7 @@ contract AppController is Constants, IController, OwnableUpgradeable {
      * @param _vault address of loan market
      * @param  _amount loan amount
      */
-    function beforeBorrow(
-        address _user,
-        address _vault,
-        uint256 _amount
-    ) external view {
+    function beforeBorrow(address _user, address _vault, uint256 _amount) external view {
         VaultState memory state = vaultStates[_vault];
         require(
             globalState.enabled && globalState.enableBorrow && state.enabled && state.enableBorrow,
@@ -556,11 +521,7 @@ contract AppController is Constants, IController, OwnableUpgradeable {
         require(totalDepositValue * PercentBase >= pendingBrorowValue * collateralRate, "LOW_COLLATERAL");
     }
 
-    function beforeWithdraw(
-        address _user,
-        address _vault,
-        uint256 _amount
-    ) external view {
+    function beforeWithdraw(address _user, address _vault, uint256 _amount) external view {
         VaultState memory state = vaultStates[_vault];
         require(
             globalState.enabled && globalState.enableWithdraw && state.enabled && state.enableWithdraw,
@@ -579,11 +540,7 @@ contract AppController is Constants, IController, OwnableUpgradeable {
         }
     }
 
-    function beforeRepay(
-        address _repayer,
-        address _vault,
-        uint256 _amount
-    ) external view {
+    function beforeRepay(address _repayer, address _vault, uint256 _amount) external view {
         VaultState memory state = vaultStates[_vault];
         require(globalState.enabled && globalState.enableRepay && state.enabled && state.enableRepay, "REPAY_DISABLED");
     }
@@ -616,11 +573,7 @@ contract AppController is Constants, IController, OwnableUpgradeable {
         }
     }
 
-    function releaseMintVaults(
-        address user_,
-        address liquidator_,
-        IVault[] calldata mintVaults_
-    ) external onlyOwner {
+    function releaseMintVaults(address user_, address liquidator_, IVault[] calldata mintVaults_) external onlyOwner {
         require(allowedLiquidator[liquidator_], "Invalid liquidator");
 
         EnumerableSet.AddressSet storage depositedVaults = userJoinedDepositVaults[user_];
@@ -775,11 +728,7 @@ contract AppController is Constants, IController, OwnableUpgradeable {
         }
     }
 
-    function _depositForUser(
-        IVault depositVault_,
-        address user_,
-        uint256 amount_
-    ) internal {
+    function _depositForUser(IVault depositVault_, address user_, uint256 amount_) internal {
         IDepositVault(address(depositVault_)).depositTo(depositVault_.underlying(), user_, amount_);
     }
 

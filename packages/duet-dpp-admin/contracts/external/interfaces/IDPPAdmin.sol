@@ -9,10 +9,5 @@ pragma solidity 0.8.9;
 pragma experimental ABIEncoderV2;
 
 interface IDPPAdmin {
-    function init(
-        address owner,
-        address dpp,
-        address operator,
-        address dodoSmartApprove
-    ) external;
+    function init(address owner, address dpp, address operator, address dodoSmartApprove) external;
 }

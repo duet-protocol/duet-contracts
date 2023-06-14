@@ -10,15 +10,9 @@ interface IMasterChef {
 
     function totalAllocPoint() external view returns (uint256);
 
-    function poolInfo(uint256 pid)
-        external
-        view
-        returns (
-            address lpToken,
-            uint256 allocPoint,
-            uint256 lastRewardBlock,
-            uint256 accSushiPerShare
-        );
+    function poolInfo(
+        uint256 pid
+    ) external view returns (address lpToken, uint256 allocPoint, uint256 lastRewardBlock, uint256 accSushiPerShare);
 
     function userInfo(uint256 pid, address user) external view returns (uint256 amount, uint256 rewardDebt);
 

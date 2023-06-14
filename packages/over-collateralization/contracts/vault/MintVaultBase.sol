@@ -53,11 +53,7 @@ abstract contract MintVaultBase is Constants, IVault, IMintVault, OwnableUpgrade
      * @notice 初始化
      * @dev  在Vault初始化时设置货币基础信息。
      */
-    function init(
-        address _controller,
-        address _feeConf,
-        address _underlying
-    ) internal {
+    function init(address _controller, address _feeConf, address _underlying) internal {
         OwnableUpgradeable.__Ownable_init();
         controller = _controller;
         feeConf = IFeeConf(_feeConf);
@@ -70,11 +66,7 @@ abstract contract MintVaultBase is Constants, IVault, IMintVault, OwnableUpgrade
 
     function underlyingTransferIn(address sender, uint256 amount) internal virtual;
 
-    function underlyingTransferOut(
-        address receipt,
-        uint256 amount,
-        bool giveWETH
-    ) internal virtual;
+    function underlyingTransferOut(address receipt, uint256 amount, bool giveWETH) internal virtual;
 
     function underlyingMint(address to, uint256 amount) internal virtual;
 
@@ -181,11 +173,7 @@ abstract contract MintVaultBase is Constants, IVault, IMintVault, OwnableUpgrade
      * @param liquidator 清算人
      * @param borrower 借款人
      */
-    function _liquidate(
-        address liquidator,
-        address borrower,
-        bytes calldata data
-    ) internal nonReentrant {
+    function _liquidate(address liquidator, address borrower, bytes calldata data) internal nonReentrant {
         require(msg.sender == controller, "LIQUIDATE_INVALID_CALLER");
         require(liquidator != borrower, "LIQUIDATE_DISABLE_YOURSELF");
         uint256 loan = borrows[borrower];

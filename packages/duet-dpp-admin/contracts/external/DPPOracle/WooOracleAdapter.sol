@@ -27,17 +27,9 @@ contract WooOracleAdapter is IOracle {
         oracle = IWooracle(oracleAddress);
     }
 
-    function getPrice(address base)
-        external
-        view
-        override
-        returns (
-            uint256 latestPrice,
-            bool isValid,
-            bool isStale,
-            uint256 timestamp
-        )
-    {
+    function getPrice(
+        address base
+    ) external view override returns (uint256 latestPrice, bool isValid, bool isStale, uint256 timestamp) {
         latestPrice = oracle.getPrice(base);
         isValid = oracle.isFeasible(base);
         isStale = !isValid;

@@ -54,11 +54,7 @@ abstract contract DepositVaultBase is Constants, IVault, IDepositVault, OwnableU
      * @notice 初始化
      * @dev  在Vault初始化时设置货币基础信息
      */
-    function init(
-        address _controller,
-        address _feeConf,
-        address _underlying
-    ) internal {
+    function init(address _controller, address _feeConf, address _underlying) internal {
         OwnableUpgradeable.__Ownable_init();
         controller = _controller;
         feeConf = IFeeConf(_feeConf);
@@ -71,11 +67,7 @@ abstract contract DepositVaultBase is Constants, IVault, IDepositVault, OwnableU
 
     function underlyingTransferIn(address sender, uint256 amount) internal virtual;
 
-    function underlyingTransferOut(
-        address receipt,
-        uint256 amount,
-        bool giveWETH
-    ) internal virtual;
+    function underlyingTransferOut(address receipt, uint256 amount, bool giveWETH) internal virtual;
 
     function setFeeConf(address _feeConf) external onlyOwner {
         require(_feeConf != address(0), "INVALID_FEECONF");
@@ -159,11 +151,7 @@ abstract contract DepositVaultBase is Constants, IVault, IDepositVault, OwnableU
      * @param liquidator 清算人
      * @param borrower 借款人
      */
-    function _liquidate(
-        address liquidator,
-        address borrower,
-        bytes calldata data
-    ) internal virtual nonReentrant {
+    function _liquidate(address liquidator, address borrower, bytes calldata data) internal virtual nonReentrant {
         require(msg.sender == controller, "LIQUIDATE_INVALID_CALLER");
         require(liquidator != borrower, "LIQUIDATE_DISABLE_YOURSELF");
 

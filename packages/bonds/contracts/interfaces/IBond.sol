@@ -28,9 +28,5 @@ interface IBond is IERC20MetadataUpgradeable {
 
     function amountToUnderlying(uint256 bondAmount_) external view returns (uint256);
 
-    function emergencyWithdraw(
-        IERC20MetadataUpgradeable token_,
-        address to_,
-        uint256 amount_
-    ) external;
+    function emergencyWithdraw(IERC20MetadataUpgradeable token_, address to_, uint256 amount_) external;
 }

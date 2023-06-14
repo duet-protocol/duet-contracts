@@ -104,11 +104,7 @@ contract DYSBUSD is Constants, DYTokenBaseUpgradeable {
         depositTo(msg.sender, _amount, _toVault);
     }
 
-    function depositTo(
-        address _to,
-        uint256 _amount,
-        address _toVault
-    ) public override {
+    function depositTo(address _to, uint256 _amount, address _toVault) public override {
         require(_toVault != address(0), "miss vault");
         require(_toVault == IController(controller).dyTokenVaults(address(this)), "mismatch dToken vault");
         _mint(_toVault, _amount);
@@ -118,12 +114,7 @@ contract DYSBUSD is Constants, DYTokenBaseUpgradeable {
         userEarn(_to, _amount);
     }
 
-    function withdrawByVault(
-        address user,
-        uint256 withdrawAmount,
-        uint256 totalDepositsOfUser,
-        bool onlyBUSD
-    ) public {
+    function withdrawByVault(address user, uint256 withdrawAmount, uint256 totalDepositsOfUser, bool onlyBUSD) public {
         require(withdrawAmount > 0, "shares need > 0");
         address vault = IController(controller).dyTokenVaults(address(this));
         require(msg.sender == vault, "not vault");
@@ -133,11 +124,7 @@ contract DYSBUSD is Constants, DYTokenBaseUpgradeable {
         _calOutputandAllocation(user, user, msg.sender, withdrawAmount, totalAmountOfUser, onlyBUSD);
     }
 
-    function withdraw(
-        address user,
-        uint256 amount,
-        bool onlyBUSD
-    ) public override {
+    function withdraw(address user, uint256 amount, bool onlyBUSD) public override {
         require(amount > 0, "shares need > 0");
         require(totalSupply() > 0, "no deposit");
 
@@ -180,11 +167,7 @@ contract DYSBUSD is Constants, DYTokenBaseUpgradeable {
         return true;
     }
 
-    function _beforeTokenTransfer(
-        address from,
-        address to,
-        uint256 amount
-    ) internal virtual override {
+    function _beforeTokenTransfer(address from, address to, uint256 amount) internal virtual override {
         uint256 totalAmountOfUser;
         address vault = IController(controller).dyTokenVaults(address(this));
         if (vault != address(0)) {
@@ -219,11 +202,7 @@ contract DYSBUSD is Constants, DYTokenBaseUpgradeable {
         addLiquidity(user, bUSDAmount, mintAmount);
     }
 
-    function addLiquidity(
-        address user,
-        uint256 bUSDAmount,
-        uint256 dUSDAmount
-    ) internal {
+    function addLiquidity(address user, uint256 bUSDAmount, uint256 dUSDAmount) internal {
         (, , uint256 liquidity) = IRouter02(router).addLiquidity(
             BUSD,
             DUSD,
@@ -250,35 +229,21 @@ contract DYSBUSD is Constants, DYTokenBaseUpgradeable {
         );
     }
 
-    function swapExactUseToken(
-        address useToken,
-        uint256 amount,
-        address wantToken
-    ) internal {
+    function swapExactUseToken(address useToken, uint256 amount, address wantToken) internal {
         address[] memory path = new address[](2);
         path[0] = useToken;
         path[1] = wantToken;
         IRouter02(router).swapExactTokensForTokens(amount, 0, path, address(this), block.timestamp);
     }
 
-    function swapExactGetToken(
-        address useToken,
-        uint256 max,
-        address wantToken,
-        uint256 amount
-    ) internal {
+    function swapExactGetToken(address useToken, uint256 max, address wantToken, uint256 amount) internal {
         address[] memory path = new address[](2);
         path[0] = useToken;
         path[1] = wantToken;
         IRouter02(router).swapTokensForExactTokens(amount, max, path, address(this), block.timestamp);
     }
 
-    function _allocation(
-        address _user,
-        address _to,
-        uint256 _transferAmount,
-        uint256 _totalAmountOfUser
-    ) internal {
+    function _allocation(address _user, address _to, uint256 _transferAmount, uint256 _totalAmountOfUser) internal {
         // handle debts and lps
         if (_user != address(0) && _to != address(0)) {
             uint256 transferDebt = (debts[_user] * _transferAmount) / _totalAmountOfUser;

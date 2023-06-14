@@ -29,13 +29,7 @@ contract Reader is Constants {
 
     address public minter;
 
-    constructor(
-        address _controller,
-        address _feeConf,
-        address _factory,
-        address _router,
-        address _minter
-    ) {
+    constructor(address _controller, address _feeConf, address _factory, address _router, address _minter) {
         controller = IController(_controller);
         feeConf = IFeeConf(_feeConf);
         factory = IPancakeFactory(_factory);
@@ -45,11 +39,7 @@ contract Reader is Constants {
     }
 
     // underlyingAmount : such as lp amount;
-    function getVaultPrice(
-        address vault,
-        uint256 underlyingAmount,
-        bool _dp
-    ) external view returns (uint256 value) {
+    function getVaultPrice(address vault, uint256 underlyingAmount, bool _dp) external view returns (uint256 value) {
         // calc dytoken amount;
         address dytoken = IVault(vault).underlying();
 
@@ -103,11 +93,10 @@ contract Reader is Constants {
     }
 
     //
-    function depositVaultValues(address[] memory _vaults, bool _dp)
-        external
-        view
-        returns (uint256[] memory amounts, uint256[] memory values)
-    {
+    function depositVaultValues(
+        address[] memory _vaults,
+        bool _dp
+    ) external view returns (uint256[] memory amounts, uint256[] memory values) {
         uint256 len = _vaults.length;
         values = new uint256[](len);
         amounts = new uint256[](len);
@@ -143,11 +132,10 @@ contract Reader is Constants {
     }
 
     // 获取用户所有仓位数量（dyToken 数量及底层币数量）
-    function userVaultDepositAmounts(address _user, address[] memory _vaults)
-        external
-        view
-        returns (uint256[] memory amounts, uint256[] memory underAmounts)
-    {
+    function userVaultDepositAmounts(
+        address _user,
+        address[] memory _vaults
+    ) external view returns (uint256[] memory amounts, uint256[] memory underAmounts) {
         uint256 len = _vaults.length;
         amounts = new uint256[](len);
         underAmounts = new uint256[](len);
@@ -164,11 +152,10 @@ contract Reader is Constants {
     }
 
     // 获取用户所有借款数量
-    function userVaultBorrowAmounts(address _user, address[] memory _vaults)
-        external
-        view
-        returns (uint256[] memory amounts)
-    {
+    function userVaultBorrowAmounts(
+        address _user,
+        address[] memory _vaults
+    ) external view returns (uint256[] memory amounts) {
         uint256 len = _vaults.length;
         amounts = new uint256[](len);
 
@@ -208,11 +195,10 @@ contract Reader is Constants {
     }
 
     // 获取多个用户的价值 (only calculate valid vault)
-    function usersVaules(address[] memory users, bool dp)
-        external
-        view
-        returns (uint256[] memory totalDeposits, uint256[] memory totalBorrows)
-    {
+    function usersVaules(
+        address[] memory users,
+        bool dp
+    ) external view returns (uint256[] memory totalDeposits, uint256[] memory totalBorrows) {
         uint256 len = users.length;
         totalDeposits = new uint256[](len);
         totalBorrows = new uint256[](len);
@@ -223,11 +209,10 @@ contract Reader is Constants {
     }
 
     // 获取多个用户的价值
-    function usersTotalVaules(address[] memory users, bool dp)
-        external
-        view
-        returns (uint256[] memory totalDeposits, uint256[] memory totalBorrows)
-    {
+    function usersTotalVaules(
+        address[] memory users,
+        bool dp
+    ) external view returns (uint256[] memory totalDeposits, uint256[] memory totalBorrows) {
         uint256 len = users.length;
         totalDeposits = new uint256[](len);
         totalBorrows = new uint256[](len);
@@ -253,16 +238,11 @@ contract Reader is Constants {
     )
         external
         view
-        returns (
-            uint256 inputVaule,
-            uint256 outputValue,
-            uint256 actualAmountOut0,
-            uint256 actualAmountOut1
-        )
+        returns (uint256 inputVaule, uint256 outputValue, uint256 actualAmountOut0, uint256 actualAmountOut1)
     {
         {
             (address oracle, , ) = controller.getValueConf(token);
-            uint256 scale = 10**IERC20Metadata(token).decimals();
+            uint256 scale = 10 ** IERC20Metadata(token).decimals();
             inputVaule = (IUSDOracle(oracle).getPrice(token) * amount) / scale;
         }
 
@@ -287,8 +267,8 @@ contract Reader is Constants {
         uint256 price0 = _getPrice(token, pathArr0);
         uint256 price1 = _getPrice(token, pathArr1);
 
-        uint256 scale0 = 10**IERC20Metadata(token0).decimals();
-        uint256 scale1 = 10**IERC20Metadata(token1).decimals();
+        uint256 scale0 = 10 ** IERC20Metadata(token0).decimals();
+        uint256 scale1 = 10 ** IERC20Metadata(token1).decimals();
 
         outputValue = (actualAmountOut0 * price0) / scale0 + (actualAmountOut1 * price1) / scale1;
     }
@@ -297,17 +277,9 @@ contract Reader is Constants {
         address token,
         uint256 amount,
         address[] memory pathArr
-    )
-        external
-        view
-        returns (
-            uint256 inputVaule,
-            uint256 outputValue,
-            uint256 amountOut
-        )
-    {
+    ) external view returns (uint256 inputVaule, uint256 outputValue, uint256 amountOut) {
         (address oracle, , ) = controller.getValueConf(token);
-        uint256 scaleIn = 10**IERC20Metadata(token).decimals();
+        uint256 scaleIn = 10 ** IERC20Metadata(token).decimals();
         inputVaule = (IUSDOracle(oracle).getPrice(token) * amount) / scaleIn;
 
         address targetToken;
@@ -317,7 +289,7 @@ contract Reader is Constants {
 
         uint256 price = _getPrice(token, pathArr);
 
-        uint256 scaleOut = 10**IERC20Metadata(targetToken).decimals();
+        uint256 scaleOut = 10 ** IERC20Metadata(targetToken).decimals();
 
         outputValue = (amountOut * price) / scaleOut;
     }
@@ -328,15 +300,7 @@ contract Reader is Constants {
         address[] memory pathArr,
         uint112[] memory reserves,
         address lp
-    )
-        internal
-        view
-        returns (
-            address targetToken,
-            uint256 amountOut,
-            uint112[] memory _reserves
-        )
-    {
+    ) internal view returns (address targetToken, uint256 amountOut, uint112[] memory _reserves) {
         if (pathArr.length == 0) {
             return (originToken, amount, reserves);
         }
@@ -360,15 +324,7 @@ contract Reader is Constants {
         uint256 amount,
         uint112[] memory reserves,
         address lp
-    )
-        internal
-        view
-        returns (
-            address targetToken,
-            uint256 amountOut,
-            uint112[] memory _reserves
-        )
-    {
+    ) internal view returns (address targetToken, uint256 amountOut, uint112[] memory _reserves) {
         uint256 len = pathArr.length;
 
         // len = 2, busd -> dusd
@@ -575,12 +531,7 @@ contract Reader is Constants {
         }
     }
 
-    function _checkAmountOut(
-        address token0,
-        address token1,
-        uint256 amountOut0,
-        uint256 amountOut1
-    ) internal view {
+    function _checkAmountOut(address token0, address token1, uint256 amountOut0, uint256 amountOut1) internal view {
         address lp = factory.getPair(token0, token1);
         IPair pair = IPair(lp);
         address _token0 = pair.token0();

@@ -70,11 +70,7 @@ contract VaultFarm is IVaultFarm, CloneFactory, OwnableUpgradeable {
         rewards = epochRewards;
     }
 
-    function doSyncVault(
-        IVault vault,
-        Pool pool,
-        address user
-    ) internal returns (bool equaled) {
+    function doSyncVault(IVault vault, Pool pool, address user) internal returns (bool equaled) {
         uint256 amount = vault.deposits(user);
         uint256 currAmount = pool.deposits(user);
 
@@ -110,11 +106,7 @@ contract VaultFarm is IVaultFarm, CloneFactory, OwnableUpgradeable {
         }
     }
 
-    function syncDeposit(
-        address _user,
-        uint256 _amount,
-        address asset
-    ) external override {
+    function syncDeposit(address _user, uint256 _amount, address asset) external override {
         require(vaults[msg.sender], "invalid vault");
         address pooladdr = assetPool[asset];
         if (pooladdr != address(0)) {
@@ -122,11 +114,7 @@ contract VaultFarm is IVaultFarm, CloneFactory, OwnableUpgradeable {
         }
     }
 
-    function syncWithdraw(
-        address _user,
-        uint256 _amount,
-        address asset
-    ) external override {
+    function syncWithdraw(address _user, uint256 _amount, address asset) external override {
         require(vaults[msg.sender], "invalid vault");
         address pooladdr = assetPool[asset];
         if (pooladdr != address(0)) {
@@ -159,11 +147,7 @@ contract VaultFarm is IVaultFarm, CloneFactory, OwnableUpgradeable {
     }
 
     // epochs need small for gas issue.
-    function newReward(
-        address[] memory epochs,
-        uint256[] memory rewards,
-        uint256 duration
-    ) public onlyOwner {
+    function newReward(address[] memory epochs, uint256[] memory rewards, uint256 duration) public onlyOwner {
         require(block.timestamp >= periodFinish, "period not finish");
         require(epochs.length == rewards.length, "mismatch length");
         require(duration > 0, "duration zero");
@@ -255,11 +239,7 @@ contract VaultFarm is IVaultFarm, CloneFactory, OwnableUpgradeable {
     }
 
     // _pools need small for gas issue.
-    function withdrawAward(
-        address[] memory _pools,
-        address to,
-        bool redeem
-    ) external {
+    function withdrawAward(address[] memory _pools, address to, bool redeem) external {
         address user = msg.sender;
 
         uint256 len = _pools.length;

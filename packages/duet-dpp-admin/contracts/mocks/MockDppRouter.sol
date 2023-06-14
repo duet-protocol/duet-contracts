@@ -50,11 +50,7 @@ contract DppRouter is Adminable {
         }
     }
 
-    function setOneAvailablePool(
-        address _baseToken,
-        address _quoteToken,
-        address _pairAddress
-    ) public onlyAdmin {
+    function setOneAvailablePool(address _baseToken, address _quoteToken, address _pairAddress) public onlyAdmin {
         availablePools[_baseToken][_quoteToken] = _pairAddress;
     }
 

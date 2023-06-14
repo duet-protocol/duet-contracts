@@ -34,11 +34,7 @@ contract LpFarmingVault is DepositVaultBase {
 
     constructor() initializer {}
 
-    function initialize(
-        address _controller,
-        address _feeConf,
-        address _underlying
-    ) external initializer {
+    function initialize(address _controller, address _feeConf, address _underlying) external initializer {
         DepositVaultBase.init(_controller, _feeConf, _underlying);
         pair = IDYToken(_underlying).underlying();
 
@@ -50,11 +46,7 @@ contract LpFarmingVault is DepositVaultBase {
         IERC20Upgradeable(underlying).safeTransferFrom(sender, address(this), amount);
     }
 
-    function underlyingTransferOut(
-        address receipt,
-        uint256 amount,
-        bool
-    ) internal virtual override {
+    function underlyingTransferOut(address receipt, uint256 amount, bool) internal virtual override {
         //  skip transfer to myself
         if (receipt == address(this)) {
             return;
@@ -70,22 +62,14 @@ contract LpFarmingVault is DepositVaultBase {
         _deposit(msg.sender, amount);
     }
 
-    function depositTo(
-        address dtoken,
-        address to,
-        uint256 amount
-    ) external {
+    function depositTo(address dtoken, address to, uint256 amount) external {
         require(dtoken == address(underlying), "TOKEN_UNMATCH");
         underlyingTransferIn(msg.sender, amount);
         _deposit(to, amount);
     }
 
     // call from dToken
-    function syncDeposit(
-        address dtoken,
-        uint256 amount,
-        address user
-    ) external virtual override {
+    function syncDeposit(address dtoken, uint256 amount, address user) external virtual override {
         address vault = IController(controller).dyTokenVaults(dtoken);
         require(msg.sender == underlying && dtoken == address(underlying), "TOKEN_UNMATCH");
         require(vault == address(this), "VAULT_UNMATCH");
@@ -96,20 +80,11 @@ contract LpFarmingVault is DepositVaultBase {
         _withdraw(msg.sender, amount, unpack);
     }
 
-    function withdrawTo(
-        address to,
-        uint256 amount,
-        bool unpack
-    ) external {
+    function withdrawTo(address to, uint256 amount, bool unpack) external {
         _withdraw(to, amount, unpack);
     }
 
-    function withdrawCall(
-        address to,
-        uint256 amount,
-        bool unpack,
-        bytes calldata data
-    ) external {
+    function withdrawCall(address to, uint256 amount, bool unpack, bytes calldata data) external {
         uint256 actualAmount = _withdraw(to, amount, unpack);
         if (data.length > 0) {
             address asset = unpack ? pair : underlying;
@@ -117,11 +92,7 @@ contract LpFarmingVault is DepositVaultBase {
         }
     }
 
-    function liquidate(
-        address liquidator,
-        address borrower,
-        bytes calldata data
-    ) external override {
+    function liquidate(address liquidator, address borrower, bytes calldata data) external override {
         _liquidate(liquidator, borrower, data);
     }
 
@@ -145,12 +116,12 @@ contract LpFarmingVault is DepositVaultBase {
         uint256 price0 = IUSDOracle(oracle0).getPrice(token0);
         uint256 price1 = IUSDOracle(oracle1).getPrice(token1);
 
-        uint256 lp_price = (((sqrtK * 2 * (HomoraMath.sqrt(price0))) / (2**56)) * HomoraMath.sqrt(price1)) / 2**56;
+        uint256 lp_price = (((sqrtK * 2 * (HomoraMath.sqrt(price0))) / (2 ** 56)) * HomoraMath.sqrt(price1)) / 2 ** 56;
 
         if (dp) {
-            value = (lp_price * amount * (dr0 + dr1)) / 2 / PercentBase / (10**18);
+            value = (lp_price * amount * (dr0 + dr1)) / 2 / PercentBase / (10 ** 18);
         } else {
-            value = (lp_price * amount) / (10**18);
+            value = (lp_price * amount) / (10 ** 18);
         }
     }
 

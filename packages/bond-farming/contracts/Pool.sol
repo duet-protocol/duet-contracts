@@ -74,11 +74,7 @@ contract Pool {
         farming = msg.sender;
     }
 
-    function updateReward(
-        address[] memory epochs,
-        uint256[] memory awards,
-        uint256 periodFinish
-    ) public onlyFarming {
+    function updateReward(address[] memory epochs, uint256[] memory awards, uint256 periodFinish) public onlyFarming {
         if (periodFinish <= block.timestamp) {
             return;
         }
@@ -123,11 +119,7 @@ contract Pool {
         lastRewardSecond = block.timestamp;
     }
 
-    function updateUser(
-        address user,
-        uint256 newDeposit,
-        bool liq
-    ) internal {
+    function updateUser(address user, uint256 newDeposit, bool liq) internal {
         for (uint256 i = 0; i < epoches.length; i++) {
             EpochInfo memory epinfo = epochInfos[epoches[i]];
             if (liq) {

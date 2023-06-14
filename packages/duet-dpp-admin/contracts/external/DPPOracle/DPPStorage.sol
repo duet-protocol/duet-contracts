@@ -69,15 +69,7 @@ contract DPPStorage is InitializableOwnable, ReentrancyGuard {
     function getPMMStateForCall()
         external
         view
-        returns (
-            uint256 i,
-            uint256 K,
-            uint256 B,
-            uint256 Q,
-            uint256 B0,
-            uint256 Q0,
-            uint256 R
-        )
+        returns (uint256 i, uint256 K, uint256 B, uint256 Q, uint256 B0, uint256 Q0, uint256 R)
     {
         PMMPricing.PMMState memory state = getPMMState();
         i = state.i;

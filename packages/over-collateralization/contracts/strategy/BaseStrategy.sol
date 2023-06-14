@@ -32,12 +32,7 @@ abstract contract BaseStrategy is Constants, IStrategy, Ownable {
     event SetFeeConf(address controller);
     event SetMinHarvestAmount(uint256 harvestAmount);
 
-    constructor(
-        address _controller,
-        address _fee,
-        address _want,
-        address _output
-    ) {
+    constructor(address _controller, address _fee, address _want, address _output) {
         controller = _controller;
         want = _want;
         output = _output;
@@ -94,11 +89,7 @@ abstract contract BaseStrategy is Constants, IStrategy, Ownable {
         IERC20(_token).safeTransfer(owner(), _amount);
     }
 
-    function safeTransfer(
-        address _token,
-        address _to,
-        uint256 _amount
-    ) internal {
+    function safeTransfer(address _token, address _to, uint256 _amount) internal {
         uint256 b = IERC20(_token).balanceOf(address(this));
         if (b > _amount) {
             IERC20(_token).safeTransfer(_to, _amount);

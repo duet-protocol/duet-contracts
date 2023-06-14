@@ -57,7 +57,7 @@ contract DPPOracle is DPPTrader {
 
         _IS_OPEN_TWAP_ = isOpenTWAP;
         _IS_ORACLE_ENABLED = isOracleEnabled;
-        if (isOpenTWAP) _BLOCK_TIMESTAMP_LAST_ = uint32(block.timestamp % 2**32);
+        if (isOpenTWAP) _BLOCK_TIMESTAMP_LAST_ = uint32(block.timestamp % 2 ** 32);
 
         _resetTargetAndReserve();
     }

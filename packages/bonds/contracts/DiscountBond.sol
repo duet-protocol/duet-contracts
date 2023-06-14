@@ -84,7 +84,7 @@ contract DiscountBond is ERC20Upgradeable, ReentrancyGuardUpgradeable, IBond {
     }
 
     function minTradingAmount() public view returns (uint256) {
-        return 10**(underlyingToken.decimals() - 4);
+        return 10 ** (underlyingToken.decimals() - 4);
     }
 
     function getPrice() public view returns (IBondFactory.BondPrice memory price) {
@@ -104,12 +104,10 @@ contract DiscountBond is ERC20Upgradeable, ReentrancyGuardUpgradeable, IBond {
         return price;
     }
 
-    function mintByUnderlyingAmount(address account_, uint256 underlyingAmount_)
-        external
-        beforeMaturity
-        nonReentrant
-        returns (uint256 bondAmount)
-    {
+    function mintByUnderlyingAmount(
+        address account_,
+        uint256 underlyingAmount_
+    ) external beforeMaturity nonReentrant returns (uint256 bondAmount) {
         underlyingToken.safeTransferFrom(msg.sender, address(this), underlyingAmount_);
         bondAmount = previewMintByUnderlyingAmount(underlyingAmount_);
         inventoryAmount -= bondAmount;
@@ -117,24 +115,18 @@ contract DiscountBond is ERC20Upgradeable, ReentrancyGuardUpgradeable, IBond {
         emit BondMinted(account_, bondAmount, underlyingAmount_);
     }
 
-    function previewMintByUnderlyingAmount(uint256 underlyingAmount_)
-        public
-        view
-        beforeMaturity
-        tradingGuard
-        returns (uint256 bondAmount)
-    {
+    function previewMintByUnderlyingAmount(
+        uint256 underlyingAmount_
+    ) public view beforeMaturity tradingGuard returns (uint256 bondAmount) {
         require(underlyingAmount_ >= minTradingAmount(), "DiscountBond: AMOUNT_TOO_LOW");
         bondAmount = (underlyingAmount_ * factory.priceFactor()) / getPrice().ask;
         require(inventoryAmount >= bondAmount, "DiscountBond: INSUFFICIENT_LIQUIDITY");
     }
 
-    function mintByBondAmount(address account_, uint256 bondAmount_)
-        external
-        nonReentrant
-        beforeMaturity
-        returns (uint256 underlyingAmount)
-    {
+    function mintByBondAmount(
+        address account_,
+        uint256 bondAmount_
+    ) external nonReentrant beforeMaturity returns (uint256 underlyingAmount) {
         underlyingAmount = previewMintByBondAmount(bondAmount_);
         underlyingToken.safeTransferFrom(msg.sender, address(this), underlyingAmount);
         inventoryAmount -= bondAmount_;
@@ -142,25 +134,17 @@ contract DiscountBond is ERC20Upgradeable, ReentrancyGuardUpgradeable, IBond {
         emit BondMinted(account_, bondAmount_, underlyingAmount);
     }
 
-    function previewMintByBondAmount(uint256 bondAmount_)
-        public
-        view
-        beforeMaturity
-        tradingGuard
-        returns (uint256 underlyingAmount)
-    {
+    function previewMintByBondAmount(
+        uint256 bondAmount_
+    ) public view beforeMaturity tradingGuard returns (uint256 underlyingAmount) {
         require(bondAmount_ >= minTradingAmount(), "DiscountBond: AMOUNT_TOO_LOW");
         require(inventoryAmount >= bondAmount_, "DiscountBond: INSUFFICIENT_LIQUIDITY");
         underlyingAmount = (bondAmount_ * getPrice().ask) / factory.priceFactor();
     }
 
-    function sellByBondAmount(uint256 bondAmount_)
-        public
-        beforeMaturity
-        nonReentrant
-        tradingGuard
-        returns (uint256 underlyingAmount)
-    {
+    function sellByBondAmount(
+        uint256 bondAmount_
+    ) public beforeMaturity nonReentrant tradingGuard returns (uint256 underlyingAmount) {
         underlyingAmount = previewSellByBondAmount(bondAmount_);
         _burn(msg.sender, bondAmount_);
         inventoryAmount += bondAmount_;
@@ -168,13 +152,9 @@ contract DiscountBond is ERC20Upgradeable, ReentrancyGuardUpgradeable, IBond {
         emit BondSold(msg.sender, bondAmount_, underlyingAmount);
     }
 
-    function previewSellByBondAmount(uint256 bondAmount_)
-        public
-        view
-        beforeMaturity
-        tradingGuard
-        returns (uint256 underlyingAmount)
-    {
+    function previewSellByBondAmount(
+        uint256 bondAmount_
+    ) public view beforeMaturity tradingGuard returns (uint256 underlyingAmount) {
         require(bondAmount_ >= minTradingAmount(), "DiscountBond: AMOUNT_TOO_LOW");
         require(balanceOf(msg.sender) >= bondAmount_, "DiscountBond: EXCEEDS_BALANCE");
         underlyingAmount = (bondAmount_ * getPrice().bid) / factory.priceFactor();
@@ -211,11 +191,7 @@ contract DiscountBond is ERC20Upgradeable, ReentrancyGuardUpgradeable, IBond {
         underlyingToken.safeTransfer(to_, amount_);
     }
 
-    function emergencyWithdraw(
-        IERC20MetadataUpgradeable token_,
-        address to_,
-        uint256 amount_
-    ) external onlyFactory {
+    function emergencyWithdraw(IERC20MetadataUpgradeable token_, address to_, uint256 amount_) external onlyFactory {
         token_.safeTransfer(to_, amount_);
     }
 }
