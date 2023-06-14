@@ -5,17 +5,10 @@
     "strict": true,
     "esModuleInterop": true,
     "outDir": "dist",
-    "lib": [
-      "es2021"
-    ],
+    "lib": ["es2021"],
     "declaration": true,
-    "typeRoots": [
-      "./types/",
-      "../node_modules/@types"
-    ],
-    "types": [
-      "node"
-    ],
+    "typeRoots": ["./types/", "../node_modules/@types"],
+    "types": ["node"],
     "baseUrl": "./"
   }
 }

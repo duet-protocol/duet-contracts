@@ -45,6 +45,10 @@ contract DuetProStaking is ReentrancyGuardUpgradeable, Adminable {
     // user => UserInfo
     mapping(address => UserInfo) public userInfos;
 
+    uint256 public boosterLockDuration = 7 days;
+    // user => block.timestamp
+    mapping(address => uint256) public lastBoosterOperatedAt;
+
     struct UserInfo {
         uint256 shares;
         uint256 boostedShares;
@@ -58,6 +62,10 @@ contract DuetProStaking is ReentrancyGuardUpgradeable, Adminable {
 
     event AddSupportedBoosterToken(address indexed user, address token);
     event RemoveSupportedBoosterToken(address indexed user, address token);
+    event StakeBooster(address indexed user, address booster, uint256 amount, uint256 value);
+    event UnstakeBooster(address indexed user, address booster, uint256 amount, uint256 value);
+    event AddLiquidity(address indexed user, uint256 liquidity);
+    event RemoveLiquidity(address indexed user, uint256 liquidity);
 
     constructor() {
         // 30097 is the chain id of hardhat in hardhat.config.ts
@@ -115,6 +123,7 @@ contract DuetProStaking is ReentrancyGuardUpgradeable, Adminable {
         );
         address user = msg.sender;
         UserInfo storage userInfo = userInfos[user];
+        lastBoosterOperatedAt[user] = block.timestamp;
         _updatePool();
 
         booster_.safeTransferFrom(user, address(this), amount_);
@@ -128,11 +137,16 @@ contract DuetProStaking is ReentrancyGuardUpgradeable, Adminable {
 
         _touchUser(user);
         _updateUserBoostedShares(user);
+        emit StakeBooster(user, address(booster_), amount_, boosterValue);
     }
 
     function unstakeBooster(IERC20MetadataUpgradeable booster_, uint256 amount_) external nonReentrant {
         address user = msg.sender;
         require(userStakedBooster[user][address(booster_)] >= amount_, "DuetProStaking: insufficient staked booster");
+        // The lastBoosterOperatedAt value of the user who staked before the lock went live is 0
+        if (lastBoosterOperatedAt[user] > 0 && block.timestamp < lastBoosterOperatedAt[user] + boosterLockDuration) {
+            revert("DuetProStaking: booster locked");
+        }
         UserInfo storage userInfo = userInfos[user];
         _updatePool();
 
@@ -155,6 +169,7 @@ contract DuetProStaking is ReentrancyGuardUpgradeable, Adminable {
         booster_.safeTransfer(user, amount_);
         _touchUser(user);
         _updateUserBoostedShares(user);
+        emit UnstakeBooster(user, address(booster_), amount_, boosterValue);
     }
 
     function addLiquidity(uint256 underlyingAmount_, IPool.PythData calldata pythData) external payable nonReentrant {
@@ -178,6 +193,7 @@ contract DuetProStaking is ReentrancyGuardUpgradeable, Adminable {
         _touchUser(user);
         userInfo.accAddedLiquidity += amount;
         _updateUserBoostedShares(user);
+        emit AddLiquidity(user, amount);
     }
 
     function removeLiquidity(
@@ -238,6 +254,8 @@ contract DuetProStaking is ReentrancyGuardUpgradeable, Adminable {
         uint256 usdLikeAmount = normalizeDecimals(amount, LIQUIDITY_DECIMALS, usdLikeUnderlying.decimals());
         pool.removeLiquidity{ value: msg.value }(address(usdLikeUnderlying), usdLikeAmount, pythData);
         usdLikeUnderlying.safeTransfer(user, usdLikeAmount);
+
+        emit RemoveLiquidity(user, amount);
     }
 
     function sharesToLiquidity(
@@ -329,6 +347,10 @@ contract DuetProStaking is ReentrancyGuardUpgradeable, Adminable {
         (lastNormalLiquidity, lastBoostedLiquidity) = calcPool();
         lastActionTime = block.timestamp;
         lastActionBlock = blockNumber();
+    }
+
+    function setBoosterLockDuration(uint256 duration) external onlyAdmin {
+        boosterLockDuration = duration;
     }
 
     function getRemoteInfo() public view returns (IDeriLens.LpInfo memory lpInfo) {
