@@ -27,6 +27,10 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     throw new Error('This script is only for arbitrum')
   }
   const { deployer } = await getNamedAccounts()
+  const UNISWAP_V3_FACTORY_ADDRESS = '0x1F98431c8aD98523631AE4a59f267346ea31F984'
+  const USDC_ADDRESS = '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8'
+  const DUET_TOKEN_ADDRESS = '0x4d13a9b2E1C6784c6290350d34645DDc7e765808'
+  const DUET_POOL_FEE = 10000
 
   const boosterOracle = await advancedDeploy(
     {
@@ -39,7 +43,18 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
       return await deploy(name, {
         from: deployer,
         contract: 'BoosterOracle',
-        args: [],
+        proxy: {
+          execute: {
+            init: {
+              methodName: 'initialize',
+              // IUniswapV3Factory uniswapV3Factory_,
+              // address usdLikeToken_,
+              // address duetToken_,
+              // uint24 duetPoolFee_,
+              args: [UNISWAP_V3_FACTORY_ADDRESS, USDC_ADDRESS, DUET_TOKEN_ADDRESS, DUET_POOL_FEE],
+            },
+          },
+        },
         log: true,
         autoMine: true, // speed up deployment on local network (ganache, hardhat), no effect on live networks
       })

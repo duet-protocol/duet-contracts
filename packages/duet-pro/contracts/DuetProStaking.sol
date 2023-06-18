@@ -357,13 +357,6 @@ contract DuetProStaking is ReentrancyGuardUpgradeable, Adminable {
         return deriLens.getLpInfo(address(pool), address(this));
     }
 
-    function _boosterValue(IERC20MetadataUpgradeable booster_, uint256 amount_) internal view returns (uint256) {
-        uint256 boosterPrice = boosterOracle.getPrice(address(booster_));
-        uint256 boosterDecimals = booster_.decimals();
-        require(boosterPrice > 0, "DuetProStaking: booster price is zero");
-        return uint256(normalizeDecimals(boosterPrice * amount_, boosterDecimals, LIQUIDITY_DECIMALS));
-    }
-
     function forceAddLiquidity(uint256 amount_, IPool.PythData calldata pythData) external payable {
         usdLikeUnderlying.safeTransferFrom(msg.sender, address(this), amount_);
         usdLikeUnderlying.approve(address(pool), amount_);

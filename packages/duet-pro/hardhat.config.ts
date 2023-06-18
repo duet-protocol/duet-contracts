@@ -25,9 +25,8 @@ import { getEtherscanEndpoints } from '@nomiclabs/hardhat-etherscan/dist/src/net
 import { chainConfig } from '@nomiclabs/hardhat-etherscan/dist/src/ChainConfig'
 import _ from 'lodash'
 import { readFile } from 'fs/promises'
-
-dotenv.config()
 import * as tdly from '@tenderly/hardhat-tenderly'
+dotenv.config()
 
 tdly.setup({ automaticVerifications: true })
 
